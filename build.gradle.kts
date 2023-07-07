@@ -37,9 +37,8 @@ dependencies {
     //jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    //swagger
-    implementation("io.springfox:springfox-boot-starter:3.0.0")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    //docs
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 
     //spring data + db
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
