@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=$${database.name}'
+      - 'POSTGRES_PASSWORD=$${database.password}'
+      - 'POSTGRES_USER=$${database.user}'
+    ports:
+      - '5432'
+    volumes:
+      - ./data/postgres-data:/var/lib/postgresql/data
+      - ./logs/postgres:/var/log/postgresql
+  rest:
+    image: 'mochal/decision-support-web-backend:1.0.0'
+    container_name: 'decision-support-rest-api'
+    ports:
+      - 8080:8080
+      - 8000:8000
+    environment:
+      -SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/$${database.name}
+      -SPRING_DATASOURCE_USERNAME: $${database.user}
+      -SPRING_DATASOURCE_PASSWORD: $${database.password}
+    depends_on:
+      - postgres
+
