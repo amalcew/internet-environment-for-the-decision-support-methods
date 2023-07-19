@@ -1,4 +1,4 @@
-package pl.poznan.put.decision_support.sample.service.electre1s.model
+package pl.poznan.put.decision_support.sample.service.electre_shared.model
 
 /**
  * corresponding to json

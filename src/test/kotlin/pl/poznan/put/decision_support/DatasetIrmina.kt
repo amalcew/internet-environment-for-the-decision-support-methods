@@ -1,7 +1,7 @@
 package pl.poznan.put.decision_support
 
-import pl.poznan.put.decision_support.sample.service.electre1s.model.Criterion
-import pl.poznan.put.decision_support.sample.service.electre1s.model.Variant
+import pl.poznan.put.decision_support.sample.service.electre_shared.model.Criterion
+import pl.poznan.put.decision_support.sample.service.electre_shared.model.Variant
 import java.util.*
 
 class DatasetIrmina {

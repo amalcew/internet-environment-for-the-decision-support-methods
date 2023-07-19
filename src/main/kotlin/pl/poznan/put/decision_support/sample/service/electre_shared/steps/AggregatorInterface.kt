@@ -1,4 +1,4 @@
-package pl.poznan.put.decision_support.sample.service.electre1s.steps
+package pl.poznan.put.decision_support.sample.service.electre_shared.steps
 
 import java.util.*
 

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pl.poznan.put.decision_support.sample.service.electre1s.Electre1sFactory
-import pl.poznan.put.decision_support.sample.service.electre1s.model.InputBody
+import pl.poznan.put.decision_support.sample.service.electre_shared.model.InputBody
 
 @RestController
 class Electre1sController() {
