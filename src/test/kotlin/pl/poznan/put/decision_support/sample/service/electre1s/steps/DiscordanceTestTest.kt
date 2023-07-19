@@ -2,11 +2,7 @@ package pl.poznan.put.decision_support.sample.service.electre1s.steps
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.springframework.hateoas.Link
 import pl.poznan.put.decision_support.DatasetIrmina
-import pl.poznan.put.decision_support.sample.service.electre1s.model.Criterion
-import pl.poznan.put.decision_support.sample.service.electre1s.model.Variant
-import java.util.*
 
 class DiscordanceTestTest {
 
