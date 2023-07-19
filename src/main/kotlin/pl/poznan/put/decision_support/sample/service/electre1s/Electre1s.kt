@@ -1,11 +1,15 @@
 package pl.poznan.put.decision_support.sample.service.electre1s
 
+import pl.poznan.put.decision_support.sample.service.electre1s.model.Criterion
+import pl.poznan.put.decision_support.sample.service.electre1s.model.Variant
 import pl.poznan.put.decision_support.sample.service.electre1s.steps.ConcordanceTest
 import pl.poznan.put.decision_support.sample.service.electre1s.steps.DiscordanceTest
 
 import java.util.*
 
-class Electre1sCalculator {
+// TODO: [Electre1s] add comments describing each function and its purpose in the Electre1s algorithm
+
+class Electre1s {
     public fun calculate(variants: Array<Variant>, criteria: LinkedList<Criterion>, lambda: Double): Array<Array<Double>> {
         val concordanceTest = ConcordanceTest()
         val discordanceTest = DiscordanceTest()

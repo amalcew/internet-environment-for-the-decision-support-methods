@@ -1,4 +1,4 @@
-package pl.poznan.put.decision_support.sample.service.electre1s
+package pl.poznan.put.decision_support.sample.service.electre1s.model
 
 class Criterion {
     val PREFERENCE_TYPE_COST = 1

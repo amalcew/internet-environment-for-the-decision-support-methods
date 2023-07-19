@@ -1,7 +1,7 @@
 package pl.poznan.put.decision_support.sample.service.electre1s.steps
 
-import pl.poznan.put.decision_support.sample.service.electre1s.Criterion
-import pl.poznan.put.decision_support.sample.service.electre1s.Variant
+import pl.poznan.put.decision_support.sample.service.electre1s.model.Criterion
+import pl.poznan.put.decision_support.sample.service.electre1s.model.Variant
 import pl.poznan.put.decision_support.sample.service.electre1s.exception.InvalidCriteriaException
 import java.util.LinkedList
 
