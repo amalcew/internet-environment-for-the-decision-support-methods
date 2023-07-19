@@ -1,5 +1,6 @@
-package pl.poznan.put.decision_support.sample.service.electre_shared.steps
+package pl.poznan.put.decision_support.sample.service.electre1s.steps
 
+import pl.poznan.put.decision_support.sample.service.electre_shared.steps.AggregatorInterface
 import java.util.*
 
 class AggregateStep : AggregatorInterface {
