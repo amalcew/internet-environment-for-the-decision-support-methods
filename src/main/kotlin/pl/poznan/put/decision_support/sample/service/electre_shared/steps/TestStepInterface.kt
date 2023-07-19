@@ -5,6 +5,9 @@ import pl.poznan.put.decision_support.sample.service.electre_shared.model.Criter
 import pl.poznan.put.decision_support.sample.service.electre_shared.model.Variant
 
 interface TestStepInterface {
+    /**
+     * @return result Array<Array<Double>>|List<Array<Array<Double>>>
+     */
     @Throws(InvalidCriteriaException::class)
-    public fun calculate(variants: List<Variant>, criteria: List<Criterion>): Array<Array<Double>>
+    public fun calculate(variants: List<Variant>, criteria: List<Criterion>): Any
 }

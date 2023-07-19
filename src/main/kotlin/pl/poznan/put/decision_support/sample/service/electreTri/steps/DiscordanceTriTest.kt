@@ -1,18 +1,18 @@
-package pl.poznan.put.decision_support.sample.service.electre1s.steps
+package pl.poznan.put.decision_support.sample.service.electreTri.steps
 
 import pl.poznan.put.decision_support.sample.service.electre_shared.model.Criterion
 import pl.poznan.put.decision_support.sample.service.electre_shared.model.Variant
 import pl.poznan.put.decision_support.sample.service.electre1s.exception.InvalidCriteriaException
+import pl.poznan.put.decision_support.sample.service.electre1s.steps.DiscordanceTest
 import pl.poznan.put.decision_support.sample.service.electre_shared.steps.TestStepInterface
 import java.util.LinkedList
 
 // TODO: [DiscordanceTest] add comments describing each function and its purpose in the Electre1s algorithm
 
-open class DiscordanceTest : TestStepInterface {
+class DiscordanceTriTest : TestStepInterface {
     @Throws(InvalidCriteriaException::class)
-    override fun calculate(variants: List<Variant>, criteria: List<Criterion>): Array<Array<Double>> {
+    override fun calculate(variants: List<Variant>, criteria: List<Criterion>): List<Array<Array<Double>>> {
         val n = variants.size
-// lines overlap, but types probably incompatible to use inheritance?
         val allResults: LinkedList<Array<Array<Double>>> = LinkedList()
         for ((criterionIndex, criterion) in criteria.withIndex()) {
             val results: Array<Array<Double>> = Array(n) { Array(n) { -1.0 } }
@@ -24,26 +24,9 @@ open class DiscordanceTest : TestStepInterface {
             allResults.add(results)
         }
 
-        return this.calculateToResultArray(allResults)
+        return allResults
     }
 
-    private fun calculateToResultArray(allResults: List<Array<Array<Double>>>): Array<Array<Double>> {
-        val n = allResults[0].size
-        val result: Array<Array<Double>> = Array(n) { Array(n) { 0.0 } }
-
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                var negateOutranking = 0.0
-                for (matrix in allResults) {
-                    if (matrix[i][j] > 0.0) {
-                        negateOutranking = 1.0
-                    }
-                }
-                result[i][j] = negateOutranking
-            }
-        }
-        return result
-    }
     @Throws(InvalidCriteriaException::class)
     private fun validateNegationOfOutranking(variantA: Double, variantB: Double, criterion: Criterion): Double {
         if (criterion.preferenceType == "gain") {
@@ -53,6 +36,10 @@ open class DiscordanceTest : TestStepInterface {
             if (variantB >= variantA + criterion.v) {
                 return 1.0
             }
+//            TODO: check math
+            val space = criterion.v - criterion.p
+            val yCurr = variantB - variantA - criterion.p
+            return 1.0 - yCurr / space
         }
         if (criterion.preferenceType == "cost") {
             if (variantB <= variantA - criterion.v) {
@@ -61,6 +48,9 @@ open class DiscordanceTest : TestStepInterface {
             if (variantB > variantA - criterion.v) {
                 return 0.0
             }
+            val space = criterion.v - criterion.p
+            val yCurr = variantB - variantA - criterion.p
+            return 1.0 - yCurr / space
         }
         throw InvalidCriteriaException("gain or cost only")  // TODO: [calculateValueOfOutranking()] change InvalidCriteriaException message to more meaningful
     }

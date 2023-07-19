@@ -1,12 +1,12 @@
-package pl.poznan.put.decision_support.sample.service.electre1s
+package pl.poznan.put.decision_support.sample.service.electreTri
 
 import pl.poznan.put.decision_support.sample.service.electre_shared.Calculator
 
-class Electre1sFactory {
+class ElectreTriFactory {
     fun createConfig(): Config {
         return Config()
     }
-    fun createElectre1s(): Calculator {
+    fun createElectreTri(): Calculator {
         return Calculator(this.createConfig())
     }
-}
+ }
