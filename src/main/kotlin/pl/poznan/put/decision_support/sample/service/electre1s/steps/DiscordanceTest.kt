@@ -44,7 +44,7 @@ class DiscordanceTest {
     }
 
     private fun validateNegationOfOutranking(variantA: Double, variantB: Double, criterion: Criterion): Double {
-        if (criterion.preferenceType === criterion.PREFERENCE_TYPE_GAIN) {
+        if (criterion.preferenceType === "gain") {
             if (variantB < variantA + criterion.v) {
                 return 0.0
             }
@@ -52,7 +52,7 @@ class DiscordanceTest {
                 return 1.0
             }
         }
-        if (criterion.preferenceType === criterion.PREFERENCE_TYPE_COST) {
+        if (criterion.preferenceType === "cost") {
             if (variantB <= variantA - criterion.v) {
                 return 1.0
             }

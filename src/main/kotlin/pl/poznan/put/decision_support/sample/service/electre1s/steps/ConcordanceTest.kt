@@ -44,7 +44,7 @@ class ConcordanceTest {
     }
 
     private fun calculateValueOfOutranking(variantA: Double, variantB: Double, criterion: Criterion): Double {
-        if (criterion.preferenceType === criterion.PREFERENCE_TYPE_GAIN) {
+        if (criterion.preferenceType === "gain") {
             if (variantA >= variantB - criterion.q) {
                 return 1.0
             }
@@ -55,7 +55,7 @@ class ConcordanceTest {
             val yCurr = variantB - variantA - criterion.q
             return 1.0 - yCurr / space
         }
-        if (criterion.preferenceType === criterion.PREFERENCE_TYPE_COST) {
+        if (criterion.preferenceType === "cost") {
             if (variantA <= variantB + criterion.q) {
                 return 1.0
             }
