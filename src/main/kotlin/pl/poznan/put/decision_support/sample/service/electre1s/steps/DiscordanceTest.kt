@@ -62,6 +62,6 @@ open class DiscordanceTest : TestStepInterface {
                 return 0.0
             }
         }
-        throw InvalidCriteriaException("gain or cost only")  // TODO: [calculateValueOfOutranking()] change InvalidCriteriaException message to more meaningful
+        throw InvalidCriteriaException("Preference type only allows for 'gain' or 'cost' types!")
     }
 }

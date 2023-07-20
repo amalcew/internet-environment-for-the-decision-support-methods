@@ -52,6 +52,6 @@ class DiscordanceTriTest : TestStepInterface {
             val yCurr = variantB - variantA - criterion.p
             return 1.0 - yCurr / space
         }
-        throw InvalidCriteriaException("gain or cost only")  // TODO: [calculateValueOfOutranking()] change InvalidCriteriaException message to more meaningful
+        throw InvalidCriteriaException("Preference type only allows for 'gain' or 'cost' types!")
     }
 }
