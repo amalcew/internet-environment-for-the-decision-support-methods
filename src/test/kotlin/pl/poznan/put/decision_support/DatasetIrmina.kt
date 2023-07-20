@@ -10,12 +10,12 @@ class DatasetIrmina {
     private val criterion2 = Criterion("gain", 9.0, 1.0, 1.6, 3.5)
 
     // ----------------------- variants --------------------------------------------------------------------------------
-    private val variant1 = Variant(arrayOf(10.8, 4.7))
-    private val variant2 = Variant(arrayOf(8.0, 6.0))
-    private val variant3 = Variant(arrayOf(11.0, 4.8))
+    private val variant1 = Variant(listOf(10.8, 4.7))
+    private val variant2 = Variant(listOf(8.0, 6.0))
+    private val variant3 = Variant(listOf(11.0, 4.8))
 
     // --------------------- global values -----------------------------------------------------------------------------
     val lambda: Double = 0.6
     val criteria = LinkedList<Criterion>(listOf(criterion1, criterion2))
-    val variants: Array<Variant> = arrayOf(variant1, variant2, variant3)
+    val variants: List<Variant> = listOf(variant1, variant2, variant3)
 }
