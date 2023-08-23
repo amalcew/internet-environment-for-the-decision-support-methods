@@ -5,7 +5,7 @@ import java.util.*
 
 class AggregateStep : AggregatorInterface {
 
-    override fun calculate(lambda: Double, stepResult: LinkedList<Any>): Array<Array<Double>> {
+    override fun calculate(lambda: Double, stepResult: LinkedList<Any>, context: MutableMap<String, Any>): Array<Array<Double>> {
         val concordanceTestResults = stepResult[0] //Array<Array<Double>>
         val discordanceTestResults = stepResult[1]
 //        TODO: is multiple with acceptable?
@@ -24,6 +24,7 @@ class AggregateStep : AggregatorInterface {
                         }
                     }
                 }
+                context["final"] = result;
                 return result
             }
         }

@@ -9,7 +9,7 @@ import java.util.LinkedList
 
 class ConcordanceTest : TestStepInterface {
     @Throws(InvalidCriteriaException::class)
-    override fun calculate(variants: List<Variant>, criteria: List<Criterion>): Array<Array<Double>> {
+    override fun calculate(variants: List<Variant>, criteria: List<Criterion>, context: MutableMap<String, Any>): Array<Array<Double>> {
         val n = variants.size
 
         val allResults: LinkedList<Array<Array<Double>>> = LinkedList()
@@ -22,8 +22,9 @@ class ConcordanceTest : TestStepInterface {
             }
             allResults.add(results)
         }
-
-        return this.calculateToResultArray(allResults, criteria)
+        val result = this.calculateToResultArray(allResults, criteria);
+        context["concordance"] = result
+        return result;
     }
 
     private fun calculateToResultArray(allResults: List<Array<Array<Double>>>, criteria: List<Criterion>): Array<Array<Double>> {

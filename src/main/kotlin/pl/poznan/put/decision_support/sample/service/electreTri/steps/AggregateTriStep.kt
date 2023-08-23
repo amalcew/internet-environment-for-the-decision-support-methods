@@ -8,7 +8,7 @@ class AggregateTriStep : AggregatorInterface {
     /**
      * TODO: no lambda usage right now. Sama macierz bez przydzieleń do klas
      */
-    override fun calculate(lambda: Double, stepResult: LinkedList<Any>): Array<Array<Double>> {
+    override fun calculate(lambda: Double, stepResult: LinkedList<Any>, context: MutableMap<String, Any>): Array<Array<Double>> {
         val concordanceTestResults = stepResult[0] //Array<Array<Double>>
         val discordanceTestResults = stepResult[1]
 //        TODO: is multiple with acceptable?
@@ -28,6 +28,7 @@ class AggregateTriStep : AggregatorInterface {
                         result[row][column] = concordanceTestResults[row][column] * multiplier
                     }
                 }
+                context["not_sure_if_final"] = result;
                 return result
             }
         }

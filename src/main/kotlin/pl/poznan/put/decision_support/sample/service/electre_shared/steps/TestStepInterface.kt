@@ -9,5 +9,5 @@ interface TestStepInterface {
      * @return result Array<Array<Double>>|List<Array<Array<Double>>>
      */
     @Throws(InvalidCriteriaException::class)
-    public fun calculate(variants: List<Variant>, criteria: List<Criterion>): Any
+    public fun calculate(variants: List<Variant>, criteria: List<Criterion>, context: MutableMap<String, Any>): Any
 }
