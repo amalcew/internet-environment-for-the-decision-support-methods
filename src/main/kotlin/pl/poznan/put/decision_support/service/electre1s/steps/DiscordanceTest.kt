@@ -1,6 +1,7 @@
 package pl.poznan.put.decision_support.service.electre1s.steps
 
 
+import pl.poznan.put.decision_support.exception.InvalidCriteriaException
 import pl.poznan.put.decision_support.service.electre_shared.model.Criterion
 import pl.poznan.put.decision_support.service.electre_shared.model.Variant
 import pl.poznan.put.decision_support.service.electre_shared.steps.DiscordanceShared
@@ -9,7 +10,7 @@ import java.util.LinkedList
 // TODO: [DiscordanceTest] add comments describing each function and its purpose in the Electre1s algorithm
 
 open class DiscordanceTest : DiscordanceShared() {
-    @Throws(pl.poznan.put.decision_support.service.electre1s.exception.InvalidCriteriaException::class)
+    @Throws(InvalidCriteriaException::class)
     override fun calculate(variants: List<Variant>, criteria: List<Criterion>, context: MutableMap<String, Any>): Array<Array<Double>> {
         val allResults = this.calculateShared(variants, criteria)
         /**
@@ -37,7 +38,7 @@ open class DiscordanceTest : DiscordanceShared() {
         }
         return result
     }
-    @Throws(pl.poznan.put.decision_support.service.electre1s.exception.InvalidCriteriaException::class)
+    @Throws(InvalidCriteriaException::class)
     override fun validateNegationOfOutranking(variantA: Double, variantB: Double, criterion: Criterion): Double {
         if (criterion.preferenceType == "gain") {
             if (variantB < variantA + criterion.v) {
@@ -55,6 +56,6 @@ open class DiscordanceTest : DiscordanceShared() {
                 return 0.0
             }
         }
-        throw pl.poznan.put.decision_support.service.electre1s.exception.InvalidCriteriaException("Preference type only allows for 'gain' or 'cost' types!")
+        throw InvalidCriteriaException("Preference type only allows for 'gain' or 'cost' types!")
     }
 }

@@ -1,6 +1,6 @@
 package pl.poznan.put.decision_support.service.electre_shared.steps
 
-import pl.poznan.put.decision_support.service.electre1s.exception.InvalidCriteriaException
+import pl.poznan.put.decision_support.exception.InvalidCriteriaException
 import pl.poznan.put.decision_support.service.electre_shared.model.Criterion
 import pl.poznan.put.decision_support.service.electre_shared.model.Variant
 
