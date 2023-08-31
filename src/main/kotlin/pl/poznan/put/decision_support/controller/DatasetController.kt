@@ -1,5 +1,6 @@
 package pl.poznan.put.decision_support.controller
 
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -23,13 +24,13 @@ class DatasetController(
     }
 
     @GetMapping("/dataset/{id}")
-    fun getDatasetById(id: Long): ResponseEntity<Dataset> {
+    fun getDatasetById(@PathVariable id: Long): ResponseEntity<Dataset> {
         val dataset = datasetService.findById(id).orElse(null)
         return if (dataset != null) ResponseEntity(dataset, HttpStatus.OK)
         else ResponseEntity(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping("/dataset/{name}")
+    @GetMapping("/dataset/name/{name}")
     fun getDatasetByName(name: String): ResponseEntity<Dataset> {
         val dataset = datasetService.getByName(name)
         return if (dataset != null) ResponseEntity(dataset, HttpStatus.OK)
