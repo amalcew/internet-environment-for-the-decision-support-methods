@@ -7,10 +7,11 @@ import jakarta.persistence.*
 data class Criterion(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "criteria_id")
     var id: Long? = null,
     val name: String? = null,
     val type: CriterionType? = null,
     @ManyToOne
-    @JoinColumn(name = "id", insertable=false, updatable=false)
+    @JoinColumn(name = "dataset_id", updatable=false)
     val dataset: Dataset? = null
 )
