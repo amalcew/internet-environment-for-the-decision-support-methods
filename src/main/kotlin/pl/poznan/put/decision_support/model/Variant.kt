@@ -9,8 +9,9 @@ data class Variant(
 ){
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "variant_id")
     var id: Long? = null
     @ManyToOne
-    @JoinColumn(name = "id", insertable=false, updatable=false)
+    @JoinColumn(name = "dataset_id", updatable=false)
     val dataset: Dataset? = null
 }
