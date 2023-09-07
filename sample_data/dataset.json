@@ -1,0 +1,16 @@
+{
+  "name": "Cars",
+  "variants": [
+    {
+      "name": "BMW",
+      "values": [
+        100
+      ]
+    }
+  ],
+  "criteria": [
+    {
+      "name": "speed"
+    }
+  ]
+}
