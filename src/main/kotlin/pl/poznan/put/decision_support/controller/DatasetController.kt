@@ -1,10 +1,10 @@
 package pl.poznan.put.decision_support.controller
 
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.poznan.put.decision_support.model.Dataset
+import pl.poznan.put.decision_support.model.domain.DatasetObject
 import pl.poznan.put.decision_support.service.dataset.DatasetService
 
 @RestController
@@ -17,11 +17,11 @@ class DatasetController(
         return datasetService.getAll()
     }
 
-    @PostMapping("/dataset")
-    fun createDataset(@RequestBody dataset: Dataset): ResponseEntity<Dataset> {
-        val createdDataset = datasetService.save(dataset)
-        return ResponseEntity(createdDataset, HttpStatus.CREATED)
-    }
+//    @PostMapping("/dataset")
+//    fun createDataset(@RequestBody dataset: Dataset): ResponseEntity<Dataset> {
+//        val createdDataset = datasetService.save(dataset)
+//        return ResponseEntity(createdDataset, HttpStatus.CREATED)
+//    }
 
     @GetMapping("/dataset/{id}")
     fun getDatasetById(@PathVariable id: Long): ResponseEntity<Dataset> {
@@ -55,5 +55,11 @@ class DatasetController(
         }
         datasetService.deleteById(datasetId)
         return ResponseEntity(HttpStatus.NO_CONTENT)
+    }
+
+    @PostMapping("/dataset")
+    fun saveDataset(@RequestBody dataset: DatasetObject): ResponseEntity<Dataset> {
+        val createdDataset = datasetService.saveDatasetOfObjects(dataset)
+        return ResponseEntity(createdDataset, HttpStatus.CREATED)
     }
 }

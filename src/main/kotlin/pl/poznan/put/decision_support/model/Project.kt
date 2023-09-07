@@ -9,8 +9,11 @@ data class Project(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "project_id")
     val id: Long? = null
     @ManyToOne
-    @JoinColumn(name = "id", insertable=false, updatable=false)
+    @JoinColumn(name = "id", updatable=false)
     val user: User? = null
+    @OneToOne
+    val dataset: Dataset? = null
 }
