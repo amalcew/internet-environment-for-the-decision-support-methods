@@ -1,8 +1,12 @@
 package pl.poznan.put.decision_support.controller
 
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import pl.poznan.put.decision_support.model.Project
 import pl.poznan.put.decision_support.model.User
 import pl.poznan.put.decision_support.service.UserService
 
@@ -17,14 +21,8 @@ class UserController(
     }
 
     @PostMapping("/users")
-    fun addUser(): User {
-        val user = User(
-            name = "John",
-            password = "Doe",
-            email = "",
-            url = "",
-            age = 0
-        )
-        return userService.addUser(user)
+    fun saveUser(@RequestBody user: User): ResponseEntity<User> {
+        val createdProject = userService.addUser(user)
+        return ResponseEntity(createdProject, HttpStatus.CREATED)
     }
 }

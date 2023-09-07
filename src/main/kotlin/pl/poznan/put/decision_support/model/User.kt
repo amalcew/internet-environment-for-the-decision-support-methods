@@ -9,7 +9,9 @@ data class User(
     val password: String,
     val url: String,
     val email: String,
-    val age: Int
+    val age: Int,
+    @OneToMany(mappedBy = "user")
+    val projects: List<Project>? = null
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
