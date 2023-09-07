@@ -10,9 +10,9 @@ data class VariantCriterionValue(
     var id: Long? = null,
     val value: Double? = null,
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "variant_id")
     val variant: Variant? = null,
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "criteria_id")
     val criterion: Criterion? = null
 )
