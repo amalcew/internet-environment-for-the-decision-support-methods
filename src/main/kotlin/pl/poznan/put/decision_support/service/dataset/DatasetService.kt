@@ -43,7 +43,7 @@ class DatasetService(
         }
         val savedVariants = mutableListOf<Variant>()
         dataset.variants.forEach { variant ->
-            val savedVariant = variantRepository.save(variant.toVariant())
+            val savedVariant = variantRepository.save(variant.toVariant().copy(dataset = savedDataset))
             savedVariants.add(savedVariant)
             savedCriteria.zip(variant.values).forEach { (criterion, value) ->
                 variantCriterionValueRepository.save(
