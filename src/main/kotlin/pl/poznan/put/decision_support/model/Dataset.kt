@@ -16,9 +16,9 @@ data class Dataset(
     @JoinColumn(name = "id")
     val project: Project? = null
 
-    @OneToMany(mappedBy = "dataset", cascade = [CascadeType.ALL])
-    val criteria: List<Criterion>? = null
+    @OneToMany(mappedBy = "dataset", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var criteria: List<Criterion>? = null
 
-    @OneToMany(mappedBy = "dataset", cascade = [CascadeType.ALL])
-    val variants: List<Variant>? = null
+    @OneToMany(mappedBy = "dataset", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var variants: List<Variant>? = null
 }

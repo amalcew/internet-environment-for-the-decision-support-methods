@@ -1,9 +1,11 @@
 package pl.poznan.put.decision_support.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "criteria")
+@JsonIgnoreProperties(value = ["dataset_id", "dataset"])
 data class Criterion(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -11,7 +13,7 @@ data class Criterion(
     var id: Long? = null,
     val name: String? = null,
     val type: CriterionType? = null,
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "dataset_id", updatable=false)
     val dataset: Dataset? = null
 )

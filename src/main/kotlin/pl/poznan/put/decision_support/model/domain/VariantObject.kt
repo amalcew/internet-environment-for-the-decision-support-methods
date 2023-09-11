@@ -7,4 +7,4 @@ data class VariantObject(
     val values: List<Double>
 )
 
-fun VariantObject.toVariant() = Variant(name)
+fun VariantObject.toVariant() = Variant(name = name)

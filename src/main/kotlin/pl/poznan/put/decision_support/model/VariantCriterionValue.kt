@@ -9,10 +9,10 @@ data class VariantCriterionValue(
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     var id: Long? = null,
     val value: Double? = null,
-    @OneToOne
+    @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "variant_id")
     val variant: Variant? = null,
-    @OneToOne
+    @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "criteria_id")
     val criterion: Criterion? = null
 )
