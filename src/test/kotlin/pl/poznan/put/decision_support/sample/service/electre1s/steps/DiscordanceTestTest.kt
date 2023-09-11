@@ -3,6 +3,7 @@ package pl.poznan.put.decision_support.sample.service.electre1s.steps
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import pl.poznan.put.decision_support.DatasetIrmina
+import pl.poznan.put.decision_support.service.electre1s.steps.DiscordanceTest
 
 class DiscordanceTestTest {
 
@@ -21,6 +22,6 @@ class DiscordanceTestTest {
                 arrayOf(0.0, 1.0, 0.0)
         )
 
-        assertArrayEquals(expected, discordanceTest.calculate(datasetIrmina.variants, datasetIrmina.criteria))
+        assertArrayEquals(expected, discordanceTest.calculate(datasetIrmina.variants, datasetIrmina.criteria, context = mutableMapOf()))
     }
 }
