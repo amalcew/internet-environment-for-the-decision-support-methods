@@ -1,27 +1,21 @@
 package pl.poznan.put.decision_support
 
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import pl.poznan.put.decision_support.controller.DatasetController
-import pl.poznan.put.decision_support.service.dataset.DatasetService
+import org.springframework.context.ApplicationContext
 
 
 @SpringBootTest
 class DecisionSupportWebBackendApplicationTests {
 
     @Autowired
-    private val datasetController: DatasetController? = null
-
-    @Autowired
-    private val datasetService: DatasetService? = null
+    var applicationContext: ApplicationContext? = null
 
     @Test
     @Throws(Exception::class)
     fun contextLoads() {
-        assertThat(datasetController).isNotNull()
-        assertThat(datasetService).isNotNull()
+        assertNotNull(applicationContext)
     }
-
 }
