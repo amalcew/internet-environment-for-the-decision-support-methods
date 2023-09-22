@@ -1,11 +1,14 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    val kotlinVersion = "1.8.21"
     id("org.springframework.boot") version "3.1.1"
     id("io.spring.dependency-management") version "1.1.0"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.spring") version "1.8.22"
-    kotlin("plugin.jpa") version "1.8.22"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("plugin.jpa") version kotlinVersion
+    id("io.gitlab.arturbosch.detekt") version "1.23.0"
 }
 
 group = "pl.poznan.put"
@@ -52,13 +55,18 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
-    runtimeOnly("org.postgresql:postgresql")
+    implementation("org.postgresql:postgresql")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    implementation("org.ojalgo:ojalgo:53.0.0")
+    implementation("com.quantego:clp-java:1.16.10")
+
 }
 
 tasks.withType<KotlinCompile> {
