@@ -1,7 +1,7 @@
 package pl.poznan.put.decision_support.service
 
 import org.springframework.stereotype.Service
-import pl.poznan.put.decision_support.model.User
+import pl.poznan.put.decision_support.model.entity.UserEntity
 import pl.poznan.put.decision_support.repository.UserRepository
 
 @Service
@@ -10,5 +10,5 @@ class UserService(
 ) {
     fun getAllUser() = userRepository.findAll()
 
-    fun addUser(user: User) = userRepository.save(user)
+    fun addUser(user: UserEntity) = userRepository.save(user)
 }

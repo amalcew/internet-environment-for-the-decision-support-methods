@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import pl.poznan.put.decision_support.model.Project
+import pl.poznan.put.decision_support.model.entity.ProjectEntity
 import pl.poznan.put.decision_support.service.project.ProjectService
 
 @Controller
@@ -12,18 +12,18 @@ class ProjectController(
     private val projectService: ProjectService
 ) {
     @GetMapping("/project")
-    fun getAllProjects(): List<Project?> {
+    fun getAllProjects(): List<ProjectEntity?> {
         return projectService.getAll()
     }
 
     @PostMapping("/project")
-    fun createProject(@RequestBody Project: Project): ResponseEntity<Project> {
+    fun createProject(@RequestBody Project: ProjectEntity): ResponseEntity<ProjectEntity> {
         val createdProject = projectService.save(Project)
         return ResponseEntity(createdProject, HttpStatus.CREATED)
     }
 
     @GetMapping("/project/{id}")
-    fun getProjectById(id: Long): ResponseEntity<Project> {
+    fun getProjectById(id: Long): ResponseEntity<ProjectEntity> {
         val project = projectService.findById(id).orElse(null)
         return if (project != null) ResponseEntity(project, HttpStatus.OK)
         else ResponseEntity(HttpStatus.NOT_FOUND)
@@ -31,7 +31,7 @@ class ProjectController(
 
 
     @PutMapping("/project/{id}")
-    fun updateProjectById(@PathVariable("id") ProjectId: Long, @RequestBody Project: Project): ResponseEntity<Project> {
+    fun updateProjectById(@PathVariable("id") ProjectId: Long, @RequestBody Project: ProjectEntity): ResponseEntity<ProjectEntity> {
 
         val existingProject =
             projectService.findById(ProjectId).orElse(null) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
@@ -42,7 +42,7 @@ class ProjectController(
     }
 
     @DeleteMapping("/project/{id}")
-    fun deleteProjectById(@PathVariable("id") ProjectId: Long): ResponseEntity<Project> {
+    fun deleteProjectById(@PathVariable("id") ProjectId: Long): ResponseEntity<ProjectEntity> {
         if (!projectService.existsById(ProjectId)) {
             return ResponseEntity(HttpStatus.NOT_FOUND)
         }

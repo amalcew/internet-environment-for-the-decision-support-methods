@@ -1,10 +1,10 @@
-package pl.poznan.put.decision_support.model
+package pl.poznan.put.decision_support.model.entity
 
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "projects")
-data class Project(
+data class ProjectEntity(
     val name: String? = null
 ) {
     @Id
@@ -13,7 +13,7 @@ data class Project(
     val id: Long? = null
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "id", updatable=false)
-    val user: User? = null
+    val user: UserEntity? = null
     @OneToOne
-    val dataset: Dataset? = null
+    val dataset: DatasetEntity? = null
 }

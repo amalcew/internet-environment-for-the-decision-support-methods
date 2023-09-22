@@ -2,7 +2,7 @@ package pl.poznan.put.decision_support.repository
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import pl.poznan.put.decision_support.model.Project
+import pl.poznan.put.decision_support.model.entity.ProjectEntity
 
 @Repository
-interface ProjectRepository : CrudRepository<Project?, Long?>
+interface ProjectRepository : CrudRepository<ProjectEntity?, Long?>

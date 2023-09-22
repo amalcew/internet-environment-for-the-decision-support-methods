@@ -1,9 +1,9 @@
 package pl.poznan.put.decision_support.model.domain
 
-import pl.poznan.put.decision_support.model.Criterion
+import pl.poznan.put.decision_support.model.entity.CriterionEntity
 
 data class CriterionObject(
     val name: String
 )
 
-fun CriterionObject.toCriterion() = Criterion(name = name)
+fun CriterionObject.toCriterion() = CriterionEntity(name = name)

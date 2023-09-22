@@ -3,17 +3,18 @@ package pl.poznan.put.decision_support.controller
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import pl.poznan.put.decision_support.model.Dataset
+import pl.poznan.put.decision_support.model.domain.Dataset
 import pl.poznan.put.decision_support.model.domain.DatasetObject
+import pl.poznan.put.decision_support.model.entity.DatasetEntity
 import pl.poznan.put.decision_support.service.dataset.DatasetService
 
 @RestController
 class DatasetController(
-    private val datasetService: DatasetService
+     private val datasetService: DatasetService
 ) {
 
     @GetMapping("/dataset")
-    fun getAllDatasets(): List<Dataset?> {
+    fun getAllDatasets(): List<DatasetEntity?> {
         return datasetService.getAll()
     }
 
@@ -38,7 +39,7 @@ class DatasetController(
     }
 
     @PutMapping("/dataset/{id}")
-    fun updateDatasetById(@PathVariable("id") datasetId: Long, @RequestBody dataset: Dataset): ResponseEntity<Dataset> {
+    fun updateDatasetById(@PathVariable("id") datasetId: Long, @RequestBody dataset: DatasetEntity): ResponseEntity<Dataset> {
 
         val existingDataset =
             datasetService.findById(datasetId).orElse(null) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
@@ -49,7 +50,7 @@ class DatasetController(
     }
 
     @DeleteMapping("/dataset/{id}")
-    fun deleteDatasetById(@PathVariable("id") datasetId: Long): ResponseEntity<Dataset> {
+    fun deleteDatasetById(@PathVariable("id") datasetId: Long): ResponseEntity<DatasetEntity> {
         if (!datasetService.existsById(datasetId)) {
             return ResponseEntity(HttpStatus.NOT_FOUND)
         }

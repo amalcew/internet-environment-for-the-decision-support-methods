@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import pl.poznan.put.decision_support.model.Project
-import pl.poznan.put.decision_support.model.User
+import pl.poznan.put.decision_support.model.entity.UserEntity
 import pl.poznan.put.decision_support.service.UserService
 
 @RestController
@@ -16,12 +15,12 @@ class UserController(
 ) {
 
     @GetMapping("/users")
-    fun getAllUsers(): MutableIterable<User?> {
+    fun getAllUsers(): MutableIterable<UserEntity?> {
         return userService.getAllUser()
     }
 
     @PostMapping("/users")
-    fun saveUser(@RequestBody user: User): ResponseEntity<User> {
+    fun saveUser(@RequestBody user: UserEntity): ResponseEntity<UserEntity> {
         val createdProject = userService.addUser(user)
         return ResponseEntity(createdProject, HttpStatus.CREATED)
     }

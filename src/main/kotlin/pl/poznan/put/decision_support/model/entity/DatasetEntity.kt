@@ -1,10 +1,10 @@
-package pl.poznan.put.decision_support.model
+package pl.poznan.put.decision_support.model.entity
 
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "datasets")
-data class Dataset(
+data class DatasetEntity(
     val name: String? = null
 ) {
     @Id
@@ -14,11 +14,11 @@ data class Dataset(
 
     @OneToOne
     @JoinColumn(name = "id")
-    val project: Project? = null
+    val project: ProjectEntity? = null
 
     @OneToMany(mappedBy = "dataset", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var criteria: List<Criterion>? = null
+    var criteria: List<CriterionEntity>? = null
 
     @OneToMany(mappedBy = "dataset", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var variants: List<Variant>? = null
+    var variants: List<VariantEntity>? = null
 }
