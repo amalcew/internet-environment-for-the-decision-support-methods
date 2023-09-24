@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController
 import pl.poznan.put.decision_support.sample.model.User
 import pl.poznan.put.decision_support.sample.service.UserService
 
-@RestController
+@RestController("api/v1")
 class UserController(
     private val userService: UserService
 ) {

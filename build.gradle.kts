@@ -32,7 +32,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
 
     //jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -46,6 +47,8 @@ dependencies {
     //may use later
 //    implementation("org.springframework.boot:spring-boot-starter-mail")
 //    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
+    implementation("javax.xml.bind:jaxb-api:2.3.0")
 
     compileOnly("org.projectlombok:lombok")
 
