@@ -1,8 +1,8 @@
-package pl.poznan.put.decision_support.sample.service
+package pl.poznan.put.decision_support.users.service
 
 import org.springframework.stereotype.Service
-import pl.poznan.put.decision_support.sample.model.User
-import pl.poznan.put.decision_support.sample.repository.UserRepository
+import pl.poznan.put.decision_support.users.model.User
+import pl.poznan.put.decision_support.users.repository.UserRepository
 
 @Service
 class UserService(

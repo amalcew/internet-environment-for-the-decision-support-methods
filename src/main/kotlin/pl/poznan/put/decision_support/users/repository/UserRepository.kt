@@ -1,8 +1,8 @@
-package pl.poznan.put.decision_support.sample.repository
+package pl.poznan.put.decision_support.users.repository
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import pl.poznan.put.decision_support.sample.model.User
+import pl.poznan.put.decision_support.users.model.User
 
 
 @Repository
