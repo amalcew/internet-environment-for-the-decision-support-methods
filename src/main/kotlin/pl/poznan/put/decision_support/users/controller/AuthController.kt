@@ -1,4 +1,4 @@
-package pl.poznan.put.decision_support.sample.controller
+package pl.poznan.put.decision_support.users.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity

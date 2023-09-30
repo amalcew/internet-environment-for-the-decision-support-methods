@@ -1,4 +1,4 @@
-package pl.poznan.put.decision_support.sample.model
+package pl.poznan.put.decision_support.users.model
 
 import jakarta.persistence.*
 import org.springframework.context.annotation.Primary

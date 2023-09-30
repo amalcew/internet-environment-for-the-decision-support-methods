@@ -1,10 +1,10 @@
-package pl.poznan.put.decision_support.sample.controller
+package pl.poznan.put.decision_support.users.controller
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
-import pl.poznan.put.decision_support.sample.model.User
-import pl.poznan.put.decision_support.sample.service.UserService
+import pl.poznan.put.decision_support.users.model.User
+import pl.poznan.put.decision_support.users.service.UserService
 
 @RestController("api/v1")
 class UserController(
