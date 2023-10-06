@@ -31,17 +31,25 @@ class JwtTokenUtil {
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact()
     }
+    fun generateRefreshToken(username: String?): String {
+        val now = Date()
 
-    fun extractClaims(token: String?): Claims {
-        return Jwts.parser()
-            .setSigningKey(secret)
-            .parseClaimsJws(token)
-            .body
-    } // Add methods for token validation, expiration check, etc.
+        return Jwts.builder()
+            .setSubject(username)
+            .setIssuedAt(now)
+            .signWith(SignatureAlgorithm.HS512, "refresh$secret")
+            .compact()
+    }
 
-    fun validateToken(token: String?): Boolean {
+    fun validateJwtToken(token: String?): Boolean {
+        return validateToken(token, secret!!)
+    }
+    fun validateRefreshToken(token: String?): Boolean {
+        return validateToken(token, "refresh$secret")
+    }
+    fun validateToken(token: String?, secretKey: String): Boolean {
         return try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token)
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             true
         } catch (ex: Exception) {
             false
@@ -52,6 +60,15 @@ class JwtTokenUtil {
         val claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).body
         val userDetails: UserDetails = User(claims.subject, "", emptyList())
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
+    }
+
+    fun getUsernameFromToken(token: String?): String? {
+        return try {
+            val claims = Jwts.parser().setSigningKey("refresh$secret").parseClaimsJws(token).body
+            claims.subject
+        } catch (ex: Exception) {
+            null
+        }
     }
 }
 
