@@ -11,7 +11,6 @@ import pl.poznan.put.decision_support.config.utils.JwtTokenUtil
 
 @EnableWebMvc
 @Configuration
-@ComponentScan("pl.poznan.put")
 open class WebConfig: WebMvcConfigurer {
 
     private var jwtTokenUtil: JwtTokenUtil? = null

@@ -23,7 +23,7 @@ class JwtTokenFilter @Autowired constructor(private var jwtTokenProvider: JwtTok
     ) {
         try {
             val jwt = extractJwtFromRequest(request)
-            if (jwt != null && jwtTokenProvider?.validateToken(jwt) == true) {
+            if (jwt != null && jwtTokenProvider?.validateJwtToken(jwt) == true) {
                 val authentication: Authentication? = jwtTokenProvider?.getAuthentication(jwt)
                 SecurityContextHolder.getContext().authentication = authentication
             }
