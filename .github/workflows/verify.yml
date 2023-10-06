@@ -13,11 +13,12 @@ jobs:
         run: |
           docker-compose up -d postgres
           sleep 10
-          
-      - name: Build and Test
-        run: |
-          ./gradlew build
-          ./gradlew test
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3    
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@749f47bda3e44aa060e82d7b3ef7e40d953bd629
+        with:
+          arguments: build
           
       - name: Stop PostgreSQL Docker container
         run: docker-compose down
