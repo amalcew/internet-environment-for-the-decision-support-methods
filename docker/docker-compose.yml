@@ -11,7 +11,7 @@ services:
       - ./data/postgres-data:/var/lib/postgresql/data
       - ./logs/postgres:/var/log/postgresql
   rest:
-    image: 'mochal/decision-support-web-backend:1.0.0'
+    image: 'decision-support-web-backend:1.0.0'
     container_name: 'decision-support-rest-api'
     ports:
       - 8080:8080

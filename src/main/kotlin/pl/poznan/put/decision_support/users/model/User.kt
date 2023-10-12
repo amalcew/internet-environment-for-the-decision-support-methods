@@ -1,13 +1,15 @@
-package pl.poznan.put.decision_support.sample.model
+package pl.poznan.put.decision_support.users.model
 
 import jakarta.persistence.*
-import org.springframework.context.annotation.Primary
+import lombok.Data
 
 @Entity
 @Table(name = "users")
+@Data
+@SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
 data class User(
     val name: String,
-    val password: String,
+    var password: String,
     val url: String,
     val email: String,
     val age: Int
