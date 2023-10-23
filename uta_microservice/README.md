@@ -97,7 +97,11 @@ docker run -p 8000:8000 uta_service
     "averageValueFunctionsPO": {}
 }
 ```
+### Used libraries
 
+- [Plumber](https://www.rplumber.io/) - R package that enables to transform R code into a web API. With Plumber, R functions can be exposed as HTTP endpoints.
+- [jsonlite](https://rdrr.io/cran/jsonlite/) - R package for working with JSON data. It provides functions to parse JSON data into R objects and serialize R objects into JSON format.
+  
 ### Source code
 
 https://github.com/paterijk/MCDA/blob/master/R/UTA.R
