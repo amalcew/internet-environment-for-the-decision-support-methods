@@ -2,21 +2,34 @@ library(plumber)
 library(jsonlite)
 library(Rglpk)
 
+#* @parser json
+#* #* @preempt log
 #* @post /UTA
-function(performanceTableJson, criteriaMinMaxJson, criteriaNumberOfBreakPointsJson, epsilon, rownamesPerformanceTableJson, colnamesPerformanceTableJson, alternativesRanksJson = NULL, alternativesPreferences = NULL, alternativesIndifferences = NULL,  criteriaLBs=NULL, criteriaUBs=NULL, alternativesIDs = NULL, criteriaIDs = NULL, kPostOptimality = NULL){
+#* @serializer json
+function(req){
+
+  body <- req$body
+  print(body$rownamesPerformanceTable)
+  rownamesPerformanceTable <- body$rownamesPerformanceTable
   
-  print(class(criteriaMinMaxJson))
-  rownamesPerformanceTable <- fromJSON(rownamesPerformanceTableJson, simplifyVector = TRUE)
+  colnamesPerformanceTable <- body$colnamesPerformanceTable
   
-  colnamesPerformanceTable <- fromJSON(colnamesPerformanceTableJson, simplifyVector = TRUE)
+  criteriaMinMax <- body$criteriaMinMax
   
-  criteriaMinMax <- fromJSON(criteriaMinMaxJson, simplifyVector = TRUE)
+  performanceTable <- body$performanceTable
   
-  performanceTable <- fromJSON(performanceTableJson, simplifyMatrix = TRUE)
+  criteriaNumberOfBreakPoints <- body$criteriaNumberOfBreakPoints
+  epsilon <- body$epsilon
+  alternativesRanks <- body$alternativesRanks
   
-  criteriaNumberOfBreakPoints <- fromJSON(criteriaNumberOfBreakPointsJson, simplifyVector = TRUE)
+  alternativesPreferences <- body$alternativesPreferences
+  alternativesIndifferences <- body$alternativesIndifferences
   
-  alternativesRanks <- fromJSON(alternativesRanksJson, simplifyVector = TRUE)
+  criteriaLBs <- body$criteriaLBs 
+  criteriaUBs <- body$criteriaUBs
+  alternativesIDs <- body$alternativesIDs 
+  criteriaIDs <- body$criteriaIDss
+  kPostOptimality <- body$kPostOptimalitys
 
   if (!((is.matrix(performanceTable) || (is.data.frame(performanceTable))))) 
     stop("wrong performanceTable, should be a matrix or a data frame")
