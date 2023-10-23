@@ -22,4 +22,11 @@ services:
       -SPRING_DATASOURCE_PASSWORD: $${database.password}
     depends_on:
       - postgres
-
+  uta-method:
+    image: 'uta-method-service:1.0.0'
+    container_name: 'uta-method-service'
+    ports:
+      - '8090:8000'
+    depends_on:
+      - rest
+      
