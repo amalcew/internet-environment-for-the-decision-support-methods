@@ -19,12 +19,5 @@ class SwaggerConfig {
                         .title("Decision Support API")
                         .version("1.0")
                         .description("REST endpoints for Decision Support API. Developed for the needs of the Decision Support Systems course at Poznan University of Technology."))
-                .addSecurityItem(SecurityRequirement().addList("Bearer Authentication"))
-                .components(Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
-    }
-    private fun createAPIKeyScheme(): SecurityScheme? {
-        return SecurityScheme().type(SecurityScheme.Type.HTTP)
-            .bearerFormat("JWT")
-            .scheme("bearer")
     }
 }
