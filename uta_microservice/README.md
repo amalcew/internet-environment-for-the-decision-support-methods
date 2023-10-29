@@ -2,7 +2,7 @@
 
 ## How to build
 ```
-docker build -t uta_service .
+docker build -t uta_service:1.0.0 .
 ```
 ## How to run
 ```
