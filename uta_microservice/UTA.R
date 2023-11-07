@@ -41,6 +41,7 @@ function(req){
     stop("alternativesPreferences should be a matrix")
   
   if (!(is.null(alternativesIndifferences) || is.matrix(alternativesIndifferences)))
+    stop("alternativesIndifferences should be a matrix")
   
   if (is.null(alternativesRanks) && is.null(alternativesPreferences) && is.null(alternativesIndifferences))
     stop("at least one of alternativesRanks, alternativesPreferences or alternativesIndifferences should not be NULL")
@@ -113,8 +114,9 @@ function(req){
 
   rownames(performanceTable) <- rownamesPerformanceTable
   colnames(performanceTable) <- colnamesPerformanceTable
-  names(alternativesRanks) <- row.names(performanceTable)
-
+  if (!is.null(alternativesRanks)) {
+    names(alternativesRanks) <- row.names(performanceTable)
+  }
   if (!is.null(alternativesRanks)){
     reallyActiveAlternatives <- intersect(rownames(performanceTable),names(alternativesRanks))
     print(reallyActiveAlternatives)
