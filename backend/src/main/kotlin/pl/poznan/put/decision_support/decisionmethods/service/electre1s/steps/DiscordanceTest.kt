@@ -1,11 +1,10 @@
 package pl.poznan.put.decision_support.service.electre1s.steps
 
 
-import pl.poznan.put.decision_support.exception.InvalidCriteriaException
-import pl.poznan.put.decision_support.service.electre_shared.model.Criterion
-import pl.poznan.put.decision_support.service.electre_shared.model.Variant
+import pl.poznan.put.decision_support.decisionmethods.exception.InvalidCriteriaException
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Criterion
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Variant
 import pl.poznan.put.decision_support.service.electre_shared.steps.DiscordanceShared
-import java.util.LinkedList
 
 // TODO: [DiscordanceTest] add comments describing each function and its purpose in the Electre1s algorithm
 

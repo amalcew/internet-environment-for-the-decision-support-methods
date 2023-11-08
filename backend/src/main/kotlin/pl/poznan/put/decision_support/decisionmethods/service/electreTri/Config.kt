@@ -1,8 +1,8 @@
-package pl.poznan.put.decision_support.service.electreTri
+package pl.poznan.put.decision_support.decisionmethods.service.electreTri
 
-import pl.poznan.put.decision_support.service.electreTri.steps.AggregateTriStep
-import pl.poznan.put.decision_support.service.electreTri.steps.DiscordanceTriTest
-import pl.poznan.put.decision_support.service.electre_shared.ConfigInterface
+import pl.poznan.put.decision_support.decisionmethods.service.electreTri.steps.AggregateTriStep
+import pl.poznan.put.decision_support.decisionmethods.service.electreTri.steps.DiscordanceTriTest
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.ConfigInterface
 import pl.poznan.put.decision_support.service.electre_shared.steps.AggregatorInterface
 import pl.poznan.put.decision_support.service.electre_shared.steps.ConcordanceTest
 import pl.poznan.put.decision_support.service.electre_shared.steps.TestStepInterface

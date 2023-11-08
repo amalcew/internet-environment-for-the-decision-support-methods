@@ -1,6 +1,6 @@
 package pl.poznan.put.decision_support.model.domain.UTA
 
-import pl.poznan.put.decision_support.model.domain.Criterion
+import pl.poznan.put.decision_support.decisionmethods.model.domain.Criterion
 
 data class UTAResponse(
     var response: List<CharacteristicPoints>

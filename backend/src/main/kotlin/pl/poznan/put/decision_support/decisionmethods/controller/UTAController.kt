@@ -1,11 +1,11 @@
-package pl.poznan.put.decision_support.controller
+package pl.poznan.put.decision_support.decisionmethods.controller
 
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pl.poznan.put.decision_support.model.domain.UTA.UTADataModel
 import pl.poznan.put.decision_support.model.domain.UTA.UTAResponse
-import pl.poznan.put.decision_support.service.UTA.UTAFactory
+import pl.poznan.put.decision_support.decisionmethods.service.UTA.UTAFactory
 
 @RestController
 class UTAController {

@@ -1,4 +1,4 @@
-package pl.poznan.put.decision_support.service.electreTri.steps
+package pl.poznan.put.decision_support.decisionmethods.service.electreTri.steps
 
 import pl.poznan.put.decision_support.service.electre_shared.steps.AggregatorInterface
 import java.util.*

@@ -1,5 +1,8 @@
 package pl.poznan.put.decision_support.service.electre_shared.model
 
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Criterion
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Variant
+
 /**
  * corresponding to json
  *

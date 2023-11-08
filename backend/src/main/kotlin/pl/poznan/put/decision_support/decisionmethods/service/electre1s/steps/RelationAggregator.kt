@@ -1,6 +1,6 @@
 package pl.poznan.put.decision_support.service.electre1s.steps
 
-import pl.poznan.put.decision_support.exception.InvalidShapeException
+import pl.poznan.put.decision_support.decisionmethods.exception.InvalidShapeException
 import pl.poznan.put.decision_support.service.electre_shared.steps.AggregatorInterface
 import java.util.*
 

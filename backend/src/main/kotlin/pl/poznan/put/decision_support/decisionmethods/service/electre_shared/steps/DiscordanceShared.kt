@@ -1,8 +1,8 @@
 package pl.poznan.put.decision_support.service.electre_shared.steps
 
-import pl.poznan.put.decision_support.exception.InvalidCriteriaException
-import pl.poznan.put.decision_support.service.electre_shared.model.Criterion
-import pl.poznan.put.decision_support.service.electre_shared.model.Variant
+import pl.poznan.put.decision_support.decisionmethods.exception.InvalidCriteriaException
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Criterion
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Variant
 import java.util.*
 
 abstract class DiscordanceShared : TestStepInterface {

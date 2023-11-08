@@ -1,4 +1,4 @@
-package pl.poznan.put.decision_support.service.UTA
+package pl.poznan.put.decision_support.decisionmethods.service.UTA
 
 class UTAFactory {
 
