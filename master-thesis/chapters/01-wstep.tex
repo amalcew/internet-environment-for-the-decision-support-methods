@@ -1,36 +1,36 @@
 
 \chapter{Wstęp}
 
-Wstęp do pracy powinien zawierać następujące elementy:
-\begin{itemize}
-    \item krótkie uzasadnienie podjęcia tematu; 
-    \item cel pracy (patrz niżej); 
-    \item zakres (przedmiotowy, podmiotowy, czasowy) wyjaśniający, w jakim rozmiarze praca będzie realizowana; 
-    \item ewentualne hipotezy, które autor zamierza sprawdzić lub udowodnić; 
-    \item krótką charakterystykę źródeł, zwłaszcza literaturowych; 
-    \item układ pracy (patrz niżej), czyli zwięzłą charakterystykę zawartości poszczególnych rozdziałów; 
-    \item ewentualne uwagi dotyczące realizacji tematu pracy np.~trudności, które pojawiły się w trakcie 
-    realizacji poszczególnych zadań, uwagi dotyczące wykorzystywanego sprzętu, współpraca z firmami zewnętrznymi. 
-\end{itemize}
+Rozwój internetu oraz technik przetwarzania dużych zbiorów danych spowodował wzrost zapotrzebowania przedsiębiorstw na aplikacje internetowe i mobilne operujące na olbrzymich zestawach danych, zdolnych serwować ich klientom najlepiej dopasowane produkty.  Rozpatrywana problematyka wymaga nie tylko pokaźnej mocy obliczeniowej, ale i inteligentnych algorytmów potrafiących dostosować się do przetwarzanych przez nie zbiorów danych i preferencji klientów. Posiadając te informacje, algorytmy powinny być w stanie zaprezentować użytkownikom końcowym rankingi odwzorowujące ich upodobania, na przykład "najstraszniejsze filmy i seriale z gatunku horrorów dla fanów dreszczyku emocji".
 
-\noindent
-\textbf{Wstęp do pracy musi się kończyć dwoma następującymi akapitami:}
-\begin{quote}
-Celem pracy jest opracowanie / wykonanie analizy / zaprojektowanie / ...........
-\end{quote}
-oraz:
-\begin{quote}
-Struktura pracy jest następująca. W rozdziale 2 przedstawiono przegląd literatury na temat ........ 
-Rozdział 3 jest poświęcony ....... (kilka zdań). 
-Rozdział 4 zawiera ..... (kilka zdań) ............ itd. 
-Rozdział X stanowi podsumowanie pracy. 
-\end{quote}
+Nie tylko firmy i korporacje zmagają się jednak z tą problematyką. Z pewnością można założyć, że każdy użytkownik internetu spotkał się choć raz z problemem wyboru najlepszego produktu spośród setek dostępnych artykułów, czy porywającej książki z gatunku fantastyki.
 
-W przypadku prac inżynierskich zespołowych lub magisterskich 2-osobowych, po tych dwóch w/w akapitach 
-musi w pracy znaleźć się akapit, w którym będzie opisany udział w pracy poszczególnych członków zespołu. Na przykład:
+W takich sytuacjach przydatne okazują się inteligentne systemy wspomagania decyzji, a w szczególności systemy wielokryterialnego wspomagania decyzji (w skrócie WWD), które specjalizują się we wspieraniu decyzji przy uwzględnieniu wielu kryteriów i dużej liczby analizowanych wariantów.
 
-\begin{quote}
-Jan Kowalski w ramach niniejszej pracy wykonał projekt tego i tego, opracował ......
-Grzegorz Brzęczyszczykiewicz wykonał ......, itd. 
-\end{quote}
+\section{Cel i założenia projektu}
 
+W niniejszej pracy podjęto się próby utworzenia aplikacji internetowej do użytku w realnych zastosowaniach wspomagania decyzji, jak i do edukacji uniwersyteckiej. System posiada zaimplementowane metody WWD rozwiązujące różne problematyki wspomagania decyzji.  Głównym założeniem projektu jest efektywny i intuicyjny interfejs użytkownika, który skutecznie wspomaga proces analizy działania zaimplementowanych metod, jak i wspomaga operacje porównywania analizowanych przez system wariantów. Ważnym aspektem jest także przemyślana implementacja systemu, ułatwiająca dodawanie nowych metod w sposób modularny.
+
+Zaprojektowany system nadaje się do użytku lokalnego, jak i do szeroko pojętego udostępniania na dedykowanych serwerach. Aplikacja wspiera autoryzację użytkowników, udostępnianie projektów w trybie przeglądania oraz edycji, operacje wyjścia/wejścia (import, eksport danych, generowanie raportów),  bogatą wizualizację działania metod.
+\newpage
+\section{Zakres projektu i zastosowane technologie}
+
+Opisany w niniejszej pracy projekt został zrealizowany przy użyciu nowoczesnych technik i narzędzi wykorzystywanych w inżynierii oprogramowania. W poniższym podrozdziale przedstawione zostały niektóre z najważniejszych programów wykorzystywanych w czasie tworzenia systemu.
+
+\subsection{Użyte technologie informatyczne}
+
+TODO
+
+\subsection{Środowisko deweloperskie \textit{JetBrains}}
+
+TODO
+
+\subsection{System kontroli wersji \textit{GIT}, platforma \textit{Github}}
+
+Niechybnie najważniejszym narzędziem użytym w czasie implementacji systemu jest system kontroli wersji \textit{GIT}. Systemem kontroli wersji nazywamy narzędzie wspomagające proces tworzenia oprogramowania w sposób współbieżny przez wielu programistów jednocześnie. Narzędzie \textit{GIT} umożliwia również tworzenie historii zmian, przydatnej w przypadku implementacji nowych, eksperymentalnych modułów projektu. 
+
+Kod źródłowy projektu umieszczony został w repozytorium platformy \textit{Github}. Platforma ta poza udostępnianiem kodu zawiera wiele narzędzi, pomocnych w czasie realizowania projektu.  Ważniejszymi z nich jest tablica zadań kanban, narzędzia automatycznego wdrażania zmian \textit{Github Actions}, czy \textit{Github Issues} umożliwiające planowanie zadań oraz recenzowanie zmian w kodzie.
+
+\section{Układ pracy}
+
+TODO
