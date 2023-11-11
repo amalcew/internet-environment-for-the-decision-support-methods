@@ -102,14 +102,14 @@ class ElectreOneResource extends Resource
     {
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
-//        try {
+        try {
             self::myInitData($record);
 
-//        } catch (\Exception $exception) {
-//            throw new \Exception("Probably connection with spring");
-//        }
-//        $electreCriteria = $record->electreCriteriaSettings;
-//        $electreCriteriaCount = $electreCriteria->count();
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            dd("Please start spring app");
+        }
+
         $variants = Filament::getTenant()->variants;
         $variantCount = $variants->count();
         $concordanceColumns = [];
