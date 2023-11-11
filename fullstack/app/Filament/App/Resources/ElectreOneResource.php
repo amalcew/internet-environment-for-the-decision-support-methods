@@ -107,7 +107,7 @@ class ElectreOneResource extends Resource
 
         } catch (\Exception $exception) {
             var_dump($exception->getMessage());
-            dd("Please start spring app");
+            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
 
         $variants = Filament::getTenant()->variants;
@@ -179,7 +179,8 @@ class ElectreOneResource extends Resource
     {
 //        Create Service
 //        url with containers could have some problems???
-        $response = Http::asJson()->post('host.docker.internal:8080/electre1s', ['data' => [
+        $port = env('SPRING_PORT', 8000);
+        $response = Http::asJson()->post("host.docker.internal:$port/electre1s", ['data' => [
             'lambda' => 0.5,
             'criteria' => [
                 [
