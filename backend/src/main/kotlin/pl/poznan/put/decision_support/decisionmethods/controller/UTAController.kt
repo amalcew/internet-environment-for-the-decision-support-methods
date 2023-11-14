@@ -1,5 +1,7 @@
 package pl.poznan.put.decision_support.decisionmethods.controller
 
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -10,16 +12,23 @@ import pl.poznan.put.decision_support.decisionmethods.utils.httpclient.HTTPClien
 import pl.poznan.put.decision_support.decisionmethods.utils.httpclient.convertFromJson
 
 @RestController
+@ConditionalOnExpression("\${uta_controller.enabled:false}")
 class UTAController {
 
     var utaFactory: UTAFactory = UTAFactory()
     val httpClientManager = HTTPClientManagerImpl()
+
+    @Value("\${uta_service.url}")
+    private val utaServiceUrl: String? = null
+
     @PostMapping("/UTA")
     fun run(@RequestBody body: UTARequest): UTAResponse? {
-        val response = httpClientManager.runRequest("http://127.0.0.1:7477/UTA", body)
-        val utaResponse = convertFromJson<UTAResponse>(response)
-        val calculator = utaFactory.createUTA()
-        val result = calculator.calculate(body, utaResponse)
-        return result
+        return utaServiceUrl?.let {
+            val response = httpClientManager.runRequest(utaServiceUrl, body)
+            val utaResponse = convertFromJson<UTAResponse>(response)
+            val calculator = utaFactory.createUTA()
+            val result = calculator.calculate(body, utaResponse)
+            result
+        }
     }
 }
