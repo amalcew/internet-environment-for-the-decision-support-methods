@@ -8,6 +8,6 @@ data class UTARequest(
     val criteriaMinMax: List<String>,
     val criteriaNumberOfBreakPoints: List<Int>,
     val epsilon: Double,
-    val performanceTable: List<List<Int>>,
+    val performanceTable: List<List<Float>>,
     val rownamesPerformanceTable: List<String>
 )
