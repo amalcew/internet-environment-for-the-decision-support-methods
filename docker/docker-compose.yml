@@ -14,10 +14,8 @@ services:
     depends_on:
       - rest
   laravel:
-    build:
-      context: ../fullstack/vendor/laravel/sail/runtimes/8.2
-      dockerfile: Dockerfile
-    image: sail-8.2/app
+    image: 'laravel-app:1.0.0'
+    container_name: laravel-app
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
@@ -27,11 +25,9 @@ services:
       LARAVEL_SAIL: 1
       XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
       XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}/../fullstack'
     volumes:
       - '../fullstack:/var/www/html'
-    networks:
-      - sail
     depends_on:
       - pgsql
   pgsql:
@@ -45,8 +41,6 @@ services:
     volumes:
       - 'sail-pgsql:/var/lib/postgresql/data'
       - '../fullstack/vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
-    networks:
-      - sail
     healthcheck:
       test:
         - CMD
@@ -58,10 +52,6 @@ services:
         - '${DB_USERNAME}'
       retries: 3
       timeout: 5s
-networks:
-  sail:
-    driver: bridge
 volumes:
   sail-pgsql:
     driver: local
-      
