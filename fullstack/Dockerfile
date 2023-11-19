@@ -1,4 +1,6 @@
 FROM laravelsail/php82-composer:latest as composer
+FROM php:5.6-fpm
+
 WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer update --prefer-dist --no-scripts --no-dev --no-autoloader --ignore-platform-reqs --ignore-platform-reqs && \
@@ -22,9 +24,12 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libzip-dev \
     libreadline-dev \
+    libpq-dev \
     sudo \
     zip \
  && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
 
 # 2. Apache configs + document root.
 RUN echo "ServerName laravel-app.local" >> /etc/apache2/apache2.conf
@@ -45,8 +50,8 @@ RUN docker-php-ext-install \
     intl \
     mbstring \
     opcache \
-    pdo_mysql \
+    pdo pdo_pgsql pgsql \
     zip
 
 # 5. Copy the application code from the composer stage.
-COPY --from=composer /app /var/www/html
+#COPY --from=composer /app /var/www/html
