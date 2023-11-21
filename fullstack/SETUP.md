@@ -14,6 +14,8 @@
 Starting app:
 `vendor/bin/sail up` 
 
+You can create alias `alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'`
+
 ## Troubleshooting
 There can be problem with permissions so give ./vendor 777
 If you get error in `sail up -d` "sth is not a directory" go to `cd vendor/laravel/sail/database` and run `rm -rf pgsql`
