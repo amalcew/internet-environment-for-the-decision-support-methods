@@ -8,6 +8,7 @@ use Filament\Support\Facades\FilamentAsset;
 
 FilamentAsset::register([
     Js::make('external-script', 'https://d3js.org/d3.v4.min.js'),
+    Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
     Js::make('graph', __DIR__ . '/../../../../resources/js/graph.js'),
 ]);
 

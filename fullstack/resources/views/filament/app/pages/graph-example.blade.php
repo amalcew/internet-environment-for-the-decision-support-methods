@@ -1,3 +1,3 @@
 <x-filament-panels::page>
-    <livewire:graph/>
+    <livewire:graph>
 </x-filament-panels::page>
