@@ -48,6 +48,8 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+    implementation("com.google.code.gson:gson:2.7")
 }
 
 tasks.withType<KotlinCompile> {
