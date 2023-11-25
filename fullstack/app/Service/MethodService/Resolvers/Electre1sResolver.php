@@ -12,9 +12,25 @@ class Electre1sResolver
     {
     }
 
-    public function resolve(Electre1sRequestDTO $dto) {
+    public function resolve(Electre1sRequestDTO $dto, $transposeArraysInResults) {
         $url = $this->urlHelper->getBaseUrl() . UrlHelper::ELECTRE_1S_RELATIVE_URL;
         $response = Http::asJson()->post($url, ['data' => $dto]);
-        return json_decode($response->body());
+        $data = json_decode($response->body());
+        if ($transposeArraysInResults) {
+            $data = $this->transposeArraysInData($data);
+        }
+        return $data;
+    }
+
+    public function transposeArraysInData($data) {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data->{$key} = $this->transpose($value);
+            }
+        }
+        return $data;
+    }
+    private function transpose($array) {
+        return array_map(null, ...$array);
     }
 }

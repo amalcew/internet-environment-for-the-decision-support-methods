@@ -148,7 +148,7 @@ class ElectreOneResource extends Resource
         try {
             $facade = new MethodFacade();
             $dto = (new Electre1sMapper)->generateDTOfromElectre1sModel($record);
-            $body = $facade->getElectre1sData($dto);
+            $body = $facade->getElectre1sData($dto, true);
             foreach ($body as $key => $matrix) {
                 $record[$key] = $matrix;
             }

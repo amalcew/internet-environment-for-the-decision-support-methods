@@ -15,9 +15,9 @@ class MethodFacade
         }
         return $this->factory;
     }
-    public function getElectre1sData(Electre1sRequestDTO $dto) {
+    public function getElectre1sData(Electre1sRequestDTO $dto, $transposeArraysInResults = false) {
         $factory = $this->getFactory();
         $resolver = $factory->createElectre1sResolver();
-        return $resolver->resolve($dto);
+        return $resolver->resolve($dto, $transposeArraysInResults);
     }
 }
