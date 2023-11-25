@@ -109,25 +109,22 @@ class ElectreOneResource extends Resource
             var_dump($exception->getMessage());
             dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
-
         $variants = Filament::getTenant()->variants;
+        $record->variants = $variants;
+
         $variantCount = $variants->count();
-        $concordanceColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $concordanceColumns[] = TestEntry::make('concordance.' . $i)->label((string)$i);
+        $concordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+        $disconcordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+        $combinedColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+        $relationsColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+
+        foreach ($variants as $i => $variant) {
+            $concordanceColumns[] = TextEntry::make('concordance.' . $i)->listWithLineBreaks(true)->label($variant->name);
+            $disconcordanceColumns[] = TextEntry::make('discordance.' . $i)->listWithLineBreaks(true)->label($variant->name);
+            $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label($variant->name);
+            $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label($variant->name);
         }
-        $disconcordanceCoulumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $disconcordanceCoulumns[] = TestEntry::make('discordance.' . $i)->label((string)$i);
-        }
-        $combinedColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $combinedColumns[] = TestEntry::make('final.' . $i)->label((string)$i);
-        }
-        $relationsColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $relationsColumns[] = TestEntry::make('relations.' . $i)->label((string)$i);
-        }
+
         return $infolist->schema([
             TextEntry::make('lambda'),
             Section::make('tables')
@@ -136,22 +133,22 @@ class ElectreOneResource extends Resource
                         ->schema(
                             $concordanceColumns
                         )
-                        ->columns(3),
+                        ->columns($variantCount+1),
                     Section::make('discordance')
                         ->schema(
-                            $disconcordanceCoulumns
+                            $disconcordanceColumns
                         )
-                        ->columns(3),
+                        ->columns($variantCount+1),
                     Section::make('final')
                         ->schema(
                             $combinedColumns
                         )
-                        ->columns(3),
+                        ->columns($variantCount+1),
                     Section::make('relations')
                         ->schema(
                             $relationsColumns
                         )
-                        ->columns(3),
+                        ->columns($variantCount+1),
                     TextEntry::make('clean_graph'),
                 ]),
 
@@ -242,7 +239,7 @@ class ElectreOneResource extends Resource
         ]);
         $body = json_decode($response->body());
         foreach ($body as $key => $matrix) {
-            $record[$key] = Arr::flatten($matrix);
+            $record[$key] = $matrix;
         }
         return $record;
     }
