@@ -15,21 +15,63 @@ Zaprojektowany system nadaje się do użytku lokalnego, jak i do szeroko pojęte
 \newpage
 \section{Zakres projektu i zastosowane technologie}
 
-Opisany w niniejszej pracy projekt został zrealizowany przy użyciu nowoczesnych technik i narzędzi wykorzystywanych w inżynierii oprogramowania. W poniższym podrozdziale przedstawione zostały niektóre z najważniejszych programów wykorzystywanych w czasie tworzenia systemu.
+Opisany w niniejszej pracy projekt został zrealizowany przy użyciu nowoczesnych technik i narzędzi wykorzystywanych w inżynierii oprogramowania. W poniższym podrozdziale przedstawione zostały niektóre z najważniejszych programów i technologii wykorzystywanych w czasie tworzenia systemu.
 
 \subsection{Użyte technologie informatyczne}
 
-TODO
+\subsubsection{Architektura mikroserwisów, \textit{Docker}}
 
-\subsection{Środowisko deweloperskie \textit{JetBrains}}
+Wiele współczesnych systemów informatycznych bazuje na architekturze \textbf{mikroserwisów}. Struktura ta pozwala na odseparowanie warstw programu oraz zabezpieczenie systemu przed atakami. W niniejszym projekcie została zastosowana szczególna wersja architektury mikroserwisowej, zwaną \textbf{konteneryzacją}. Technologia ta wykorzystuje wirtualizację na poziomie systemu operacyjnego oraz system operacyjny Linux - te dwie cechy zapewniają wysoką wydajność, konfigurowalność, kompatybilność międzyplatformową i bezpieczeństwo tworzonego rozwiązania. 
 
-TODO
+Aplikacja została podzielona na [wstawić finalną liczbę kontenerów] kontenery, hostowane przy użyciu platformy \textit{Docker}:
+\begin{itemize}
+	\item Silnik z metodami WWD,
+	\item Aplikacja internetowa,
+	\item Silnik bazodanowy.
+\end{itemize}
 
-\subsection{System kontroli wersji \textit{GIT}, platforma \textit{Github}}
+\subsubsection{Języki programowania, frameworki, bazy danych}
+
+Konteneryzacja posiada również jeszcze jedną, ogromną zaletę - zastosowanie mikroserwisów pozwala na dowolność w wykorzystaniu przeróżnych języków programowania i bibliotek programistycznych. Na wymienionych powyżej kontenerach zostały użyte różne języki oraz frameworki, z których najważniejszymi są:
+\begin{itemize}
+	\item \textbf{\textit{PHP}} - język skryptowy, szeroko wykorzystywany w budowaniu stron internetowych i aplikacji webowych. W ramach języka użyte zostały:
+	\begin{itemize}
+		\item \textbf{\textit{Laravel}} - Framework implementujący model MVC (z ang. \textit{Model-View-Controller}),
+		\item \textbf{\textit{Livewire}} - Full-stackowy framework Laravela, służący do budowy interfejsów użytkownika,
+		\item \textbf{\textit{Filament}} - Biblioteka wzorców i komponentów, wykorzystująca framework \textit{Livewire}
+	\end{itemize}
+	
+	\item \textbf{\textit{Kotlin}} - międzyplatformowy, statycznie typowany język programowania ogólnego przeznaczenia, stworzony i rozwijany przez firmę \textit{JetBrains}. Język ten działa na maszynie wirtualnej \textit{Javy}. 
+	
+	\item \textbf{\textit{Java}} - obiektowy, międzyplatformowy język programowania, aktualnie rozwijany przez korporację \textit{Oracle}. Głównym frameworkiem wykorzystywanym w czasie tworzenia projektu był:
+	\begin{itemize}
+		\item \textbf{\textit{Spring Boot}} - narzędzie umożliwiające tworzenie mikrousług minimalnym nakładem pracy wejścia i konfiguracji.
+	\end{itemize}
+\end{itemize}
+
+Technologią niezbędną w każdym projekcie informatycznym, tworzonym na środowisko webowe, jest silnik bazodanowy. Z uwagi na silną zależność pomiędzy danymi oraz niezbędną międzyplatformowość, w ramach projektu użyty został silnik zarządzania relacyjnymi bazami danych \textit{PostgreSQL}. Silnik ten jest natywnie wspierany przez rodzinę systemów operacyjnych \textit{Linux} i pozwala na łatwe zarządzanie dużymi wolumenami składowanych danych.
+
+\subsection{Środowisko deweloperskie}
+
+Ze względu na skalę projektu oraz mnogość użytych technologii i języków programowania, bardzo ważnym narzędziem używanym w czasie tworzenia systemu było Zintegrowane Środowisko Programistyczne (ang. \textit{IDE - integrated development environment}). Najczęściej używanymi \textit{IDE} były programy oferowane przez firmę \textit{JetBrains}, lidera tego typu rozwiązań na rynku informatycznym. Szczególnie przydatnymi \textit{IDE} były \textbf{\textit{PhpStorm}} (użyte przy pisaniu w języku PHP), \textbf{\textit{IntelliJ IDEA}} (użyte przy pisaniu w języku Kotlin), \textbf{\textit{DataGrip}} (budowa i zarządzanie bazą danych)
+
+\subsection{Komunikacja i praca równoległa}
+
+\subsubsection{System kontroli wersji \textit{GIT}, platforma \textit{Github}}
 
 Niechybnie najważniejszym narzędziem użytym w czasie implementacji systemu jest system kontroli wersji \textit{GIT}. Systemem kontroli wersji nazywamy narzędzie wspomagające proces tworzenia oprogramowania w sposób współbieżny przez wielu programistów jednocześnie. Narzędzie \textit{GIT} umożliwia również tworzenie historii zmian, przydatnej w przypadku implementacji nowych, eksperymentalnych modułów projektu. 
 
 Kod źródłowy projektu umieszczony został w repozytorium platformy \textit{Github}. Platforma ta poza udostępnianiem kodu zawiera wiele narzędzi, pomocnych w czasie realizowania projektu.  Ważniejszymi z nich jest tablica zadań kanban, narzędzia automatycznego wdrażania zmian \textit{Github Actions}, czy \textit{Github Issues} umożliwiające planowanie zadań oraz recenzowanie zmian w kodzie.
+
+\subsubsection{Tablica zadań \textit{Kanban}}
+
+Metodyka wykorzystywana w inżynierii oprogramowania do zarządzania zasobami i zadaniami projektowymi. Metodę zaadaptowało wiele platform i narzędzi zarządzania projektami, w ramach projektu użyte zostało narzędzie \textit{Github Projects}, hostowane na platformie \textit{Github}.
+
+\subsubsection{Platforma \textit{Discord}}
+
+Chmurowa usługa internetowa pozwalająca na hostowanie serwerów głosowych oraz czatu, głównie wykorzystywana przez graczy oraz twórców treści. Discord używany jest również przez profesjonalne firmy programistyczne, jako komunikator internetowy.
+
+\newpage
 
 \section{Układ pracy}
 
