@@ -93,14 +93,13 @@ class DatasetResource extends Resource
 
         $groupedValues = [];
         foreach ($criteria as $criterion) {
-            $groupedValues[] = $criterion->values->sortBy('variant_id');
+            $groupedValues[$criterion->name] = $criterion->values->sortBy('variant_id');
         }
         //        saving will throw an error
         $record->groupedValues = $groupedValues;
-
         $valuesGrid[] = TextEntry::make('variants')->listWithLineBreaks(true);
-        foreach ($groupedValues as $_) {
-            $valuesGrid[] = TextEntry::make('criteria')->listWithLineBreaks(true);
+        foreach ($groupedValues as $key => $value) {
+            $valuesGrid[] = TextEntry::make('groupedValues.'.$key)->listWithLineBreaks(true)->label($key);
         }
 
         return $infolist->schema([
