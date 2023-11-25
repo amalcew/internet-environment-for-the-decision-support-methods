@@ -7,7 +7,11 @@ use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
 use App\Infolists\Components\TestEntry;
 use App\Models\Dataset;
 use App\Models\ElectreOne;
+use App\Models\Project;
 use App\Models\Variant;
+use App\Service\MethodService\Mappers\Electre1sMapper;
+use App\Service\MethodService\MethodFacade;
+use App\Service\MethodService\Transfers\Electre1sRequestDTO;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -70,13 +74,8 @@ class ElectreOneResource extends Resource
     {
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
-        try {
-            self::myInitData($record);
+        $record = self::initAndCalculateElectre($record);
 
-        } catch (\Exception $exception) {
-            var_dump($exception->getMessage());
-            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
-        }
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
 
@@ -101,22 +100,22 @@ class ElectreOneResource extends Resource
                         ->schema(
                             $concordanceColumns
                         )
-                        ->columns($variantCount+1),
+                        ->columns($variantCount + 1),
                     Section::make('discordance')
                         ->schema(
                             $disconcordanceColumns
                         )
-                        ->columns($variantCount+1),
+                        ->columns($variantCount + 1),
                     Section::make('final')
                         ->schema(
                             $combinedColumns
                         )
-                        ->columns($variantCount+1),
+                        ->columns($variantCount + 1),
                     Section::make('relations')
                         ->schema(
                             $relationsColumns
                         )
-                        ->columns($variantCount+1),
+                        ->columns($variantCount + 1),
                     TextEntry::make('clean_graph'),
                 ]),
 
@@ -140,75 +139,23 @@ class ElectreOneResource extends Resource
         ];
     }
 
-    protected static function myInitData(?\Illuminate\Database\Eloquent\Model $record)
+    /**
+     * @param ElectreOne $record
+     * @return ElectreOne
+     */
+    public static function initAndCalculateElectre(ElectreOne $record): ElectreOne
     {
-//        Create Service
-//        url with containers could have some problems???
-        $port = env('SPRING_PORT', 8000);
-        $response = Http::asJson()->post("host.docker.internal:$port/electre1s", ['data' => [
-            'lambda' => 0.5,
-            'criteria' => [
-                [
-                    "preferenceType" => "cost",
-                    "weight" => 1.0,
-                    "q" => 0.9,
-                    "p" => 2.2,
-                    "v" => 3.0
-                ],
-                [
-                    "preferenceType" => "gain",
-                    "weight" => 9.0,
-                    "q" => 1.0,
-                    "p" => 1.6,
-                    "v" => 3.5
-                ]
-            ],
-            "variants" => [
-                [
-                    "values" => [
-                        10.8,
-                        4.7
-                    ]
-                ],
-                [
-                    "values" => [
-                        8.0,
-                        6.0
-                    ]
-                ],
-                [
-                    "values" => [
-                        11.0,
-                        4.8
-                    ]
-                ]
-            ],
-            "b" => [
-                [
-                    "values" => [
-                        10.8,
-                        4.7
-                    ]
-                ],
-                [
-                    "values" => [
-                        8.0,
-                        6.0
-                    ]
-                ],
-                [
-                    "values" => [
-                        11.0,
-                        4.8
-                    ]
-                ]
-            ]
-        ]
-        ]);
-        $body = json_decode($response->body());
-        foreach ($body as $key => $matrix) {
-            $record[$key] = $matrix;
+        try {
+            $facade = new MethodFacade();
+            $dto = (new Electre1sMapper)->generateDTOfromElectre1sModel($record);
+            $body = $facade->getElectre1sData($dto);
+            foreach ($body as $key => $matrix) {
+                $record[$key] = $matrix;
+            }
+            return $record;
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
-        return $record;
     }
 }
