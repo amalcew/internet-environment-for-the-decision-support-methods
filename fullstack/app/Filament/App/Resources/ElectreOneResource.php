@@ -39,16 +39,6 @@ class ElectreOneResource extends Resource
                 Forms\Components\TextInput::make('lambda')
                     ->required()
                     ->numeric(),
-//                Forms\Components\TextInput::make('concordance')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('discordance')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('combined')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('relations')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('clean_graph')
-//                    ->maxLength(255),
             ]);
     }
 
@@ -56,26 +46,9 @@ class ElectreOneResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('project.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('lambda')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('concordance')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('discordance')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('combined')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('relations')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('clean_graph')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -87,11 +60,6 @@ class ElectreOneResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
