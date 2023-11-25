@@ -88,8 +88,8 @@ class DatasetResource extends Resource
         $valuesGrid = [];
 /** @var Collection<Criterion> $criteria */
         $criteria = $record->criteria()->with('values')->get();
-        $variants = $record->variants;
-        $variantCount = $variants->count();
+        $record->variants()->get();
+        $criteriaCount = $criteria->count();
 
         $groupedValues = [];
         foreach ($criteria as $criterion) {
@@ -109,7 +109,7 @@ class DatasetResource extends Resource
                         ->schema(
                             $valuesGrid
                         )
-                        ->columns($variantCount+1)
+                        ->columns($criteriaCount+1)
                     ])
         ]);
     }
