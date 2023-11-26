@@ -21,4 +21,9 @@ class Value extends Model
     {
         return $this->belongsTo(Criterion::class);
     }
+
+    public function __toString()
+    {
+        return $this->value;
+    }
 }

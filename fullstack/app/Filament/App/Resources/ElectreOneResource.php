@@ -7,7 +7,11 @@ use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
 use App\Infolists\Components\TestEntry;
 use App\Models\Dataset;
 use App\Models\ElectreOne;
+use App\Models\Project;
 use App\Models\Variant;
+use App\Service\MethodService\Mappers\Electre1sMapper;
+use App\Service\MethodService\MethodFacade;
+use App\Service\MethodService\Transfers\Electre1sRequestDTO;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -39,16 +43,6 @@ class ElectreOneResource extends Resource
                 Forms\Components\TextInput::make('lambda')
                     ->required()
                     ->numeric(),
-//                Forms\Components\TextInput::make('concordance')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('discordance')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('combined')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('relations')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('clean_graph')
-//                    ->maxLength(255),
             ]);
     }
 
@@ -56,26 +50,9 @@ class ElectreOneResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('project.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('lambda')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('concordance')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('discordance')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('combined')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('relations')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('clean_graph')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -88,11 +65,6 @@ class ElectreOneResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
@@ -102,32 +74,24 @@ class ElectreOneResource extends Resource
     {
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
-        try {
-            self::myInitData($record);
-
-        } catch (\Exception $exception) {
-            var_dump($exception->getMessage());
-            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
-        }
+        $record = self::initAndCalculateElectre($record);
 
         $variants = Filament::getTenant()->variants;
+        $record->variants = $variants;
+
         $variantCount = $variants->count();
-        $concordanceColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $concordanceColumns[] = TestEntry::make('concordance.' . $i)->label((string)$i);
+        $concordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+        $disconcordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+        $combinedColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+        $relationsColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+
+        foreach ($variants as $i => $variant) {
+            $concordanceColumns[] = TextEntry::make('concordance.' . $i)->listWithLineBreaks(true)->label($variant->name);
+            $disconcordanceColumns[] = TextEntry::make('discordance.' . $i)->listWithLineBreaks(true)->label($variant->name);
+            $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label($variant->name);
+            $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label($variant->name);
         }
-        $disconcordanceCoulumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $disconcordanceCoulumns[] = TestEntry::make('discordance.' . $i)->label((string)$i);
-        }
-        $combinedColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $combinedColumns[] = TestEntry::make('final.' . $i)->label((string)$i);
-        }
-        $relationsColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $relationsColumns[] = TestEntry::make('relations.' . $i)->label((string)$i);
-        }
+
         return $infolist->schema([
             TextEntry::make('lambda'),
             Section::make('tables')
@@ -136,22 +100,22 @@ class ElectreOneResource extends Resource
                         ->schema(
                             $concordanceColumns
                         )
-                        ->columns(3),
+                        ->columns($variantCount + 1),
                     Section::make('discordance')
                         ->schema(
-                            $disconcordanceCoulumns
+                            $disconcordanceColumns
                         )
-                        ->columns(3),
+                        ->columns($variantCount + 1),
                     Section::make('final')
                         ->schema(
                             $combinedColumns
                         )
-                        ->columns(3),
+                        ->columns($variantCount + 1),
                     Section::make('relations')
                         ->schema(
                             $relationsColumns
                         )
-                        ->columns(3),
+                        ->columns($variantCount + 1),
                     TextEntry::make('clean_graph'),
                 ]),
 
@@ -175,75 +139,23 @@ class ElectreOneResource extends Resource
         ];
     }
 
-    protected static function myInitData(?\Illuminate\Database\Eloquent\Model $record)
+    /**
+     * @param ElectreOne $record
+     * @return ElectreOne
+     */
+    public static function initAndCalculateElectre(ElectreOne $record): ElectreOne
     {
-//        Create Service
-//        url with containers could have some problems???
-        $port = env('SPRING_PORT', 8000);
-        $response = Http::asJson()->post("host.docker.internal:$port/electre1s", ['data' => [
-            'lambda' => 0.5,
-            'criteria' => [
-                [
-                    "preferenceType" => "cost",
-                    "weight" => 1.0,
-                    "q" => 0.9,
-                    "p" => 2.2,
-                    "v" => 3.0
-                ],
-                [
-                    "preferenceType" => "gain",
-                    "weight" => 9.0,
-                    "q" => 1.0,
-                    "p" => 1.6,
-                    "v" => 3.5
-                ]
-            ],
-            "variants" => [
-                [
-                    "values" => [
-                        10.8,
-                        4.7
-                    ]
-                ],
-                [
-                    "values" => [
-                        8.0,
-                        6.0
-                    ]
-                ],
-                [
-                    "values" => [
-                        11.0,
-                        4.8
-                    ]
-                ]
-            ],
-            "b" => [
-                [
-                    "values" => [
-                        10.8,
-                        4.7
-                    ]
-                ],
-                [
-                    "values" => [
-                        8.0,
-                        6.0
-                    ]
-                ],
-                [
-                    "values" => [
-                        11.0,
-                        4.8
-                    ]
-                ]
-            ]
-        ]
-        ]);
-        $body = json_decode($response->body());
-        foreach ($body as $key => $matrix) {
-            $record[$key] = Arr::flatten($matrix);
+        try {
+            $facade = new MethodFacade();
+            $dto = (new Electre1sMapper)->generateDTOfromElectre1sModel($record);
+            $body = $facade->getElectre1sData($dto, true);
+            foreach ($body as $key => $matrix) {
+                $record[$key] = $matrix;
+            }
+            return $record;
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
-        return $record;
     }
 }

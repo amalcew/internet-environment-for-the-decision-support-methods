@@ -35,4 +35,14 @@ class Dataset extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function criteria(): HasMany
+    {
+        return $this->hasMany(Criterion::class);
+    }
+
+    public function variants(): HasMany
+    {
+        return $this->hasMany(Variant::class);
+    }
 }
