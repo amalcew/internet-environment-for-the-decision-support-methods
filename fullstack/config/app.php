@@ -1,5 +1,6 @@
 <?php
 
+use Asantibanez\LaravelBladeSortable\LaravelBladeSortableServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -170,7 +171,8 @@ return [
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\Filament\AppPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        LaravelBladeSortableServiceProvider::class
     ])->toArray(),
 
     /*
