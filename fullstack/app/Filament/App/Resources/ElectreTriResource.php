@@ -3,15 +3,14 @@
 namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ElectreTriResource\Pages;
-use App\Filament\App\Resources\ElectreTriResource\RelationManagers;
 use App\Models\ElectreTri;
+use App\Service\MethodService\Mappers\ElectreTriMapper;
+use App\Service\MethodService\MethodFacade;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ElectreTriResource extends Resource
 {
@@ -88,5 +87,21 @@ class ElectreTriResource extends Resource
             'view' => Pages\ViewElectreTri::route('/{record}'),
             'edit' => Pages\EditElectreTri::route('/{record}/edit'),
         ];
+    }
+
+    public static function initAndCalculateElectre(ElectreTri $record): ElectreTri
+    {
+        try {
+            $facade = new MethodFacade();
+            $dto = (new ElectreTriMapper())->generateDTOfromElectreTriModel($record);
+            $body = $facade->getElectreTriData($dto, true);
+            foreach ($body as $key => $matrix) {
+                $record[$key] = $matrix;
+            }
+            return $record;
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
+        }
     }
 }
