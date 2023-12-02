@@ -4,28 +4,18 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ElectreOneResource\Pages;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
-use App\Infolists\Components\TestEntry;
-use App\Models\Dataset;
 use App\Models\ElectreOne;
-use App\Models\Project;
-use App\Models\Variant;
 use App\Service\MethodService\Mappers\Electre1sMapper;
 use App\Service\MethodService\MethodFacade;
-use App\Service\MethodService\Transfers\Electre1sRequestDTO;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
 
 class ElectreOneResource extends Resource
 {

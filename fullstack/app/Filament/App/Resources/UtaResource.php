@@ -4,14 +4,16 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\UtaResource\Pages;
 use App\Filament\App\Resources\UtaResource\RelationManagers;
+use App\Models\ElectreTri;
 use App\Models\Uta;
+use App\Service\MethodService\Mappers\ElectreTriMapper;
+use App\Service\MethodService\Mappers\UTAMapper;
+use App\Service\MethodService\MethodFacade;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UtaResource extends Resource
 {
@@ -83,5 +85,21 @@ class UtaResource extends Resource
             'view' => Pages\ViewUta::route('/{record}'),
             'edit' => Pages\EditUta::route('/{record}/edit'),
         ];
+    }
+
+    public static function initAndCalculateUTA(Uta $record): Uta
+    {
+        try {
+            $facade = new MethodFacade();
+            $dto = (new UTAMapper())->generateDTOfromUTAModel($record);
+            $body = $facade->getUTAData($dto, true);
+            foreach ($body as $key => $matrix) {
+                $record[$key] = $matrix;
+            }
+            return $record;
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
+        }
     }
 }
