@@ -14,4 +14,20 @@ class Uta extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public $criteriaMinMax = [];
+
+    public $criteriaNumberOfBreakPoints = [];
+
+    public $rownamesPerformanceTable = [];
+
+    public $colnamesPerformanceTable = [];
+
+    public $alternativesPreferences = [];
+
+    public $alternativesIndifferences = [];
+
+    public $performanceTable = [];
+
+    public $epsilon = 0.05;
 }

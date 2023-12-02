@@ -20,6 +20,7 @@ services:
             - sail
         depends_on:
             - pgsql
+            - rest
     pgsql:
         image: 'postgres:15'
         ports:
@@ -45,6 +46,28 @@ services:
                 - '${DB_USERNAME}'
             retries: 3
             timeout: 5s
+    rest:
+        build:
+            context: ../backend
+            dockerfile: Dockerfile
+        image: 'decision-support-web-backend:1.0.0'
+        container_name: 'decision-support-rest-api'
+        ports:
+            - '8000:8080'
+        networks:
+            - sail
+        depends_on:
+            - uta-method
+    uta-method:
+        build:
+            context: ../uta_microservice
+            dockerfile: Dockerfile
+        image: 'uta_service:1.0.0'
+        container_name: 'uta-method-service'
+        ports:
+            - '8090:8090'
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge

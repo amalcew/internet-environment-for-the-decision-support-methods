@@ -18,4 +18,9 @@ class Criterion extends Model
     {
         return $this->hasMany(Value::class);
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }
