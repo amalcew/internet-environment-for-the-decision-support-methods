@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ElectreOneResource\Pages;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
+use App\Infolists\Components\Electre1sGraph;
 use App\Infolists\Components\TestEntry;
 use App\Models\Dataset;
 use App\Models\ElectreOne;
@@ -20,12 +21,21 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
+
+
+FilamentAsset::register([
+    Js::make('external-script', 'https://d3js.org/d3.v4.min.js'),
+    Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
+    Js::make('graph', __DIR__ . '/../../../../resources/js/graph.js'),
+]);
 
 class ElectreOneResource extends Resource
 {
@@ -116,7 +126,7 @@ class ElectreOneResource extends Resource
                             $relationsColumns
                         )
                         ->columns($variantCount + 1),
-                    TextEntry::make('clean_graph'),
+                    Electre1sGraph::make('clean_graph'),
                 ]),
 
         ]);
