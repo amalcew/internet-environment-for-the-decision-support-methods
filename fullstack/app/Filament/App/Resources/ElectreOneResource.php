@@ -19,6 +19,7 @@ use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Assets\Js;
@@ -29,7 +30,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
-
 
 FilamentAsset::register([
     Js::make('external-script', 'https://d3js.org/d3.v4.min.js'),
@@ -126,7 +126,9 @@ class ElectreOneResource extends Resource
                             $relationsColumns
                         )
                         ->columns($variantCount + 1),
-                    Electre1sGraph::make('clean_graph'),
+//                    Electre1sGraph::make('clean_graph'),
+                    ViewEntry::make('status')
+                    ->view('infolists.components.electre1s-graph')
                 ]),
 
         ]);
