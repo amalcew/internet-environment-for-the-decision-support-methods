@@ -130,7 +130,8 @@ class ElectreOneResource extends Resource
                         ->columns($variantCount + 1),
                     Section::make('graph')
                         ->schema([
-                            Electre1sGraph::make('warpper')
+                            Electre1sGraph::make('wrapper')
+//                            ->mount('bar')
                         ])
                 ]),
         ]);

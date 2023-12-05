@@ -8,7 +8,6 @@ const renderGraph =  function (id, data) {
     var margin = {top: 10, right: 30, bottom: 30, left: 40},
         width = 928 - margin.left - margin.right,
         height = 680 - margin.top - margin.bottom;
-    console.log("!!!!");
 
     // color scale
     var colors = d3.scaleOrdinal(d3.schemeCategory10);
@@ -128,5 +127,4 @@ const renderGraph =  function (id, data) {
     }
 }
 
-
-renderGraph('graph', graphData)
+renderGraph(id, graphData)

@@ -1,6 +1,13 @@
+<div>
+    <p>{{ $foo }}</p>
+</div>
 <div id="graph" style="width: 100%;height: 100%;">
+
 </div>
 <script>
+
+    var id = '{{ $graphId }}';
+    var graphExample = {{ json_decode($graphData) }};
     var graphData = {
         nodes: [
             {
@@ -19,10 +26,6 @@
                 id: 4,
                 name: "D"
             },
-            {
-                id: 5,
-                name: "E"
-            }
         ],
         links: [
             {
@@ -30,13 +33,14 @@
                 target: 2
             },
             {
-                source: 1,
-                target: 5
-            },
-            {
                 source: 2,
                 target: 3
+            },
+            {
+                source: 3,
+                target: 4
             }
         ]
     }
 </script>
+
