@@ -30,6 +30,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 
@@ -87,9 +88,13 @@ class ElectreOneResource extends Resource
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
+//        dd($record);
+        $data = self::mockGraphData();
 
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
+
+
 
         $variantCount = $variants->count();
         $concordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
@@ -103,6 +108,7 @@ class ElectreOneResource extends Resource
             $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label($variant->name);
             $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label($variant->name);
         }
+        $graphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
 
         return $infolist->schema([
             TextEntry::make('lambda'),
@@ -130,8 +136,8 @@ class ElectreOneResource extends Resource
                         ->columns($variantCount + 1),
                     Section::make('graph')
                         ->schema([
-                            Electre1sGraph::make('wrapper')
-//                            ->mount('bar')
+                            Electre1sGraph::make('graph123')
+                                ->viewData(['title' => 'my title 12345', 'graph' => $graphData])
                         ])
                 ]),
         ]);
@@ -172,5 +178,85 @@ class ElectreOneResource extends Resource
             var_dump($exception->getMessage());
             dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
+    }
+
+    private static function mockGraphData(): array
+    {
+        return [
+            'nodes' => [
+                [
+                    'id' => 1,
+                    'name' => "A"
+                ],
+                [
+                    'id' => 2,
+                    'name' => "B"
+                ],
+                [
+                    'id' => 3,
+                    'name' => "C"
+                ],
+                [
+                    'id' => 4,
+                    'name' => "D"
+                ],
+            ],
+            'links' => [
+                [
+                    'source' => 1,
+                    'target' => 2
+                ],
+                [
+                    'source' => 2,
+                    'target' => 3
+                ],
+                [
+                    'source' => 3,
+                    'target' => 4
+                ],
+                [
+                    'source' => 2,
+                    'target' => 4
+                ]
+            ]
+        ];
+
+    }
+
+    /**
+     * @param array $matrix
+     * @param Collection<Variant> $variants
+     * @return array
+     */
+    private static function mapFullRelationsMatrixToGraphData(array $matrix, $variants): array
+    {
+//        TODO: check if variant should be sorted?
+//        TODO: check axises
+
+        $nodes = [];
+        $links = [];
+        foreach ($variants as $i => $variant) {
+            $nodes[] = ['id' => $i, 'name' => $variant->name];
+        }
+        foreach ($matrix as $x => $row) {
+            foreach ($row as $y => $cell) {
+                if ($x == $y) {
+                    continue;
+                }
+                if ($cell == "-P") { // transposed matrix - inverted relationships
+//                    TODO: check this!!!
+                    $links[] = [
+                        'source' => $x,
+                        'target' => $y
+                    ];
+                }
+//                if (false == "I") TODO:
+            }
+        }
+        return [
+            'nodes' => $nodes,
+            'links' => $links
+        ];
+
     }
 }
