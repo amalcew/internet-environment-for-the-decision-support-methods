@@ -3,6 +3,8 @@ services:
         build:
             context: ./vendor/laravel/sail/runtimes/8.2
             dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
         image: sail-8.2/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
@@ -10,6 +12,7 @@ services:
             - '${APP_PORT:-80}:80'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
+            WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
@@ -20,12 +23,13 @@ services:
             - sail
         depends_on:
             - pgsql
+            - rest
     pgsql:
         image: 'postgres:15'
         ports:
             - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
-#            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            #            PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: 'mydatabase'
             POSTGRES_USER: 'myuser'
             POSTGRES_PASSWORD: 'secret'
@@ -45,6 +49,28 @@ services:
                 - '${DB_USERNAME}'
             retries: 3
             timeout: 5s
+    rest:
+        build:
+            context: ../backend
+            dockerfile: Dockerfile
+        image: 'decision-support-web-backend:1.0.0'
+        container_name: 'decision-support-rest-api'
+        ports:
+            - '8000:8080'
+        networks:
+            - sail
+        depends_on:
+            - uta-method
+    uta-method:
+        build:
+            context: ../uta_microservice
+            dockerfile: Dockerfile
+        image: 'uta_service:1.0.0'
+        container_name: 'uta-method-service'
+        ports:
+            - '8090:8090'
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge

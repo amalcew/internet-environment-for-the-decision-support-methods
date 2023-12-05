@@ -28,14 +28,14 @@ class ReferenceTable extends Component
     }
 
 
-    public function handleOnSortOrderChanged($sortOrder, $previousSortOrder, $name, $from, $to)
-    {
-       // dd($sortOrder);
-        // $sortOrder = new keys order
-        // $previousSortOrder = keys previous order
-        // $name = drop target name
-        // $from = name of drop target from where the dragged/sorted item came from
-        // $to = name of drop target to where the dragged/sorted item was placed
-    }
+//    public function handleSortOrderChange($sortOrder, $previousSortOrder, $name, $from, $to)
+//    {
+//        dd($sortOrder);
+////         $sortOrder = new keys order
+////         $previousSortOrder = keys previous order
+////         $name = drop target name
+////         $from = name of drop target from where the dragged/sorted item came from
+////         $to = name of drop target to where the dragged/sorted item was placed
+//    }
 
 }

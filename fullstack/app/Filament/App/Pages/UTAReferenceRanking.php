@@ -25,4 +25,18 @@ class UTAReferenceRanking extends Page
         ];
     }
 
+    /**
+     * No idea why it runs here and not on ReferenceTable
+     * @param $sortOrder
+     * @param $previousSortOrder
+     * @param $name
+     * @param $from
+     * @param $to
+     * @return void
+     */
+    public function handleSortOrderChange($sortOrder, $previousSortOrder, $name, $from, $to)
+    {
+        $this->widgetData['list'] = $sortOrder;
+    }
+
 }
