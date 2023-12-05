@@ -40,8 +40,8 @@ const renderGraph =  function (id, data) {
                     return d.id;
                 })
                 .links(data.links)
-            // .distance(200)
-            // .strength(1)
+            .distance(200)
+            .strength(1)
         )
         .force("charge", d3.forceManyBody()
             .strength(-500)

@@ -250,7 +250,17 @@ class ElectreOneResource extends Resource
                         'target' => $y
                     ];
                 }
-//                if (false == "I") TODO:
+                if ($cell == "I") {
+
+                    $links[] = [
+                        'source' => $x,
+                        'target' => $y
+                    ];
+//                    $links[] = [
+//                        'source' => $y,
+//                        'target' => $x
+//                    ];
+                }
             }
         }
         return [
