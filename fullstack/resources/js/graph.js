@@ -72,7 +72,7 @@ const renderGraph =  function (id, data) {
         .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
-            .on("end", dragended)
+            // .on("end", dragended)
         );
     node
         .append("circle")

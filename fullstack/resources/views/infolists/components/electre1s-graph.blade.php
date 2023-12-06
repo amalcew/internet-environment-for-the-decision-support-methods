@@ -1,11 +1,9 @@
-<div>
-    <p>{{ $title }}</p>
-</div>
-<div id="all_graph" style="width: 100%;height: 100%;">
+<div id="{{ $graphId  }}" style="width: 100%;height: 100%;">
 
 </div>
 <script>
-    var graphData = {!! json_encode($graph) !!};
-    var id = 'all_graph';
+    {{-- exclamation marks required to bypass sanitization --}}
+    var graphData = {!! json_encode($graphData) !!};
+    var id = '{{ $graphId  }}';
 </script>
 

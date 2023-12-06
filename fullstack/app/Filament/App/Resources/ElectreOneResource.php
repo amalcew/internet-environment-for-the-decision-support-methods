@@ -120,10 +120,10 @@ class ElectreOneResource extends Resource
                             $relationsColumns
                         )
                         ->columns($variantCount + 1),
-                    Section::make('graph')
+                    Section::make('outranking graph')
                         ->schema([
-                            Electre1sGraph::make('graph123')
-                                ->viewData(['title' => 'my title 12345', 'graph' => $graphData])
+                            Electre1sGraph::make('outranking_graph')
+                                ->viewData(['graphId' => 'outranking_graph', 'graphData' => $graphData])
                         ])
                 ]),
         ]);
@@ -172,36 +172,26 @@ class ElectreOneResource extends Resource
      */
     private static function mapFullRelationsMatrixToGraphData(array $matrix, $variants): array
     {
-//        TODO: check if variant should be sorted?
-//        TODO: check axises
-
-        $nodes = [];
-        $links = [];
+        $nodes = array();
+        $links = array();
         foreach ($variants as $i => $variant) {
             $nodes[] = ['id' => $i, 'name' => $variant->name];
         }
         foreach ($matrix as $x => $row) {
             foreach ($row as $y => $cell) {
-                if ($x == $y) {
-                    continue;
-                }
-                if ($cell == "-P") { // transposed matrix - inverted relationships
-//                    TODO: check this!!!
-                    $links[] = [
-                        'source' => $x,
-                        'target' => $y
-                    ];
-                }
-                if ($cell == "I") {
-
-                    $links[] = [
-                        'source' => $x,
-                        'target' => $y
-                    ];
-//                    $links[] = [
-//                        'source' => $y,
-//                        'target' => $x
-//                    ];
+                if ($x != $y) { // omit node relation with itself
+                    if ($cell == "-P") { // transposed matrix - inverted relationships
+                        $links[] = [
+                            'source' => $x,
+                            'target' => $y
+                        ];
+                    }
+                    if ($cell == "I") {
+                        $links[] = [
+                            'source' => $x,
+                            'target' => $y
+                        ];
+                    }
                 }
             }
         }
