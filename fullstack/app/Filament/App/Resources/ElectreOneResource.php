@@ -4,28 +4,24 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ElectreOneResource\Pages;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
-use App\Infolists\Components\TestEntry;
-use App\Models\Dataset;
+use App\Infolists\Components\Electre1sGraph;
 use App\Models\ElectreOne;
-use App\Models\Project;
 use App\Models\Variant;
 use App\Service\MethodService\Mappers\Electre1sMapper;
 use App\Service\MethodService\MethodFacade;
-use App\Service\MethodService\Transfers\Electre1sRequestDTO;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Collection;
+
 
 class ElectreOneResource extends Resource
 {
@@ -72,12 +68,19 @@ class ElectreOneResource extends Resource
 
     public static function infolist(Infolist $infolist): Infolist
     {
+        FilamentAsset::register([
+            Js::make('external-script', 'https://d3js.org/d3.v4.min.js'),
+            Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
+            Js::make('graph', __DIR__ . '/../../resources/js/graph.js'),
+        ]);
+
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
-
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
+
+
 
         $variantCount = $variants->count();
         $concordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
@@ -91,6 +94,7 @@ class ElectreOneResource extends Resource
             $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label($variant->name);
             $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label($variant->name);
         }
+        $graphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
 
         return $infolist->schema([
             TextEntry::make('lambda'),
@@ -116,9 +120,12 @@ class ElectreOneResource extends Resource
                             $relationsColumns
                         )
                         ->columns($variantCount + 1),
-                    TextEntry::make('clean_graph'),
+                    Section::make('outranking graph')
+                        ->schema([
+                            Electre1sGraph::make('outranking_graph')
+                                ->viewData(['graphId' => 'outranking_graph', 'graphData' => $graphData])
+                        ])
                 ]),
-
         ]);
     }
 
@@ -157,5 +164,41 @@ class ElectreOneResource extends Resource
             var_dump($exception->getMessage());
             dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
+    }
+    /**
+     * @param array $matrix
+     * @param Collection<Variant> $variants
+     * @return array
+     */
+    private static function mapFullRelationsMatrixToGraphData(array $matrix, $variants): array
+    {
+        $nodes = array();
+        $links = array();
+        foreach ($variants as $i => $variant) {
+            $nodes[] = ['id' => $i, 'name' => $variant->name];
+        }
+        foreach ($matrix as $x => $row) {
+            foreach ($row as $y => $cell) {
+                if ($x != $y) { // omit node relation with itself
+                    if ($cell == "-P") { // transposed matrix - inverted relationships
+                        $links[] = [
+                            'source' => $x,
+                            'target' => $y
+                        ];
+                    }
+                    if ($cell == "I") {
+                        $links[] = [
+                            'source' => $x,
+                            'target' => $y
+                        ];
+                    }
+                }
+            }
+        }
+        return [
+            'nodes' => $nodes,
+            'links' => $links
+        ];
+
     }
 }
