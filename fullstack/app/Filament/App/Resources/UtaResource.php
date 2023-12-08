@@ -29,7 +29,7 @@ class UtaResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('project_id')
+                Forms\Components\TextInput::make('epsilon')
                     ->required()
                     ->numeric(),
             ]);
@@ -71,7 +71,7 @@ class UtaResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\UTACriteriaSettingsRelationManager::class,
         ];
     }
 
