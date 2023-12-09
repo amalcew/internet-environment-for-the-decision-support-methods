@@ -60,19 +60,47 @@
     <div>
         <h1>Reference Table</h1>
         <h3 class="instruction">Drag and drop to reorder</h3>
-        <div class="container">
+        <div class="container" id="multi_column">
             <div class="column">
-                <x-laravel-blade-sortable::sortable
-                    wire:onSortOrderChange="handleSortOrderChange">
-                    @foreach($names as $name)
-                            <x-laravel-blade-sortable::sortable-item sort-key="{{ $name }}">
-                                <x-filament::card>
-                                {{ $name }}
+                <x-filament::card height="100%">
+                    <x-laravel-blade-sortable::sortable
+                        wire:onSortOrderChange="handleSortOrderChange">
+                        @foreach($names as $name)
+                            <x-laravel-blade-sortable::sortable-item sort-key="{{ $name }}" class="sortable_card">
+                                <x-filament::card >
+                                    {{ $name }}
                                 </x-filament::card>
                             </x-laravel-blade-sortable::sortable-item>
 
-                    @endforeach
-                </x-laravel-blade-sortable::sortable>
+                        @endforeach
+                    </x-laravel-blade-sortable::sortable>
+                </x-filament::card>
+            </div>
+            <div class="icon_wrapper">
+                <x-filament::icon
+                    alias="panels::topbar.global-search.field"
+                    class="h-8 w-8 text-gray-500 dark:text-gray-400"
+                >
+                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"></path>
+                    </svg>
+                </x-filament::icon>
+            </div>
+            <div class="column">
+                <x-filament::card height="100%" >
+                    <x-laravel-blade-sortable::sortable
+                        wire:onSortOrderChange="handleSortOrderChangeSorted">
+                        @foreach($selected as $selecte)
+                            <x-laravel-blade-sortable::sortable-item sort-key="{{ $selecte }}" class="sortable_card">
+                                <x-filament::card margin-top="100px">
+                                    {{ $selecte }}
+                                </x-filament::card>
+                            </x-laravel-blade-sortable::sortable-item>
+                        @endforeach
+                    </x-laravel-blade-sortable::sortable>
+                </x-filament::card>
             </div>
         </div>
     </div>

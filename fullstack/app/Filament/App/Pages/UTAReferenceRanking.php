@@ -22,6 +22,8 @@ class UTAReferenceRanking extends Page
                 'item 2',
                 'item 3',
             ],
+            'selected' => [],
+            'final_ranking' => [] // TODO request to UTA endpoint
         ];
     }
 
@@ -37,6 +39,13 @@ class UTAReferenceRanking extends Page
     public function handleSortOrderChange($sortOrder, $previousSortOrder, $name, $from, $to)
     {
         $this->widgetData['list'] = $sortOrder;
+        dd($this->widgetData['list']);
+    }
+
+    public function handleSortOrderChangeSorted($sortOrder, $previousSortOrder, $name, $from, $to)
+    {
+        $this->widgetData['selected'] = $sortOrder;
+        dd($this->widgetData['selected']);
     }
 
 }
