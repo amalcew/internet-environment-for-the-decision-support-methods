@@ -22,6 +22,7 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use Filament\Infolists\Components\Tabs;
 
 
 class ElectreOneResource extends Resource
@@ -77,6 +78,7 @@ class ElectreOneResource extends Resource
             Js::make('graph', __DIR__ . '/../../resources/js/graph.js'),
         ]);
 
+
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
@@ -98,36 +100,57 @@ class ElectreOneResource extends Resource
         }
         $graphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
 
+//        graphs have to be in 1 tab!! Otherwise weird bugs with d3 display
+        FilamentAsset::registerScriptData([
+            'graphs' => [
+                'final_outranking_graph' => $graphData,
+                'full_outranking_graph' => $graphData
+            ]
+        ]);
+
+
         return $infolist->schema([
-            TextEntry::make('lambda'),
-            Section::make('tables')
-                ->schema([
-                    Section::make('concordance')
-                        ->schema(
-                            $concordanceColumns
-                        )
-                        ->columns($variantCount + 1),
-                    Section::make('discordance')
-                        ->schema(
-                            $disconcordanceColumns
-                        )
-                        ->columns($variantCount + 1),
-                    Section::make('final')
-                        ->schema(
-                            $combinedColumns
-                        )
-                        ->columns($variantCount + 1),
-                    Section::make('relations')
-                        ->schema(
-                            $relationsColumns
-                        )
-                        ->columns($variantCount + 1),
-                    Section::make('outranking graph')
+            Tabs::make('tabs')
+                ->tabs([
+                    Tabs\Tab::make('graphs')
                         ->schema([
-                            Electre1sGraph::make('outranking_graph')
-                                ->viewData(['graphId' => 'outranking_graph', 'graphData' => $graphData])
-                        ])
-                ]),
+                            TextEntry::make('lambda'),
+                            Section::make('outranking graph')
+                                ->schema([
+                                    Electre1sGraph::make('final_outranking_graph')
+                                        ->viewData(['graphId' => 'final_outranking_graph', 'graphData' => $graphData])
+                                ]),
+                            Section::make('final outranking graph')
+                                ->schema([
+                                    Electre1sGraph::make('full_outranking_graph')
+                                        ->viewData(['graphId' => 'full_outranking_graph', 'graphData' => $graphData])
+                                ]),
+                        ])->columnSpanFull(),
+                    Tabs\Tab::make('tables')
+                        ->schema([
+                            Section::make('concordance')
+                                ->schema(
+                                    $concordanceColumns
+                                )
+                                ->columns($variantCount + 1),
+                            Section::make('discordance')
+                                ->schema(
+                                    $disconcordanceColumns
+                                )
+                                ->columns($variantCount + 1),
+                            Section::make('final')
+                                ->schema(
+                                    $combinedColumns
+                                )
+                                ->columns($variantCount + 1),
+                            Section::make('relations')
+                                ->schema(
+                                    $relationsColumns
+                                )
+                                ->columns($variantCount + 1),
+                        ])->columnSpanFull(),
+                ])
+            ->columnSpanFull()
         ]);
     }
 

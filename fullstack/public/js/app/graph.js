@@ -1,4 +1,3 @@
-
 const renderGraph =  function (id, data) {
 
     var elementExists = document.getElementById(id);
@@ -40,8 +39,8 @@ const renderGraph =  function (id, data) {
                     return d.id;
                 })
                 .links(data.links)
-            .distance(200)
-            .strength(1)
+            // .distance(200)
+            // .strength(1)
         )
         .force("charge", d3.forceManyBody()
             .strength(-500)
@@ -70,8 +69,8 @@ const renderGraph =  function (id, data) {
         .enter()
         .append("g")
         .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
+                .on("start", dragstarted)
+                .on("drag", dragged)
             // .on("end", dragended)
         );
     node
@@ -95,6 +94,8 @@ const renderGraph =  function (id, data) {
 
     simulation.force("link")
         .links(data.links);
+
+
 
     function ticked() {
         link
@@ -127,4 +128,6 @@ const renderGraph =  function (id, data) {
     }
 }
 
-renderGraph(id, graphData)
+for (graphId in window.filamentData.graphs) {
+    renderGraph(graphId, window.filamentData.graphs[graphId]);
+}
