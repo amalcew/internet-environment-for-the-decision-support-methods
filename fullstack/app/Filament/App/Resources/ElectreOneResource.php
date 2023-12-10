@@ -76,9 +76,6 @@ class ElectreOneResource extends Resource
             Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
             Js::make('graph', __DIR__ . '/../../resources/js/graph.js'),
         ]);
-        return $infolist->schema([
-            TextEntry::make('lambda')
-        ]);
 
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
