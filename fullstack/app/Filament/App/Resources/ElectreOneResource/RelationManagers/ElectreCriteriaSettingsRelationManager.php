@@ -25,7 +25,7 @@ class ElectreCriteriaSettingsRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\Select::make('criterion_id')
-                    ->options(function(Get $get) {
+                    ->options(function (Get $get) {
                         /** @var Project $project */
                         $project = Filament::getTenant();
 //                        /** @var ElectreOne $electreOne */
@@ -63,23 +63,23 @@ class ElectreCriteriaSettingsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('p'),
                 Tables\Columns\TextColumn::make('v'),
             ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
-            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
             ]);
+//            ->filters([
+//                //
+//            ])
+//            ->headerActions([
+//                Tables\Actions\CreateAction::make(),
+//            ])
+
+//            ->bulkActions([
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
+//            ])
+//            ->emptyStateActions([
+//                Tables\Actions\CreateAction::make(),
+//            ]);
     }
 }

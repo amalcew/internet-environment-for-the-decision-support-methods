@@ -15,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
@@ -31,19 +32,21 @@ class ElectreOneResource extends Resource
 
     public static function form(Form $form): Form
     {
+        self::guardElectre();
+        $record = $form->getRecord();
+        $editSchema = [];
+        if ($record) {
+            $editSchema[] = Forms\Components\TextInput::make('lambda')
+                ->required()
+                ->numeric();
+        }
         return $form
-            ->schema([
-//                Forms\Components\Select::make('project_id')
-//                    ->relationship('project', 'name')
-//                    ->required(),
-                Forms\Components\TextInput::make('lambda')
-                    ->required()
-                    ->numeric(),
-            ]);
+            ->schema($editSchema);
     }
 
     public static function table(Table $table): Table
     {
+        self::guardElectre();
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
@@ -73,13 +76,15 @@ class ElectreOneResource extends Resource
             Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
             Js::make('graph', __DIR__ . '/../../resources/js/graph.js'),
         ]);
+        return $infolist->schema([
+            TextEntry::make('lambda')
+        ]);
 
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
-
 
 
         $variantCount = $variants->count();
@@ -165,6 +170,7 @@ class ElectreOneResource extends Resource
             dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
     }
+
     /**
      * @param array $matrix
      * @param Collection<Variant> $variants
@@ -200,5 +206,31 @@ class ElectreOneResource extends Resource
             'links' => $links
         ];
 
+    }
+
+    /**
+     * @return bool
+     */
+    public static function validateProject(): bool
+    {
+        $proj = Filament::getTenant();
+        if (!$proj->dataset) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return void
+     */
+    public static function guardElectre(): void
+    {
+        if (!self::validateProject()) {
+            Notification::make()
+                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->danger()
+                ->send();
+            redirect(Filament::getUrl() . '/datasets');
+        }
     }
 }
