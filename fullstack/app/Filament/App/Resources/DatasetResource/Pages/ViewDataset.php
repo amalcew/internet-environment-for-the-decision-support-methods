@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources\DatasetResource\Pages;
 
 use App\Filament\App\Resources\DatasetResource;
 use Filament\Actions;
+use Filament\Facades\Filament;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewDataset extends ViewRecord
@@ -14,6 +15,8 @@ class ViewDataset extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Actions\ViewAction::make()->action(fn() => $this->redirect(Filament::getUrl() . '/profile'))
+            ->label('Attach')
         ];
     }
 }

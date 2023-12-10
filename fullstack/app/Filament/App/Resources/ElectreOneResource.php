@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\ElectreOneResource\Components\ElectreLabel;
 use App\Filament\App\Resources\ElectreOneResource\Pages;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
 use App\Infolists\Components\Electre1sGraph;
@@ -87,16 +88,17 @@ class ElectreOneResource extends Resource
 
 
         $variantCount = $variants->count();
-        $concordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
-        $disconcordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
-        $combinedColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
-        $relationsColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+        $concordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)->label(new ElectreLabel('Variants'))];
+        $disconcordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)->label(new ElectreLabel('Variants'))];
+        $combinedColumns = [TextEntry::make('variants')->listWithLineBreaks(true)->label(new ElectreLabel('Variants'))];
+        $relationsColumns = [TextEntry::make('variants')->listWithLineBreaks(true)->label(new ElectreLabel('Variants'))];
+
 
         foreach ($variants as $i => $variant) {
-            $concordanceColumns[] = TextEntry::make('concordance.' . $i)->listWithLineBreaks(true)->label($variant->name);
-            $disconcordanceColumns[] = TextEntry::make('discordance.' . $i)->listWithLineBreaks(true)->label($variant->name);
-            $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label($variant->name);
-            $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label($variant->name);
+            $concordanceColumns[] = TextEntry::make('concordance.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+            $disconcordanceColumns[] = TextEntry::make('discordance.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+            $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+            $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
         }
         $graphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
 

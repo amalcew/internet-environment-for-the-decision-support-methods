@@ -9,6 +9,7 @@ use Filament\Actions;
 use Filament\Facades\Filament;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class CreateDataset extends CreateRecord
@@ -23,11 +24,16 @@ class CreateDataset extends CreateRecord
         unset($data['csv_file']);
         /** @var Dataset $record */
         $record = new ($this->getModel())($data);
-        $record->user()->associate(auth()->user());
-        $record->save();
-        $record->members()->attach(auth()->user()); // populate dataset_user too
-        $record->save();
-        AfterDatasetCreated::dispatch($record, $file);
+        DB::transaction(function () use ($record, $file) {
+            $record->user()->associate(auth()->user());
+            $saved = $record->save();
+            if ($saved) {
+                $record->members()->attach(auth()->user()); // populate dataset_user too
+                $record->save();
+                AfterDatasetCreated::dispatch($record, $file);
+            }
+        });
+
         return $record;
     }
 

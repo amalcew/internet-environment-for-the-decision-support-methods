@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DatasetResource extends Resource
@@ -46,7 +47,11 @@ class DatasetResource extends Resource
                 ->required(),
                 Forms\Components\FileUpload::make('csv_file')
                 ->required()
-                ->storeFiles(false)
+                ->storeFiles(false),
+                Forms\Components\Placeholder::make('info')
+                ->content(new HtmlString('1 line: variants;<1 kryterium>; <2 kryterium>... <br>
+                                    2 line: <empty space>;c;g... <br>
+                                    Decimal seperator: "."'))
             ]);
     }
 

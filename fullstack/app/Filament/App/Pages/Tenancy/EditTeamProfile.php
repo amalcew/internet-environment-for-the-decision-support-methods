@@ -3,9 +3,11 @@
 namespace App\Filament\App\Pages\Tenancy;
 
 use App\Models\Dataset;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Pages\Tenancy\EditTenantProfile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -23,12 +25,15 @@ class EditTeamProfile extends EditTenantProfile
             ->schema([
                 TextInput::make('name'),
                 Select::make('dataset_id')
-                ->relationship(
-                    'dataset',
-                    'id',
-                    modifyQueryUsing: fn (Builder $query) => $query->whereRelation('datasetUsers', 'user_id', '=', auth()->user()->id)->with('user')
-                )
-                ->getOptionLabelFromRecordUsing(fn (Dataset $dataset) => "{$dataset->name} - {$dataset->user->email}")
+                    ->disabled(fn($state) => filled($state))
+                    ->relationship(
+                        'dataset',
+                        'id',
+                        modifyQueryUsing: fn(Builder $query) => $query->whereRelation('datasetUsers', 'user_id', '=', auth()->user()->id)->with('user')
+                    )
+                    ->getOptionLabelFromRecordUsing(fn(Dataset $dataset) => "{$dataset->name} - {$dataset->user->email}"),
+                Placeholder::make('info')
+                ->content('If you already selected a dataset, you need a new project to use another dataset.')
             ]);
     }
 }
