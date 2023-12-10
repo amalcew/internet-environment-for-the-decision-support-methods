@@ -21,7 +21,7 @@ class ElectreCriteriaSetting extends Model
         return $this->belongsTo(Criterion::class);
     }
 
-//    protected $hidden = [
-//        'id', 'electre_one_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
-//    ];
+    protected $hidden = [
+        'id', 'electre_one_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
+    ];
 }

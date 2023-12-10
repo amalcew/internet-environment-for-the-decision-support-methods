@@ -44,7 +44,6 @@ class CreateElectreOne extends CreateRecord
     }
     protected function getRedirectUrl(): string
     {
-        ;
-        return Filament::getUrl() . '/electre-ones/' . $this->getRecord()->id . '/edit';
+        return self::$resource::getUrl('edit', ['record' => $this->getRecord()]);
     }
 }
