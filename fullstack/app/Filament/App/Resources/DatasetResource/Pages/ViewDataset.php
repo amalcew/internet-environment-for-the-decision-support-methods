@@ -15,7 +15,7 @@ class ViewDataset extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
-            Actions\ViewAction::make()->action(fn() => $this->redirect(Filament::getUrl() . '/profile'))
+            Actions\ViewAction::make()->action(fn() => $this->redirect(Filament::getTenantProfileUrl()))
             ->label('Attach')
         ];
     }

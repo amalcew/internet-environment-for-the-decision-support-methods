@@ -39,6 +39,6 @@ class CreateDataset extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return Filament::getUrl() . '/profile';
+        return Filament::getTenantProfileUrl();
     }
 }

@@ -44,6 +44,6 @@ class CreateElectreOne extends CreateRecord
     }
     protected function getRedirectUrl(): string
     {
-        return self::$resource::getUrl('edit', ['record' => $this->getRecord()]);
+        return ElectreOneResource::getUrl('edit', ['record' => $this->getRecord()]);
     }
 }

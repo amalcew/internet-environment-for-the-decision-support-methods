@@ -252,7 +252,7 @@ class ElectreOneResource extends Resource
                 ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
                 ->danger()
                 ->send();
-            redirect(Filament::getUrl() . '/datasets');
+            redirect(DatasetResource::getUrl());
         }
     }
 }
