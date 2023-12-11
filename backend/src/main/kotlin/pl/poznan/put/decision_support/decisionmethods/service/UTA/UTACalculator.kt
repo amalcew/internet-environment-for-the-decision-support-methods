@@ -12,10 +12,12 @@ import java.lang.Integer.min
 class UTACalculator {
 
     fun calculate(utaRequest: UTARequest, utaResponse: UTAResponse): UTAResponse {
-        val resultMap = mutableMapOf<String, List<Float>>()
+        val resultMap = mutableMapOf<String, List<Float?>>()
 
         for (i in utaRequest.performanceTable.indices) {
-            resultMap[utaRequest.rownamesPerformanceTable[i]] = utaRequest.performanceTable[i]
+            utaRequest.rownamesPerformanceTable[i]?.let {
+                resultMap[it] = utaRequest.performanceTable[i]
+            }
         }
         val overallCompleted = mutableListOf<Float>()
 
