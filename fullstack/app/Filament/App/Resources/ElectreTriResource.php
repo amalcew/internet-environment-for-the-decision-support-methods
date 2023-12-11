@@ -6,8 +6,12 @@ use App\Filament\App\Resources\ElectreTriResource\Pages;
 use App\Models\ElectreTri;
 use App\Service\MethodService\Mappers\ElectreTriMapper;
 use App\Service\MethodService\MethodFacade;
+use Faker\Provider\Text;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -87,6 +91,24 @@ class ElectreTriResource extends Resource
             'view' => Pages\ViewElectreTri::route('/{record}'),
             'edit' => Pages\EditElectreTri::route('/{record}/edit'),
         ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        /** @var ElectreTri $record */
+        $record = $infolist->getRecord();
+        $record = self::initAndCalculateElectre($record);
+        $valuesGrid[] = TextEntry::make('variants')->listWithLineBreaks(true);
+        return $infolist->schema([
+            Section::make('dataset values')
+                ->schema([
+                    Section::make('aaa')
+                        ->schema(
+                            $valuesGrid
+                        )
+                        ->columns(2)
+                ])
+        ]);
     }
 
     public static function initAndCalculateElectre(ElectreTri $record): ElectreTri
