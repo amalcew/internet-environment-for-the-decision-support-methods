@@ -18,6 +18,6 @@ class ElectreTri extends Model
 
     public function electreCriteriaSettings(): HasMany
     {
-        return $this->hasMany(ElectreCriteriaSetting::class);
+        return $this->hasMany(ElectreCriteriaSetting::class, 'electre_one_id');
     }
 }

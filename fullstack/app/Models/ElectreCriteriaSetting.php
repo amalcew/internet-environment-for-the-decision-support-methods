@@ -10,10 +10,14 @@ class ElectreCriteriaSetting extends Model
 {
     use HasFactory;
 
-//TODO: add polymphorfic relationship to electreTri
     public function electreOne(): BelongsTo
     {
         return $this->belongsTo(ElectreOne::class);
+    }
+
+    public function electreTri(): BelongsTo
+    {
+        return $this->belongsTo(ElectreTri::class);
     }
 
     public function criterion(): BelongsTo
@@ -22,6 +26,6 @@ class ElectreCriteriaSetting extends Model
     }
 
     protected $hidden = [
-        'id', 'electre_one_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
+        'id', 'electre_one_id', 'electre_tri_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
     ];
 }
