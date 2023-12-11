@@ -22,7 +22,7 @@ class UTAReferenceRanking extends Page
         $this->widgetData = [
             'custom_title' => "Your Title Here",
             'custom_content' => "Your content here",
-            'list' => $variants->pluck('name')->toArray(),
+            'list' => $variants->toArray(),
             'selected' => [],
             'final_ranking' => [] // TODO request to UTA endpoint
         ];
@@ -40,13 +40,17 @@ class UTAReferenceRanking extends Page
     public function handleSortOrderChange($sortOrder, $previousSortOrder, $name, $from, $to)
     {
         $this->widgetData['list'] = $sortOrder;
-        dd($this->widgetData['list']);
+       // dd($this->widgetData['list']);
     }
 
     public function handleSortOrderChangeSorted($sortOrder, $previousSortOrder, $name, $from, $to)
     {
         $this->widgetData['selected'] = $sortOrder;
-        //dd($this->widgetData['selected']);
+        $variants = Variant::all()->toArray();
+        $filteredObjects = array_filter($variants, function ($variant) {
+            return  in_array($variant['id'], $this->widgetData['selected']);
+        });
+        dd($filteredObjects);
     }
 
 }
