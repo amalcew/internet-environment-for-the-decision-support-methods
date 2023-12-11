@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\ElectreOneResource\Components\ElectreLabel;
 use App\Filament\App\Resources\ElectreOneResource\Pages;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
 use App\Infolists\Components\Electre1sGraph;
@@ -15,12 +16,14 @@ use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use Filament\Infolists\Components\Tabs;
 
 
 class ElectreOneResource extends Resource
@@ -31,19 +34,21 @@ class ElectreOneResource extends Resource
 
     public static function form(Form $form): Form
     {
+        self::guardElectre();
+        $record = $form->getRecord();
+        $editSchema = [];
+        if ($record) {
+            $editSchema[] = Forms\Components\TextInput::make('lambda')
+                ->required()
+                ->numeric();
+        }
         return $form
-            ->schema([
-//                Forms\Components\Select::make('project_id')
-//                    ->relationship('project', 'name')
-//                    ->required(),
-                Forms\Components\TextInput::make('lambda')
-                    ->required()
-                    ->numeric(),
-            ]);
+            ->schema($editSchema);
     }
 
     public static function table(Table $table): Table
     {
+        self::guardElectre();
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
@@ -74,6 +79,7 @@ class ElectreOneResource extends Resource
             Js::make('graph', __DIR__ . '/../../resources/js/graph.js'),
         ]);
 
+
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
@@ -81,51 +87,72 @@ class ElectreOneResource extends Resource
         $record->variants = $variants;
 
 
-
         $variantCount = $variants->count();
-        $concordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
-        $disconcordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
-        $combinedColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
-        $relationsColumns = [TextEntry::make('variants')->listWithLineBreaks(true)];
+        $concordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)->label(new ElectreLabel('Variants'))];
+        $disconcordanceColumns = [TextEntry::make('variants')->listWithLineBreaks(true)->label(new ElectreLabel('Variants'))];
+        $combinedColumns = [TextEntry::make('variants')->listWithLineBreaks(true)->label(new ElectreLabel('Variants'))];
+        $relationsColumns = [TextEntry::make('variants')->listWithLineBreaks(true)->label(new ElectreLabel('Variants'))];
+
 
         foreach ($variants as $i => $variant) {
-            $concordanceColumns[] = TextEntry::make('concordance.' . $i)->listWithLineBreaks(true)->label($variant->name);
-            $disconcordanceColumns[] = TextEntry::make('discordance.' . $i)->listWithLineBreaks(true)->label($variant->name);
-            $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label($variant->name);
-            $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label($variant->name);
+            $concordanceColumns[] = TextEntry::make('concordance.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+            $disconcordanceColumns[] = TextEntry::make('discordance.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+            $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+            $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
         }
         $graphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
 
+//        graphs have to be in 1 tab!! Otherwise weird bugs with d3 display
+        FilamentAsset::registerScriptData([
+            'graphs' => [
+                'final_outranking_graph' => $graphData,
+                'full_outranking_graph' => $graphData
+            ]
+        ]);
+
+
         return $infolist->schema([
-            TextEntry::make('lambda'),
-            Section::make('tables')
-                ->schema([
-                    Section::make('concordance')
-                        ->schema(
-                            $concordanceColumns
-                        )
-                        ->columns($variantCount + 1),
-                    Section::make('discordance')
-                        ->schema(
-                            $disconcordanceColumns
-                        )
-                        ->columns($variantCount + 1),
-                    Section::make('final')
-                        ->schema(
-                            $combinedColumns
-                        )
-                        ->columns($variantCount + 1),
-                    Section::make('relations')
-                        ->schema(
-                            $relationsColumns
-                        )
-                        ->columns($variantCount + 1),
-                    Section::make('outranking graph')
+            Tabs::make('tabs')
+                ->tabs([
+                    Tabs\Tab::make('graphs')
                         ->schema([
-                            Electre1sGraph::make('outranking_graph')
-                                ->viewData(['graphId' => 'outranking_graph', 'graphData' => $graphData])
-                        ])
-                ]),
+                            TextEntry::make('lambda'),
+                            Section::make('outranking graph')
+                                ->schema([
+                                    Electre1sGraph::make('final_outranking_graph')
+                                        ->viewData(['graphId' => 'final_outranking_graph', 'graphData' => $graphData])
+                                ]),
+                            Section::make('final outranking graph')
+                                ->schema([
+                                    Electre1sGraph::make('full_outranking_graph')
+                                        ->viewData(['graphId' => 'full_outranking_graph', 'graphData' => $graphData])
+                                ]),
+                        ])->columnSpanFull(),
+                    Tabs\Tab::make('tables')
+                        ->schema([
+                            Section::make('concordance')
+                                ->schema(
+                                    $concordanceColumns
+                                )
+                                ->columns($variantCount + 1),
+                            Section::make('discordance')
+                                ->schema(
+                                    $disconcordanceColumns
+                                )
+                                ->columns($variantCount + 1),
+                            Section::make('final')
+                                ->schema(
+                                    $combinedColumns
+                                )
+                                ->columns($variantCount + 1),
+                            Section::make('relations')
+                                ->schema(
+                                    $relationsColumns
+                                )
+                                ->columns($variantCount + 1),
+                        ])->columnSpanFull(),
+                ])
+            ->columnSpanFull()
         ]);
     }
 
@@ -165,6 +192,7 @@ class ElectreOneResource extends Resource
             dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
     }
+
     /**
      * @param array $matrix
      * @param Collection<Variant> $variants
@@ -200,5 +228,31 @@ class ElectreOneResource extends Resource
             'links' => $links
         ];
 
+    }
+
+    /**
+     * @return bool
+     */
+    public static function validateProject(): bool
+    {
+        $proj = Filament::getTenant();
+        if (!$proj->dataset) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return void
+     */
+    public static function guardElectre(): void
+    {
+        if (!self::validateProject()) {
+            Notification::make()
+                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->danger()
+                ->send();
+            redirect(DatasetResource::getUrl());
+        }
     }
 }

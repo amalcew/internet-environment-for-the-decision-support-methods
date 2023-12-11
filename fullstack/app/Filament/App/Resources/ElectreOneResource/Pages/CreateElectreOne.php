@@ -42,4 +42,8 @@ class CreateElectreOne extends CreateRecord
         });
 
     }
+    protected function getRedirectUrl(): string
+    {
+        return ElectreOneResource::getUrl('edit', ['record' => $this->getRecord()]);
+    }
 }

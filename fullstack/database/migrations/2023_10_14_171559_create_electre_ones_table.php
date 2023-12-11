@@ -13,12 +13,7 @@ return new class extends Migration
     {
         Schema::create('electre_ones', function (Blueprint $table) {
             $table->id();
-            $table->double('lambda');
-//            $table->string('concordance')->nullable();
-//            $table->string('discordance')->nullable();
-//            $table->string('combined')->nullable();
-//            $table->string('relations')->nullable();
-//            $table->string('clean_graph')->nullable();
+            $table->double('lambda')->nullable();
             $table->foreignId('project_id')->constrained();
             $table->timestamps();
         });
