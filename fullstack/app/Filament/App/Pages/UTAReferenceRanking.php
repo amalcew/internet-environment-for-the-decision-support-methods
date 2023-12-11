@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Pages;
 
+use App\Models\Variant;
 use Filament\Pages\Page;
 
 class UTAReferenceRanking extends Page
@@ -10,18 +11,18 @@ class UTAReferenceRanking extends Page
 
     protected static string $view = 'filament.app.pages.utaInterface';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public $widgetData;
 
     public function mount(): void
     {
+        $variants = Variant::all();
+      //  dd($variants->pluck('name')->toArray());
         $this->widgetData = [
             'custom_title' => "Your Title Here",
             'custom_content' => "Your content here",
-            'list' => [
-                'item 1',
-                'item 2',
-                'item 3',
-            ],
+            'list' => $variants->pluck('name')->toArray(),
             'selected' => [],
             'final_ranking' => [] // TODO request to UTA endpoint
         ];
@@ -45,7 +46,7 @@ class UTAReferenceRanking extends Page
     public function handleSortOrderChangeSorted($sortOrder, $previousSortOrder, $name, $from, $to)
     {
         $this->widgetData['selected'] = $sortOrder;
-        dd($this->widgetData['selected']);
+        //dd($this->widgetData['selected']);
     }
 
 }
