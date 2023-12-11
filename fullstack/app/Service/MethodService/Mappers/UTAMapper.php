@@ -13,12 +13,6 @@ class UTAMapper
     public function generateDTOfromUTAModel(Uta $uta)
     {
         $dto = new UTARequest();
-        $dto->lambda = $uta->lambda;
-        $electreCriteria = $uta->electreCriteriaSettings()->with('criterion')->orderBy('criterion_id')->get();
-        $dto->criteria = $electreCriteria->toArray();
-        foreach ($electreCriteria as $i => $electreCriterion) {
-            $dto->criteria[$i]['preferenceType'] = $electreCriterion->criterion->type;
-        }
         $variants = Filament::getTenant()->variants()->with('values')->get();
         foreach ($variants as $variant) {
             $obj = new \StdClass;
