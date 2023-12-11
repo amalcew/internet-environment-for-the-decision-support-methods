@@ -44,7 +44,9 @@ class ElectreCriteriaSettingsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('v')
                     ->required()
                     ->maxLength(255),
-            ]);
+                Forms\Components\Checkbox::make('use veto')
+            ])
+            ->columns(4);
     }
 
     public function table(Table $table): Table
@@ -57,6 +59,7 @@ class ElectreCriteriaSettingsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('q'),
                 Tables\Columns\TextColumn::make('p'),
                 Tables\Columns\TextColumn::make('v'),
+                Tables\Columns\CheckboxColumn::make('use veto')->disabled(true),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
