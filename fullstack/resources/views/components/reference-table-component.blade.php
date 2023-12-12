@@ -59,7 +59,7 @@
     </script>
     <div>
         <h1>Reference Table</h1>
-        <h3 class="instruction">Drag and drop to reorder</h3>
+        <h3 class="instruction">Drag and drop to generate reference ranking</h3>
         <div class="container" id="multi_column">
             <div class="column">
                 <x-filament::card height="100%">
