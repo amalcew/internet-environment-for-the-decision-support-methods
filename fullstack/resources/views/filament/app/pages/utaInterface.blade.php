@@ -54,6 +54,42 @@
                 display: flex;
 
             }
+
+            .row-container {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+                border-spacing: 10px;
+            }
+
+            .column-table-cell {
+                display: table-cell;
+                text-align: center;
+            }
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .grid-cell {
+                text-align: center;
+                margin: 20px;
+                font-size: 20px;
+            }
+
+            .chart-title {
+                text-align: center;
+                font-size: 20px;
+                margin: 20px;
+            }
+
+            .badge-text {
+                font-size: 16px;
+                margin: 6px;
+                text-align: center;
+            }
+
         </style>
         <x-slot name="heading">
             {{ $widgetData["custom_title"] }}
@@ -68,5 +104,15 @@
     </x-filament::section>
     <x-filament::section>
         <x-final-ranking-component :ranking="$widgetData['final_ranking']"/>
+    </x-filament::section>
+    <x-filament::section>
+        <div class="grid-container">
+            @foreach ($widgetData['chart_data'] as $key => $value)
+                <div class="grid-cell">
+                    <h3 class="chart-title">{{ $key }}</h3>
+                    @livewire(\App\Filament\App\Pages\UtaChart::class, ['chart_data' => $value, 'chart_title' => $key])
+                </div>
+            @endforeach
+        </div>
     </x-filament::section>
 </x-filament-panels::page>
