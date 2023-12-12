@@ -39,7 +39,7 @@ open class DiscordanceTest : DiscordanceShared() {
     }
     @Throws(InvalidCriteriaException::class)
     override fun validateNegationOfOutranking(variantA: Double, variantB: Double, criterion: Criterion): Double {
-        if (criterion.use_veto == true) {
+        if (!criterion.use_veto) {
             if (criterion.preferenceType == "gain") {
                 if (variantB < variantA + criterion.v) {
                     return 0.0
