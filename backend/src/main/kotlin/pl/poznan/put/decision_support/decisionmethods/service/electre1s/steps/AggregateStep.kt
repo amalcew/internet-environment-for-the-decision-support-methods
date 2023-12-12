@@ -17,7 +17,7 @@ class AggregateStep : AggregatorInterface {
 
                 for (row in concordanceTestResults.indices) {
                     for (column in 0 until concordanceTestResults[row].size) {
-                        if (concordanceTestResults[row][column] >= lambda && discordanceTestResults[row][column] == 0.0) {
+                        if (concordanceTestResults[row][column] >= lambda && discordanceTestResults[row][column] != 1.0) {
                             result[row][column] = 1.0
                         } else {
                             result[row][column] = 0.0
