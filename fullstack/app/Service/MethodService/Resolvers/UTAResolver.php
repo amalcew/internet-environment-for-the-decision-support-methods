@@ -15,7 +15,6 @@ class UTAResolver
     public function resolve(UTARequest $dto, $transposeArraysInResults) {
         $url = $this->urlHelper->getBaseUrl() . UrlHelper::UTA_RELATIVE_URL;
         $response = Http::asJson()->post($url, ['data' => $dto]);
-        dd($dto);
         $data = json_decode($response->body());
         if ($transposeArraysInResults) {
             $data = $this->transposeArraysInData($data);
