@@ -62,12 +62,42 @@
         <div class="container">
             <div class="column" id="single_column">
                 <x-filament::card>
+                    <div class="row-container">
+                        <div class="column-table-cell">
+                            Utility
+                        </div>
+                        <div class="column-table-cell">
+                            Rank
+                        </div>
+                        <div class="column-table-cell">
+                            Variant Name
+                        </div>
+                    </div>
                     <x-laravel-blade-sortable::sortable id="single_column_section"
-                        wire:onSortOrderChange="handleSortOrderChange">
-                        @foreach($ranking as $position)
-                            <x-laravel-blade-sortable::sortable-item sort-key="{{ $position }}" class="sortable_card">
+                                                        :allow-sort="false"
+                                                        :allow-drop="false"
+                    >
+                        @foreach($ranking as $key => $position)
+                            <x-laravel-blade-sortable::sortable-item sort-key="{{ $position[2] }}"
+                                                                     class="sortable_card">
                                 <x-filament::card>
-                                    {{ $position }}
+                                    <div class="row-container">
+                                        <div class="column-table-cell">
+                                            <x-filament::badge>
+                                                <p class="badge-text"> {{$position[0]}}</p>
+                                            </x-filament::badge>
+                                        </div>
+                                        <div class="column-table-cell">
+                                            <x-filament::badge>
+                                                <p class="badge-text"> {{$position[1]}}</p>
+                                            </x-filament::badge>
+                                        </div>
+                                        <div class="column-table-cell">
+                                            <x-filament::badge>
+                                                <p class="badge-text"> {{$position[2]}}</p>
+                                            </x-filament::badge>
+                                        </div>
+                                    </div>
                                 </x-filament::card>
                             </x-laravel-blade-sortable::sortable-item>
                         @endforeach
