@@ -26,6 +26,6 @@ class ElectreCriteriaSetting extends Model
     }
 
     protected $hidden = [
-        'id', 'electre_one_id', 'electre_tri_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
+        'id', 'electre_one_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
     ];
 }
