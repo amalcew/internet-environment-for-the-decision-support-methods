@@ -32,6 +32,7 @@ class CreateElectreOne extends CreateRecord
                 'q' => 0,
                 'p' => 0,
                 'v' => 0,
+                'use_veto' => 0
             ]));
             $collection->add($electreCriterion);
         }

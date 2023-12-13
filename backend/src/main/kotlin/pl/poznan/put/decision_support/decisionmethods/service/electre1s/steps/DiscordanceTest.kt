@@ -39,21 +39,25 @@ open class DiscordanceTest : DiscordanceShared() {
     }
     @Throws(InvalidCriteriaException::class)
     override fun validateNegationOfOutranking(variantA: Double, variantB: Double, criterion: Criterion): Double {
-        if (criterion.preferenceType == "gain") {
-            if (variantB < variantA + criterion.v) {
-                return 0.0
+        if (criterion.use_veto == true) {
+            if (criterion.preferenceType == "gain") {
+                if (variantB < variantA + criterion.v) {
+                    return 0.0
+                }
+                if (variantB >= variantA + criterion.v) {
+                    return 1.0
+                }
             }
-            if (variantB >= variantA + criterion.v) {
-                return 1.0
+            if (criterion.preferenceType == "cost") {
+                if (variantB <= variantA - criterion.v) {
+                    return 1.0
+                }
+                if (variantB > variantA - criterion.v) {
+                    return 0.0
+                }
             }
-        }
-        if (criterion.preferenceType == "cost") {
-            if (variantB <= variantA - criterion.v) {
-                return 1.0
-            }
-            if (variantB > variantA - criterion.v) {
-                return 0.0
-            }
+        } else {
+            return 0.0
         }
         throw InvalidCriteriaException("Preference type only allows for 'gain' or 'cost' types!")
     }

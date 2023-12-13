@@ -4,4 +4,5 @@ class Criterion (var preferenceType: String,
                             var weight: Double,
                             var q: Double,
                             var p: Double,
-                            var v: Double)
+                            var v: Double,
+                            var use_veto: Boolean)
