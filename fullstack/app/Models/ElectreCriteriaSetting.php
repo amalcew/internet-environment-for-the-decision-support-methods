@@ -10,14 +10,10 @@ class ElectreCriteriaSetting extends Model
 {
     use HasFactory;
 
+//TODO: add polymphorfic relationship to electreTri
     public function electreOne(): BelongsTo
     {
         return $this->belongsTo(ElectreOne::class);
-    }
-
-    public function electreTri(): BelongsTo
-    {
-        return $this->belongsTo(ElectreTri::class);
     }
 
     public function criterion(): BelongsTo

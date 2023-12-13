@@ -16,10 +16,6 @@ class Uta extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function electreCriteriaSettings(): HasMany
-    {
-        return $this->hasMany(ElectreCriteriaSetting::class);
-    }
 
     public function utaCriteriaSettings(): HasMany
     {

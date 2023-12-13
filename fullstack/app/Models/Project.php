@@ -44,14 +44,6 @@ class Project extends Model
     {
         return $this->hasMany(ElectreOne::class);
     }
-    public function electreTris(): HasMany
-    {
-        return $this->hasMany(ElectreTri::class);
-    }
-    public function utas(): HasMany
-    {
-        return $this->hasMany(Uta::class);
-    }
 
     public function utas(): HasMany
     {

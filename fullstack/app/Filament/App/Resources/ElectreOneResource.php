@@ -2,9 +2,12 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\ElectreOneResource\Components\ElectreLabel;
 use App\Filament\App\Resources\ElectreOneResource\Pages;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
+use App\Infolists\Components\Electre1sGraph;
 use App\Models\ElectreOne;
+use App\Models\Variant;
 use App\Service\MethodService\Mappers\Electre1sMapper;
 use App\Service\MethodService\MethodFacade;
 use Filament\Facades\Filament;
@@ -15,12 +18,16 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs\Tab;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Assets\Js;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
+use Filament\Infolists\Components\Tabs;
+
 
 class ElectreOneResource extends Resource
 {
@@ -32,19 +39,21 @@ class ElectreOneResource extends Resource
 
     public static function form(Form $form): Form
     {
+        self::guardElectre();
+        $record = $form->getRecord();
+        $editSchema = [];
+        if ($record) {
+            $editSchema[] = Forms\Components\TextInput::make('lambda')
+                ->required()
+                ->numeric();
+        }
         return $form
-            ->schema([
-//                Forms\Components\Select::make('project_id')
-//                    ->relationship('project', 'name')
-//                    ->required(),
-                Forms\Components\TextInput::make('lambda')
-                    ->required()
-                    ->numeric(),
-            ]);
+            ->schema($editSchema);
     }
 
     public static function table(Table $table): Table
     {
+        self::guardElectre();
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
@@ -69,10 +78,16 @@ class ElectreOneResource extends Resource
 
     public static function infolist(Infolist $infolist): Infolist
     {
+        FilamentAsset::register([
+            Js::make('external-script', 'https://d3js.org/d3.v4.min.js'),
+            Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
+            Js::make('graph', __DIR__ . '/../../resources/js/graph.js'),
+        ]);
+
+
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
-
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
 
@@ -254,6 +269,69 @@ class ElectreOneResource extends Resource
         } catch (\Exception $exception) {
             var_dump($exception->getMessage());
             dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
+        }
+    }
+
+    /**
+     * @param array $matrix
+     * @param Collection<Variant> $variants
+     * @return array
+     */
+    private static function mapFullRelationsMatrixToGraphData(array $matrix, $variants): array
+    {
+        $nodes = array();
+        $links = array();
+        foreach ($variants as $i => $variant) {
+            $nodes[] = ['id' => $i, 'name' => $variant->name];
+        }
+        foreach ($matrix as $x => $row) {
+            foreach ($row as $y => $cell) {
+                if ($x != $y) { // omit node relation with itself
+                    if ($cell == "-P") { // transposed matrix - inverted relationships
+                        $links[] = [
+                            'source' => $x,
+                            'target' => $y
+                        ];
+                    }
+                    if ($cell == "I") {
+                        $links[] = [
+                            'source' => $x,
+                            'target' => $y
+                        ];
+                    }
+                }
+            }
+        }
+        return [
+            'nodes' => $nodes,
+            'links' => $links
+        ];
+
+    }
+
+    /**
+     * @return bool
+     */
+    public static function validateProject(): bool
+    {
+        $proj = Filament::getTenant();
+        if (!$proj->dataset) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return void
+     */
+    public static function guardElectre(): void
+    {
+        if (!self::validateProject()) {
+            Notification::make()
+                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->danger()
+                ->send();
+            redirect(DatasetResource::getUrl());
         }
     }
 }
