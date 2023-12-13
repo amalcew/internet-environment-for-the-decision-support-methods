@@ -1,0 +1,41 @@
+{
+  "data": {
+    "lambda": 0.6,
+    "criteria": [
+      {
+        "preferenceType": "cost",
+        "weight": 1.0,
+        "q": 0.9,
+        "p": 2.2,
+        "v": 3.0
+      },
+      {
+        "preferenceType": "gain",
+        "weight": 9.0,
+        "q": 1.0,
+        "p": 1.6,
+        "v": 3.5
+      }
+    ],
+    "variants": [
+      {
+        "values": [
+          10.8,
+          4.7
+        ]
+      },
+      {
+        "values": [
+          8.0,
+          6.0
+        ]
+      },
+      {
+        "values": [
+          11.0,
+          4.8
+        ]
+      }
+    ]
+  }
+}

@@ -2,26 +2,32 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\ElectreOneResource\Components\ElectreLabel;
 use App\Filament\App\Resources\ElectreOneResource\Pages;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
-use App\Infolists\Components\TestEntry;
-use App\Models\Dataset;
+use App\Infolists\Components\Electre1sGraph;
 use App\Models\ElectreOne;
 use App\Models\Variant;
+use App\Service\MethodService\Mappers\Electre1sMapper;
+use App\Service\MethodService\MethodFacade;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Tabs\Tab;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Assets\Js;
+use Filament\Support\Enums\FontWeight;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Collection;
+use Filament\Infolists\Components\Tabs;
+
 
 class ElectreOneResource extends Resource
 {
@@ -33,51 +39,26 @@ class ElectreOneResource extends Resource
 
     public static function form(Form $form): Form
     {
+        self::guardElectre();
+        $record = $form->getRecord();
+        $editSchema = [];
+        if ($record) {
+            $editSchema[] = Forms\Components\TextInput::make('lambda')
+                ->required()
+                ->numeric();
+        }
         return $form
-            ->schema([
-//                Forms\Components\Select::make('project_id')
-//                    ->relationship('project', 'name')
-//                    ->required(),
-                Forms\Components\TextInput::make('lambda')
-                    ->required()
-                    ->numeric(),
-//                Forms\Components\TextInput::make('concordance')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('discordance')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('combined')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('relations')
-//                    ->maxLength(255),
-//                Forms\Components\TextInput::make('clean_graph')
-//                    ->maxLength(255),
-            ]);
+            ->schema($editSchema);
     }
 
     public static function table(Table $table): Table
     {
+        self::guardElectre();
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('project.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('lambda')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('concordance')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('discordance')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('combined')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('relations')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('clean_graph')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -90,11 +71,6 @@ class ElectreOneResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
@@ -102,61 +78,160 @@ class ElectreOneResource extends Resource
 
     public static function infolist(Infolist $infolist): Infolist
     {
+        FilamentAsset::register([
+            Js::make('external-script', 'https://d3js.org/d3.v4.min.js'),
+            Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
+            Js::make('graph', __DIR__ . '/../../resources/js/graph.js'),
+        ]);
+
+
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
-        try {
-            self::myInitData($record);
-
-        } catch (\Exception $exception) {
-            var_dump($exception->getMessage());
-            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
-        }
-
+        $record = self::initAndCalculateElectre($record);
         $variants = Filament::getTenant()->variants;
-        $variantCount = $variants->count();
-        $concordanceColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $concordanceColumns[] = TestEntry::make('concordance.' . $i)->label((string)$i);
-        }
-        $disconcordanceCoulumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $disconcordanceCoulumns[] = TestEntry::make('discordance.' . $i)->label((string)$i);
-        }
-        $combinedColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $combinedColumns[] = TestEntry::make('final.' . $i)->label((string)$i);
-        }
-        $relationsColumns = [];
-        for ($i = 0; $i < $variantCount * $variantCount; $i++) {
-            $relationsColumns[] = TestEntry::make('relations.' . $i)->label((string)$i);
-        }
-        return $infolist->schema([
-            TextEntry::make('lambda'),
-            Section::make('tables')
-                ->schema([
-                    Section::make('concordance')
-                        ->schema(
-                            $concordanceColumns
-                        )
-                        ->columns(3),
-                    Section::make('discordance')
-                        ->schema(
-                            $disconcordanceCoulumns
-                        )
-                        ->columns(3),
-                    Section::make('final')
-                        ->schema(
-                            $combinedColumns
-                        )
-                        ->columns(3),
-                    Section::make('relations')
-                        ->schema(
-                            $relationsColumns
-                        )
-                        ->columns(3),
-                    TextEntry::make('clean_graph'),
-                ]),
+        $record->variants = $variants;
 
+        // TODO: find more elegant way to HTML format
+        $variantCount = $variants->count();
+        $concordanceColumns = [
+            TextEntry::make('variants')
+                ->listWithLineBreaks(true)
+                ->label(new ElectreLabel('Variants'))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+        ];
+        $disconcordanceColumns = [
+            TextEntry::make('variants')
+                ->listWithLineBreaks(true)
+                ->label(new ElectreLabel('Variants'))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+        ];
+        $combinedColumns = [
+            TextEntry::make('variants')
+                ->listWithLineBreaks(true)
+                ->label(new ElectreLabel('Variants'))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+        ];
+        $relationsColumns = [
+            TextEntry::make('variants')
+                ->listWithLineBreaks(true)
+                ->label(new ElectreLabel('Variants'))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+        ];
+
+
+        foreach ($variants as $i => $variant) {
+            $concordanceColumns[] = TextEntry::make('concordance.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name))->numeric(decimalPlaces: 2, decimalSeparator: '.', thousandsSeparator: ',',);
+            $disconcordanceColumns[] = TextEntry::make('discordance.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+            $combinedColumns[] = TextEntry::make('final.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+            $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
+        }
+        $OutrankingGraphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
+
+        // graphs have to be in 1 tab!! Otherwise weird bugs with d3 display
+        // TODO: insert final graph data
+        FilamentAsset::registerScriptData([
+            'graphs' => [
+                'outranking_graph' => $OutrankingGraphData,
+                'final_graph' => $OutrankingGraphData
+            ]
+        ]);
+
+
+        return $infolist->schema([
+            Tabs::make('tabs')
+                ->tabs([
+                    Tab::make('graphs')
+                        ->schema([
+                            TextEntry::make('lambda'),
+                            Section::make('Outranking graph')
+                                ->schema([
+                                    Electre1sGraph::make('outranking_graph')
+                                        ->viewData(['graphId' => 'outranking_graph', 'graphData' => $OutrankingGraphData])
+                                ])
+                                ->collapsible(),
+                            Section::make('Final graph')
+                                ->schema([
+                                    Electre1sGraph::make('final_graph')
+                                        ->viewData(['graphId' => 'final_graph', 'graphData' => $OutrankingGraphData])
+                                ])
+                                ->collapsible(),
+                        ])->columnSpanFull(),
+                    // TODO: insert here marginal concordances received from Spring Boot
+                    Tab::make('tables')
+                        ->schema([
+                            Section::make('Marginal concordance')
+                                ->schema(
+                                    [
+                                        Tabs::make('Marginal concordance')
+                                            ->tabs([
+                                                Tab::make('Tab 1')
+                                                    ->schema(
+                                                        [
+                                                            Grid::make(['default' => $variantCount + 1])
+                                                                ->schema($concordanceColumns)
+                                                            ,
+                                                        ]
+                                                    ),
+                                                Tab::make('Tab 2')
+                                                    ->schema(
+                                                        [
+                                                            Grid::make(['default' => $variantCount + 1])
+                                                                ->schema($concordanceColumns)
+                                                            ,
+                                                        ]
+                                                    ),
+                                                Tab::make('Tab 3')
+                                                    ->schema(
+                                                        [
+                                                            Grid::make(['default' => $variantCount + 1])
+                                                                ->schema($concordanceColumns)
+                                                            ,
+                                                        ]
+                                                    ),
+                                            ])
+//                                            ->contained(false)
+                                    ]
+                                )
+                                ->collapsible(),
+                            Section::make('Comprehensive concordance')
+                                ->schema(
+                                    [
+                                        Grid::make(['default' => $variantCount + 1])->schema($concordanceColumns),
+                                    ]
+                                )
+                                ->collapsible(),
+                            Section::make('Discordance')
+                                ->schema(
+                                    [
+                                        Grid::make(['default' => $variantCount + 1])->schema($disconcordanceColumns),
+                                    ]
+                                )
+                                ->collapsible(),
+                            Section::make('Outranking')
+                                ->schema(
+                                    [
+                                        Grid::make(['default' => $variantCount + 1])->schema($combinedColumns),
+                                    ]
+                                )
+                                ->collapsible(),
+                            Section::make('Relations')
+                                ->schema(
+                                    [
+                                        Grid::make(['default' => $variantCount + 1])->schema($relationsColumns),
+                                    ]
+                                )
+                                ->collapsible(),
+                        ])->columnSpanFull(),
+                ])
+                ->columnSpanFull()
         ]);
     }
 
@@ -177,75 +252,86 @@ class ElectreOneResource extends Resource
         ];
     }
 
-    protected static function myInitData(?\Illuminate\Database\Eloquent\Model $record)
+    /**
+     * @param ElectreOne $record
+     * @return ElectreOne
+     */
+    public static function initAndCalculateElectre(ElectreOne $record): ElectreOne
     {
-//        Create Service
-//        url with containers could have some problems???
-        $port = env('SPRING_PORT', 8000);
-        $response = Http::asJson()->post("host.docker.internal:$port/electre1s", ['data' => [
-            'lambda' => 0.5,
-            'criteria' => [
-                [
-                    "preferenceType" => "cost",
-                    "weight" => 1.0,
-                    "q" => 0.9,
-                    "p" => 2.2,
-                    "v" => 3.0
-                ],
-                [
-                    "preferenceType" => "gain",
-                    "weight" => 9.0,
-                    "q" => 1.0,
-                    "p" => 1.6,
-                    "v" => 3.5
-                ]
-            ],
-            "variants" => [
-                [
-                    "values" => [
-                        10.8,
-                        4.7
-                    ]
-                ],
-                [
-                    "values" => [
-                        8.0,
-                        6.0
-                    ]
-                ],
-                [
-                    "values" => [
-                        11.0,
-                        4.8
-                    ]
-                ]
-            ],
-            "b" => [
-                [
-                    "values" => [
-                        10.8,
-                        4.7
-                    ]
-                ],
-                [
-                    "values" => [
-                        8.0,
-                        6.0
-                    ]
-                ],
-                [
-                    "values" => [
-                        11.0,
-                        4.8
-                    ]
-                ]
-            ]
-        ]
-        ]);
-        $body = json_decode($response->body());
-        foreach ($body as $key => $matrix) {
-            $record[$key] = Arr::flatten($matrix);
+        try {
+            $facade = new MethodFacade();
+            $dto = (new Electre1sMapper)->generateDTOfromElectre1sModel($record);
+            $body = $facade->getElectre1sData($dto, true);
+            foreach ($body as $key => $matrix) {
+                $record[$key] = $matrix;
+            }
+            return $record;
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
-        return $record;
+    }
+
+    /**
+     * @param array $matrix
+     * @param Collection<Variant> $variants
+     * @return array
+     */
+    private static function mapFullRelationsMatrixToGraphData(array $matrix, $variants): array
+    {
+        $nodes = array();
+        $links = array();
+        foreach ($variants as $i => $variant) {
+            $nodes[] = ['id' => $i, 'name' => $variant->name];
+        }
+        foreach ($matrix as $x => $row) {
+            foreach ($row as $y => $cell) {
+                if ($x != $y) { // omit node relation with itself
+                    if ($cell == "-P") { // transposed matrix - inverted relationships
+                        $links[] = [
+                            'source' => $x,
+                            'target' => $y
+                        ];
+                    }
+                    if ($cell == "I") {
+                        $links[] = [
+                            'source' => $x,
+                            'target' => $y
+                        ];
+                    }
+                }
+            }
+        }
+        return [
+            'nodes' => $nodes,
+            'links' => $links
+        ];
+
+    }
+
+    /**
+     * @return bool
+     */
+    public static function validateProject(): bool
+    {
+        $proj = Filament::getTenant();
+        if (!$proj->dataset) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return void
+     */
+    public static function guardElectre(): void
+    {
+        if (!self::validateProject()) {
+            Notification::make()
+                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->danger()
+                ->send();
+            redirect(DatasetResource::getUrl());
+        }
     }
 }

@@ -32,6 +32,7 @@ class CreateElectreOne extends CreateRecord
                 'q' => 0,
                 'p' => 0,
                 'v' => 0,
+                'use_veto' => 0
             ]));
             $collection->add($electreCriterion);
         }
@@ -41,5 +42,9 @@ class CreateElectreOne extends CreateRecord
             });
         });
 
+    }
+    protected function getRedirectUrl(): string
+    {
+        return ElectreOneResource::getUrl('edit', ['record' => $this->getRecord()]);
     }
 }

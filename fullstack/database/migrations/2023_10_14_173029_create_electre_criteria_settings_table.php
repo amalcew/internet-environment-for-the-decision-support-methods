@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('q')->nullable();
             $table->double('p')->nullable();
             $table->double('v')->nullable();
+            $table->boolean('use_veto')->nullable();
             $table->timestamps(); // see last change by teacher
         });
     }

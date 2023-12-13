@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ElectreCriteriaSetting extends Model
 {
     use HasFactory;
+
 //TODO: add polymphorfic relationship to electreTri
     public function electreOne(): BelongsTo
     {
@@ -19,4 +20,8 @@ class ElectreCriteriaSetting extends Model
     {
         return $this->belongsTo(Criterion::class);
     }
+
+    protected $hidden = [
+        'id', 'electre_one_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
+    ];
 }

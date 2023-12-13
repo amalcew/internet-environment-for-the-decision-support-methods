@@ -24,19 +24,14 @@ class ElectreCriteriaSettingsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('criterion_id')
-                    ->options(function(Get $get) {
-                        /** @var Project $project */
-                        $project = Filament::getTenant();
-//                        /** @var ElectreOne $electreOne */
-//                        $electreOne = $this->getOwnerRecord();
-//                        TODO: try to filter not in electreOne->electreCriteriaSettings
-                        return $project->criteria->pluck('name', 'id');
-                    })
-                    ->native(false)
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+                Forms\Components\Fieldset::make('criterion')
+                    ->relationship('criterion')->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->inlineLabel()
+                    ])
+                    ->label('')
+                    ->columns(1)
+                    ->disabled(),
                 Forms\Components\TextInput::make('weight')
                     ->required()
                     ->maxLength(255),
@@ -49,7 +44,9 @@ class ElectreCriteriaSettingsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('v')
                     ->required()
                     ->maxLength(255),
-            ]);
+                Forms\Components\Checkbox::make('use_veto')
+            ])
+            ->columns(4);
     }
 
     public function table(Table $table): Table
@@ -62,24 +59,10 @@ class ElectreCriteriaSettingsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('q'),
                 Tables\Columns\TextColumn::make('p'),
                 Tables\Columns\TextColumn::make('v'),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Columns\CheckboxColumn::make('use_veto')->disabled(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
             ]);
     }
 }
