@@ -2,9 +2,12 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\ElectreOneResource\Components\ElectreLabel;
 use App\Filament\App\Resources\ElectreOneResource\Pages;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers;
+use App\Infolists\Components\Electre1sGraph;
 use App\Models\ElectreOne;
+use App\Models\Variant;
 use App\Service\MethodService\Mappers\Electre1sMapper;
 use App\Service\MethodService\MethodFacade;
 use Filament\Facades\Filament;
@@ -12,9 +15,11 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Components\Tabs\Tab;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Assets\Js;
 use Filament\Support\Enums\FontWeight;

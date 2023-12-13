@@ -3,6 +3,7 @@
 namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\UtaResource\Pages;
+use App\Filament\App\Resources\UtaResource\RelationManagers\UtaCriteriaSettingsRelationManager;
 use App\Models\Uta;
 use App\Service\MethodService\Mappers\UTAMapper;
 use App\Service\MethodService\MethodFacade;
@@ -74,7 +75,7 @@ class UtaResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\UTACriteriaSettingsRelationManager::class,
+            UTACriteriaSettingsRelationManager::class,
         ];
     }
 

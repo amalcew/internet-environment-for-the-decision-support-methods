@@ -48,10 +48,6 @@ class Project extends Model
     {
         return $this->hasMany(ElectreTri::class);
     }
-    public function utas(): HasMany
-    {
-        return $this->hasMany(Uta::class);
-    }
 
     public function utas(): HasMany
     {
