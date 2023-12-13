@@ -21,6 +21,11 @@ class Uta extends Model
         return $this->hasMany(ElectreCriteriaSetting::class);
     }
 
+    public function utaCriteriaSettings(): HasMany
+    {
+        return $this->hasMany(UtaCriteriaSetting::class);
+    }
+
     public $criteriaMinMax = [];
 
     public $criteriaNumberOfBreakPoints = [];
@@ -36,4 +41,5 @@ class Uta extends Model
     public $performanceTable = [];
 
     public $epsilon = 0.05;
+
 }

@@ -2,8 +2,10 @@
 
 namespace App\Filament\App\Resources\UtaResource\Pages;
 
+use App\Filament\App\Pages\UTAReferenceRanking;
 use App\Filament\App\Resources\UtaResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewUta extends ViewRecord
@@ -14,6 +16,11 @@ class ViewUta extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Action::make('solve')
+                ->label('Solve')
+                ->url(UTAReferenceRanking::getUrl())
+                ->icon('heroicon-s-play')
+                ->iconPosition('after')
         ];
     }
 }

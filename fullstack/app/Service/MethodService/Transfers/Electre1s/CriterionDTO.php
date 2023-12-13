@@ -9,4 +9,5 @@ class CriterionDTO
     public float $q;
     public float $p;
     public float $v;
+    public bool $use_veto;
 }
