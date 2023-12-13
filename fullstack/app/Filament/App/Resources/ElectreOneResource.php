@@ -35,6 +35,8 @@ class ElectreOneResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Methods';
+
     public static function form(Form $form): Form
     {
         self::guardElectre();

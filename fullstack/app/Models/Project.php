@@ -45,6 +45,11 @@ class Project extends Model
         return $this->hasMany(ElectreOne::class);
     }
 
+    public function utas(): HasMany
+    {
+        return $this->hasMany(Uta::class);
+    }
+
     public function dataset(): BelongsTo
     {
         return $this->belongsTo(Dataset::class);

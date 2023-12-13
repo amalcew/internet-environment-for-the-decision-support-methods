@@ -17,19 +17,20 @@ class UtaResource extends Resource
 {
     protected static ?string $model = Uta::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
 
     protected static ?string $navigationLabel = 'Uta';
 
     protected static ?string $modelLabel = 'Uta';
     protected static ?string $pluralModelLabel = 'Uta';
 
+    protected static ?string $navigationGroup = 'Methods';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('project_id')
+                Forms\Components\TextInput::make('epsilon')
                     ->required()
                     ->numeric(),
             ]);
@@ -71,7 +72,7 @@ class UtaResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\UTACriteriaSettingsRelationManager::class,
         ];
     }
 

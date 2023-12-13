@@ -37,7 +37,7 @@ class DatasetResource extends Resource
         return $query;
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
 
     public static function form(Form $form): Form
     {
