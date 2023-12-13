@@ -22,6 +22,11 @@ class Uta extends Model
         return $this->hasMany(UtaCriteriaSetting::class);
     }
 
+    public function electreCriteriaSettings(): HasMany
+    {
+        return $this->hasMany(ElectreCriteriaSetting::class);
+    }
+
     public $criteriaMinMax = [];
 
     public $criteriaNumberOfBreakPoints = [];

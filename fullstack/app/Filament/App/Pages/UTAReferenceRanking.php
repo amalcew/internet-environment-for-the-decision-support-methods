@@ -64,7 +64,6 @@ class UTAReferenceRanking extends Page
         $filteredObjects = array_filter($variants, function ($variant) {
             return in_array($variant['id'], $this->widgetData['selected']);
         });
-        dd($filteredObjects);
     }
 
     function zipArrays($arr1, $arr2, $arr3)

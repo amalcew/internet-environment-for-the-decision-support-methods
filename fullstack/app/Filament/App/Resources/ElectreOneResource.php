@@ -15,6 +15,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Components\Tabs\Tab;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
@@ -25,9 +26,6 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Collection;
-use Filament\Infolists\Components\Tabs;
-
 
 class ElectreOneResource extends Resource
 {
@@ -88,6 +86,7 @@ class ElectreOneResource extends Resource
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
+
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
 
