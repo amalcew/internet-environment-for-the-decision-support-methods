@@ -98,7 +98,7 @@ class ElectreOneResource extends Resource
                 ->label(new ElectreLabel('Variants'))
                 ->weight(FontWeight::Medium)
                 ->html()
-                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
         ];
         $disconcordanceColumns = [
             TextEntry::make('variants')
@@ -106,7 +106,7 @@ class ElectreOneResource extends Resource
                 ->label(new ElectreLabel('Variants'))
                 ->weight(FontWeight::Medium)
                 ->html()
-                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
         ];
         $combinedColumns = [
             TextEntry::make('variants')
@@ -114,7 +114,7 @@ class ElectreOneResource extends Resource
                 ->label(new ElectreLabel('Variants'))
                 ->weight(FontWeight::Medium)
                 ->html()
-                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
         ];
         $relationsColumns = [
             TextEntry::make('variants')
@@ -122,7 +122,7 @@ class ElectreOneResource extends Resource
                 ->label(new ElectreLabel('Variants'))
                 ->weight(FontWeight::Medium)
                 ->html()
-                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
         ];
 
 
