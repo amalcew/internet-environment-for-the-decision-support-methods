@@ -63,6 +63,7 @@ class AppPanelProvider extends PanelProvider
             ->tenant(Project::class)
             ->tenantRegistration(RegisterTeam::class)
             ->tenantProfile(EditTeamProfile::class)
-            ->sidebarFullyCollapsibleOnDesktop();
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->maxContentWidth('full');
     }
 }
