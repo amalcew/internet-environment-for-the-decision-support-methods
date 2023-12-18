@@ -1,4 +1,5 @@
 library(plumber)
+options("plumber.port" = 8090)
 library(jsonlite)
 library(Rglpk)
 
@@ -9,7 +10,7 @@ library(Rglpk)
 function(req){
 
   body <- req$body
-  print(body$rownamesPerformanceTable)
+
   rownamesPerformanceTable <- body$rownamesPerformanceTable
   
   colnamesPerformanceTable <- body$colnamesPerformanceTable
