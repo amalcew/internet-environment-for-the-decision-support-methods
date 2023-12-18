@@ -20,13 +20,14 @@ class UTACalculator {
             }
         }
         val overallCompleted = mutableListOf<Float>()
+        val valueFunctions = getAscendingValues(utaRequest, utaResponse)
 
         for (alternative in utaRequest.rownamesPerformanceTable) { // ["RER","METRO1","METRO2","BUS","TAXI"] //TODO remove
             val yValues = mutableListOf<Double>()
             utaRequest.colnamesPerformanceTable.forEachIndexed { i, criteria -> // ["Price","Time","Comfort"] //TODO remove
                 val value = resultMap[alternative]?.get(i)
-                val valueFunctionsX = utaResponse.valueFunctions?.get(criteria)?.get(0)
-                val valueFunctionsY = utaResponse.valueFunctions?.get(criteria)?.get(1)
+                val valueFunctionsX = valueFunctions.get(criteria)?.get(0)
+                val valueFunctionsY = valueFunctions.get(criteria)?.get(1)
                 for (valueRange in 0..(valueFunctionsX?.size?.minus(2) ?: 0)) {
                     val currentX = valueFunctionsX?.get(valueRange)?.toFloat() ?: 0
                     val currentY = valueFunctionsY?.get(valueRange)?.toFloat() ?: 0
@@ -68,6 +69,21 @@ class UTACalculator {
                 valueFunctions
             )
         }
+    }
+
+    private fun getAscendingValues(utaRequest: UTARequest, utaResponse: UTAResponse) : Map<String, List<List<Double>>>{
+        val valueFunctions = mutableMapOf<String, List<List<Double>>>()
+        utaRequest.colnamesPerformanceTable.forEachIndexed { i, criteria ->
+            if (utaRequest.criteriaMinMax[i] == "min") {
+                val xCol = utaResponse.valueFunctions?.get(criteria)?.get(0)?.reversed() ?: listOf()
+                val yCol = utaResponse.valueFunctions?.get(criteria)?.get(1)?.reversed() ?: listOf()
+                val cols = listOf(xCol, yCol)
+                criteria?.let { valueFunctions[criteria] = cols }
+            } else {
+                criteria?.let { valueFunctions[criteria] = utaResponse.valueFunctions?.get(criteria) ?: listOf() }
+            }
+        }
+        return valueFunctions
     }
 
     private fun mapValuesToRankingPositions(values: List<Float>): List<Int> {
