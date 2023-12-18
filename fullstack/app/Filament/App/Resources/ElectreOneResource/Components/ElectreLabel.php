@@ -13,6 +13,6 @@ class ElectreLabel implements Htmlable
 
     public function toHtml()
     {
-        return '<p style="overflow: hidden; height: 25px; text-overflow: ellipsis; max-width: 50px;">'. $this->text .'</p>';
+        return '<p style="overflow: hidden; white-space: nowrap; height: 25px; text-overflow: ellipsis; max-width: 50px;">'. $this->text .'</p>';
     }
 }

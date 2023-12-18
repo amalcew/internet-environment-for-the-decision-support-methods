@@ -21,11 +21,17 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
+
+
+FilamentAsset::register([
+    Css::make('electre-one-stylesheet', __DIR__ . '/../../../../resources/css/electreOne.css'),
+]);
 
 class ElectreOneResource extends Resource
 {
@@ -79,7 +85,7 @@ class ElectreOneResource extends Resource
         FilamentAsset::register([
             Js::make('external-script', 'https://d3js.org/d3.v4.min.js'),
             Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
-            Js::make('graph', __DIR__ . '/../../resources/js/graph.js'),
+            Js::make('graph', __DIR__ . '/../../../../resources/js/graph.js'),
         ]);
 
 
@@ -89,7 +95,6 @@ class ElectreOneResource extends Resource
 
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
-
         // TODO: find more elegant way to HTML format
         $variantCount = $variants->count();
         $concordanceColumns = [
@@ -176,7 +181,7 @@ class ElectreOneResource extends Resource
                                                         [
                                                             Grid::make(['default' => $variantCount + 1])
                                                                 ->schema($concordanceColumns)
-                                                            ,
+                                                                ->columnSpan(['default' => 65,]),
                                                         ]
                                                     ),
                                                 Tab::make('Tab 2')
@@ -184,7 +189,7 @@ class ElectreOneResource extends Resource
                                                         [
                                                             Grid::make(['default' => $variantCount + 1])
                                                                 ->schema($concordanceColumns)
-                                                            ,
+                                                                ->columnSpan(['default' => 65,]),
                                                         ]
                                                     ),
                                                 Tab::make('Tab 3')
@@ -192,7 +197,7 @@ class ElectreOneResource extends Resource
                                                         [
                                                             Grid::make(['default' => $variantCount + 1])
                                                                 ->schema($concordanceColumns)
-                                                            ,
+                                                                ->columnSpan(['default' => 65,]),
                                                         ]
                                                     ),
                                             ])
@@ -203,28 +208,36 @@ class ElectreOneResource extends Resource
                             Section::make('Comprehensive concordance')
                                 ->schema(
                                     [
-                                        Grid::make(['default' => $variantCount + 1])->schema($concordanceColumns),
+                                        Grid::make(['default' => $variantCount + 1])
+                                            ->schema($concordanceColumns)
+                                            ->columnSpan(['default' => 65,]),
                                     ]
                                 )
                                 ->collapsible(),
                             Section::make('Discordance')
                                 ->schema(
                                     [
-                                        Grid::make(['default' => $variantCount + 1])->schema($disconcordanceColumns),
+                                        Grid::make(['default' => $variantCount + 1])
+                                            ->schema($disconcordanceColumns)
+                                            ->columnSpan(['default' => 65,]),
                                     ]
                                 )
                                 ->collapsible(),
                             Section::make('Outranking')
                                 ->schema(
                                     [
-                                        Grid::make(['default' => $variantCount + 1])->schema($combinedColumns),
+                                        Grid::make(['default' => $variantCount + 1])
+                                            ->schema($combinedColumns)
+                                            ->columnSpan(['default' => 65,]),
                                     ]
                                 )
                                 ->collapsible(),
                             Section::make('Relations')
                                 ->schema(
                                     [
-                                        Grid::make(['default' => $variantCount + 1])->schema($relationsColumns),
+                                        Grid::make(['default' => $variantCount + 1])
+                                            ->schema($relationsColumns)
+                                            ->columnSpan(['default' => 65,]),
                                     ]
                                 )
                                 ->collapsible(),
