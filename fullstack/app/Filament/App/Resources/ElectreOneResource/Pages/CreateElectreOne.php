@@ -16,6 +16,8 @@ class CreateElectreOne extends CreateRecord
 {
     protected static string $resource = ElectreOneResource::class;
 
+    protected static bool $canCreateAnother = false;
+
     public function afterCreate() {
         /** @var Project $project */
         $project = Filament::getTenant();

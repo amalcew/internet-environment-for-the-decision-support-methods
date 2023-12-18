@@ -41,6 +41,13 @@ class DatasetResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $record = $form->getRecord();
+        // edit form - only attach users
+        if ($record) {
+            return $form->schema([
+                Forms\Components\Placeholder::make('Share with other users')
+            ]);
+        }
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
@@ -74,12 +81,8 @@ class DatasetResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\EditAction::make()
+                ->label('share with others'),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
