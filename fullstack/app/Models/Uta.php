@@ -27,20 +27,4 @@ class Uta extends Model
         return $this->hasMany(ElectreCriteriaSetting::class);
     }
 
-    public $criteriaMinMax = [];
-
-    public $criteriaNumberOfBreakPoints = [];
-
-    public $rownamesPerformanceTable = [];
-
-    public $colnamesPerformanceTable = [];
-
-    public $alternativesPreferences = [];
-
-    public $alternativesIndifferences = [];
-
-    public $performanceTable = [];
-
-    public $epsilon = 0.05;
-
 }
