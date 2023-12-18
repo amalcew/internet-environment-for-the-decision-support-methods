@@ -33,7 +33,7 @@ class DatasetResource extends Resource
 //    change tenant filter to user filter
     public static function scopeEloquentQueryToTenant(Builder $query, ?Model $tenant): Builder
     {
-        $query->whereRelation('user', 'id', '=', auth()->user()->id);
+        $query->whereRelation('datasetUsers', 'user_id', '=', auth()->id());
         return $query;
     }
 
