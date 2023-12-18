@@ -7,11 +7,13 @@ use App\Filament\App\Resources\UtaResource\RelationManagers\UtaCriteriaSettingsR
 use App\Models\Uta;
 use App\Service\MethodService\Mappers\UTAMapper;
 use App\Service\MethodService\MethodFacade;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Infolists\Components\Section;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -31,16 +33,21 @@ class UtaResource extends Resource
 
     public static function form(Form $form): Form
     {
+        self::guardUta();
+        $record = $form->getRecord();
+        $editSchema = [];
+        if ($record) {
+            $editSchema[] = Forms\Components\TextInput::make('epsilon')
+                ->required()
+                ->numeric();
+        }
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('epsilon')
-                    ->required()
-                    ->numeric(),
-            ]);
+            ->schema($editSchema);
     }
 
     public static function table(Table $table): Table
     {
+        self::guardUta();
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('project_id')
@@ -94,6 +101,7 @@ class UtaResource extends Resource
         /** @var Uta $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateUTA($record);
+        // TODO display records overallValues
         $valuesGrid[] = TextEntry::make('variants')->listWithLineBreaks(true);
         return $infolist->schema([
             Section::make('dataset values')
@@ -112,7 +120,7 @@ class UtaResource extends Resource
         try {
             $facade = new MethodFacade();
             $dto = (new UTAMapper())->generateDTOfromUTAModel($record);
-            $body = $facade->getUTAData($dto, true);
+            $body = $facade->getUTAData($dto, false);
             foreach ($body as $key => $matrix) {
                 $record[$key] = $matrix;
             }
@@ -120,6 +128,32 @@ class UtaResource extends Resource
         } catch (\Exception $exception) {
             var_dump($exception->getMessage());
             dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public static function validateProject(): bool
+    {
+        $proj = Filament::getTenant();
+        if (!$proj->dataset) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return void
+     */
+    public static function guardUta(): void
+    {
+        if (!self::validateProject()) {
+            Notification::make()
+                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->danger()
+                ->send();
+            redirect(DatasetResource::getUrl());
         }
     }
 }
