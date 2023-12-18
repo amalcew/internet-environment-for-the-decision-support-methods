@@ -8,6 +8,8 @@
     display: table;
     clear: both;
 }
+/*npm run build (uses vite) will generate compressed css*/
+/*public/css/filament/filamnet/app.css is source!!!*/
 .my-markdown h1 {
      display: block;
      font-size: 2em;

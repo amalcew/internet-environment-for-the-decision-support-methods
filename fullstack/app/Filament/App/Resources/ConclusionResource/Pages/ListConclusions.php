@@ -10,8 +10,12 @@ class ListConclusions extends ListRecords
 {
     protected static string $resource = ConclusionResource::class;
 
+
+
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+            Actions\CreateAction::make()
+        ];
     }
 }

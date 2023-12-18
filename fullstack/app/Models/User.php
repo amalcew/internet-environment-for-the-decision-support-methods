@@ -69,4 +69,9 @@ class User extends Authenticatable implements HasTenants
     {
         return $this->projects->contains($tenant);
     }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
