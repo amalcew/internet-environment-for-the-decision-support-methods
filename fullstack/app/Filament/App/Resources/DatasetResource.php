@@ -55,10 +55,11 @@ class DatasetResource extends Resource
                 Forms\Components\FileUpload::make('csv_file')
                 ->required()
                 ->storeFiles(false),
-                Forms\Components\Placeholder::make('info')
-                ->content(new HtmlString('1 line: variants;<1 kryterium>; <2 kryterium>... <br>
-                                    2 line: <empty space>;c;g... <br>
-                                    Decimal seperator: "."'))
+                Forms\Components\Placeholder::make('CSV info')
+                ->content(new HtmlString('CSV: 1 line contains: variants;<1 kryterium>; <2 kryterium>... <br>
+                                    (1st element is required to be "variants")<br>
+                                    2 line contains: &lt;empty space>;c;g... <br>
+                                    Decimal seperator is "."'))
             ]);
     }
 
