@@ -1,0 +1,12 @@
+.fi-section-content-ctn {
+    overflow: scroll !important;
+}
+.fi-in-tabs-tab {
+    overflow: scroll !important;
+}
+.electre-variant {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 80px;
+}
