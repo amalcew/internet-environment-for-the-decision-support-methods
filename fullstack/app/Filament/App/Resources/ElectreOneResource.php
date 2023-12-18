@@ -183,7 +183,7 @@ class ElectreOneResource extends Resource
                                                 Tab::make('Tab 1')
                                                     ->schema(
                                                         [
-                                                            Grid::make(['default' => $variantCount + 1])
+                                                            Grid::make(['default' => $variantCount + 2])
                                                                 ->schema($concordanceColumns)
                                                                 ->columnSpan(['default' => 65,]),
                                                         ]
@@ -191,7 +191,7 @@ class ElectreOneResource extends Resource
                                                 Tab::make('Tab 2')
                                                     ->schema(
                                                         [
-                                                            Grid::make(['default' => $variantCount + 1])
+                                                            Grid::make(['default' => $variantCount + 2])
                                                                 ->schema($concordanceColumns)
                                                                 ->columnSpan(['default' => 65,]),
                                                         ]
@@ -199,7 +199,7 @@ class ElectreOneResource extends Resource
                                                 Tab::make('Tab 3')
                                                     ->schema(
                                                         [
-                                                            Grid::make(['default' => $variantCount + 1])
+                                                            Grid::make(['default' => $variantCount + 2])
                                                                 ->schema($concordanceColumns)
                                                                 ->columnSpan(['default' => 65,]),
                                                         ]
