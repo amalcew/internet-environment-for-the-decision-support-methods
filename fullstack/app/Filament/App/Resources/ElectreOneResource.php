@@ -100,34 +100,38 @@ class ElectreOneResource extends Resource
         $concordanceColumns = [
             TextEntry::make('variants')
                 ->listWithLineBreaks(true)
+                ->columnSpan(2)
                 ->label(new ElectreLabel('Variants'))
                 ->weight(FontWeight::Medium)
                 ->html()
-                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
         ];
         $disconcordanceColumns = [
             TextEntry::make('variants')
                 ->listWithLineBreaks(true)
+                ->columnSpan(2)
                 ->label(new ElectreLabel('Variants'))
                 ->weight(FontWeight::Medium)
                 ->html()
-                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
         ];
         $combinedColumns = [
             TextEntry::make('variants')
                 ->listWithLineBreaks(true)
+                ->columnSpan(2)
                 ->label(new ElectreLabel('Variants'))
                 ->weight(FontWeight::Medium)
                 ->html()
-                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
         ];
         $relationsColumns = [
             TextEntry::make('variants')
                 ->listWithLineBreaks(true)
+                ->columnSpan(2)
                 ->label(new ElectreLabel('Variants'))
                 ->weight(FontWeight::Medium)
                 ->html()
-                ->formatStateUsing(fn(string $state): string => __('<p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60px;">' . $state . '</p>'))
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
         ];
 
 
@@ -208,7 +212,7 @@ class ElectreOneResource extends Resource
                             Section::make('Comprehensive concordance')
                                 ->schema(
                                     [
-                                        Grid::make(['default' => $variantCount + 1])
+                                        Grid::make(['default' => $variantCount + 2])
                                             ->schema($concordanceColumns)
                                             ->columnSpan(['default' => 65,]),
                                     ]
@@ -217,7 +221,7 @@ class ElectreOneResource extends Resource
                             Section::make('Discordance')
                                 ->schema(
                                     [
-                                        Grid::make(['default' => $variantCount + 1])
+                                        Grid::make(['default' => $variantCount + 2])
                                             ->schema($disconcordanceColumns)
                                             ->columnSpan(['default' => 65,]),
                                     ]
@@ -226,7 +230,7 @@ class ElectreOneResource extends Resource
                             Section::make('Outranking')
                                 ->schema(
                                     [
-                                        Grid::make(['default' => $variantCount + 1])
+                                        Grid::make(['default' => $variantCount + 2])
                                             ->schema($combinedColumns)
                                             ->columnSpan(['default' => 65,]),
                                     ]
@@ -235,7 +239,7 @@ class ElectreOneResource extends Resource
                             Section::make('Relations')
                                 ->schema(
                                     [
-                                        Grid::make(['default' => $variantCount + 1])
+                                        Grid::make(['default' => $variantCount + 2])
                                             ->schema($relationsColumns)
                                             ->columnSpan(['default' => 65,]),
                                     ]
