@@ -7,7 +7,7 @@ use App\Service\MethodService\Transfers\Electre1s\VariantDTO;
 
 class Electre1sRequestDTO
 {
-    public float $lambda;
+    public ?float $lambda;
 
     /** @var CriterionDTO[] */
     public array $criteria = [];
