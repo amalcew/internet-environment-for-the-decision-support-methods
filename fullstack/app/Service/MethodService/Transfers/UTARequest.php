@@ -6,9 +6,9 @@ use App\Service\MethodService\Transfers\Electre1s\VariantDTO;
 
 class UTARequest
 {
-    public array $alternativesIndifferences = [[]];
+    public ?array $alternativesIndifferences = [[]];
 
-    public array $alternativesPreferences = [[]];
+    public ?array $alternativesPreferences = [[]];
 
     /** @var int[] */
     public ?array $alternativesRanks = [];

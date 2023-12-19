@@ -96,7 +96,7 @@
         </x-slot>
         <x-reference-table-component :names="$widgetData['list']" :selected="$widgetData['selected']"/>
         <div class="button-container">
-            <x-filament::button size="xl" class="secondary-button">
+            <x-filament::button size="xl" class="secondary-button" wire:click="generateFinalRanking">
                 Generate final ranking
             </x-filament::button>
         </div>
@@ -108,6 +108,9 @@
     <x-filament::section>
         <div class="grid-container">
             @foreach ($widgetData['chart_data'] as $key => $value)
+                    <?php
+                        Log::info($value);
+                    ?>
                 <div class="grid-cell">
                     <h3 class="chart-title">{{ $key }}</h3>
                     @livewire(\App\Filament\App\Pages\UtaChart::class, ['chart_data' => $value, 'chart_title' => $key])

@@ -10,7 +10,7 @@ use Filament\Facades\Filament;
 
 class UTAMapper
 {
-    public function generateDTOfromUTAModel(Uta $uta)
+    public function generateDTOfromUTAModel(Uta $uta, $alternativesPreferences)
     {
         $dto = new UTARequest();
         $dto->epsilon = $uta->epsilon;
@@ -47,10 +47,11 @@ class UTAMapper
 
         $dto->performanceTable = $variantValues;
         $dto->rownamesPerformanceTable = $variantNames;
-        $dto->alternativesPreferences = [["MA750", "IE900"]];
-        $dto->alternativesIndifferences = [["MA750", "IE900"]];
+        $dto->alternativesPreferences = $alternativesPreferences;
+        $dto->alternativesIndifferences = null;
         $dto->colnamesPerformanceTable = $criteriaNames;
         $dto->alternativesRanks = null;
+      //  dd($dto);
         return $dto;
     }
 }

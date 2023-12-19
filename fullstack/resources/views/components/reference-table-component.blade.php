@@ -92,9 +92,9 @@
                     <x-laravel-blade-sortable::sortable
                         wire:onSortOrderChange="handleSortOrderChangeSorted">
                         @foreach($selected as $selecte)
-                            <x-laravel-blade-sortable::sortable-item sort-key="{{ $selecte }}" class="sortable_card">
+                            <x-laravel-blade-sortable::sortable-item sort-key="{{ $selecte['id'] }}" class="sortable_card">
                                 <x-filament::card margin-top="100px">
-                                    {{ $selecte }}
+                                    {{ $selecte['name'] }}
                                 </x-filament::card>
                             </x-laravel-blade-sortable::sortable-item>
                         @endforeach
