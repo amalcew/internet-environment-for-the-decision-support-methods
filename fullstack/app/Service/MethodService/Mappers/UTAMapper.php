@@ -2,9 +2,7 @@
 
 namespace App\Service\MethodService\Mappers;
 
-use App\Models\ElectreTri;
 use App\Models\Uta;
-use App\Service\MethodService\Transfers\ElectreTriRequest;
 use App\Service\MethodService\Transfers\UTARequest;
 use Filament\Facades\Filament;
 
@@ -51,7 +49,6 @@ class UTAMapper
         $dto->alternativesIndifferences = null;
         $dto->colnamesPerformanceTable = $criteriaNames;
         $dto->alternativesRanks = null;
-      //  dd($dto);
         return $dto;
     }
 }
