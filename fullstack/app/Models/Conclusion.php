@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Uta extends Model
+class Conclusion extends Model
 {
     use HasFactory;
 
@@ -15,15 +15,8 @@ class Uta extends Model
     {
         return $this->belongsTo(Project::class);
     }
-
-
-    public function utaCriteriaSettings(): HasMany
+    public function comments(): HasMany
     {
-        return $this->hasMany(UtaCriteriaSetting::class);
-    }
-
-    public function electreCriteriaSettings(): HasMany
-    {
-        return $this->hasMany(ElectreCriteriaSetting::class);
+        return  $this->hasMany(Comment::class);
     }
 }

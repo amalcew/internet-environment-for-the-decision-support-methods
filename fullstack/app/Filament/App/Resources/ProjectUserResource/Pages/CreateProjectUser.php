@@ -10,4 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 class CreateProjectUser extends CreateRecord
 {
     protected static string $resource = ProjectUserResource::class;
+    protected static bool $canCreateAnother = false;
+
 }
