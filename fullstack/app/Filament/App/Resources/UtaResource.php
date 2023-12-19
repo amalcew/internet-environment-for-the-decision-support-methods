@@ -50,13 +50,9 @@ class UtaResource extends Resource
         self::guardUta();
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('project_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -94,25 +90,6 @@ class UtaResource extends Resource
             'view' => Pages\ViewUta::route('/{record}'),
             'edit' => Pages\EditUta::route('/{record}/edit'),
         ];
-    }
-
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        /** @var Uta $record */
-        $record = $infolist->getRecord();
-        $record = self::initAndCalculateUTA($record);
-        // TODO display records overallValues
-        $valuesGrid[] = TextEntry::make('variants')->listWithLineBreaks(true);
-        return $infolist->schema([
-            Section::make('dataset values')
-                ->schema([
-                    Section::make('aaa')
-                        ->schema(
-                            $valuesGrid
-                        )
-                        ->columns(2)
-                ])
-        ]);
     }
 
     public static function initAndCalculateUTA(Uta $record): Uta

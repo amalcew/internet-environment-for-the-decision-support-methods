@@ -15,12 +15,7 @@ class ListUtas extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
-            Action::make('solve')
-                ->label('Solve')
-                ->url(UTAReferenceRanking::getUrl())
-                ->icon('heroicon-s-play')
-            ->iconPosition('after')
+            Actions\CreateAction::make()
         ];
     }
 }

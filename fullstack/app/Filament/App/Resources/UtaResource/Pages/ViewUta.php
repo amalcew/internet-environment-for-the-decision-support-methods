@@ -18,7 +18,7 @@ class ViewUta extends ViewRecord
             Actions\EditAction::make(),
             Action::make('solve')
                 ->label('Solve')
-                ->url(UTAReferenceRanking::getUrl())
+                ->url(UTAReferenceRanking::getUrl(['record' => $this->getRecord()->id]))
                 ->icon('heroicon-s-play')
                 ->iconPosition('after')
         ];

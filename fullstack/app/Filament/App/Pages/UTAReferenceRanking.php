@@ -6,8 +6,8 @@ use App\Models\Uta;
 use App\Models\Variant;
 use App\Service\MethodService\Mappers\UTAMapper;
 use App\Service\MethodService\MethodFacade;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Log;
 
 class UTAReferenceRanking extends Page
 {
@@ -17,24 +17,24 @@ class UTAReferenceRanking extends Page
 
     protected static bool $shouldRegisterNavigation = false;
 
-    private $variants;
+    private $min_variants_in_reference_ranking = 3;
+
     public $widgetData;
 
     public function mount(): void
     {
         $variants = Variant::all();
-
         $this->widgetData = [
             'custom_title' => "Create your own reference ranking",
             'list' => $variants->toArray(),
             'selected' => [],
             'final_ranking' => [],
-            'chart_data' => []
+            'chart_data' => [],
+            'uta_id' => request()->record
         ];
     }
 
     /**
-     * No idea why it runs here and not on ReferenceTable
      * @param $sortOrder
      * @param $previousSortOrder
      * @param $name
@@ -46,12 +46,14 @@ class UTAReferenceRanking extends Page
     {
         $variants = Variant::all();
         $this->widgetData['list'] = $this->getStringsByIndices($variants, $sortOrder);
+        $this->widgetData['chart_data'] = [];
     }
 
     public function handleSortOrderChangeSorted($sortOrder, $previousSortOrder, $name, $from, $to)
     {
         $variants = Variant::all();
         $this->widgetData['selected'] = $this->getStringsByIndices($variants, $sortOrder);
+        $this->widgetData['chart_data'] = [];
     }
 
     function zipArrays($arr1, $arr2, $arr3)
@@ -74,25 +76,33 @@ class UTAReferenceRanking extends Page
         return $result;
     }
 
-    function generateFinalRanking()
+    function generateFinalRanking(Uta $uta)
     {
+        if (count($this->widgetData['selected']) < $this->min_variants_in_reference_ranking) {
+            Notification::make()
+                ->title('Reference ranking must contain at least 3 variants')
+                ->warning()
+                ->send();
+            return;
+        }
         $nameArray = array_map(function ($object) {
             return $this->getNameAttribute($object);
         }, $this->widgetData['selected']);
 
         $ranking = $this->getPairsOfStrings($nameArray);
-        $variants = Variant::all();
-        $uta = Uta::all();
-
         $facade = new MethodFacade();
-        $dto = (new UTAMapper())->generateDTOfromUTAModel($uta[1], $ranking);
+        $dto = (new UTAMapper())->generateDTOfromUTAModel($uta, $ranking);
         $body = $facade->getUTAData($dto, false);
-
         $this->widgetData['chart_data'] = $body->valueFunctions;
-        //Log::info(json_encode($body->valueFunctions));
-        Log::info(json_encode($this->widgetData['chart_data']));
-        $this->widgetData['final_ranking'] = $this->zipArrays($body->overallValues, $body->ranks, $dto->rownamesPerformanceTable);
+        $zippedArrays = $this->zipArrays($body->overallValues, $body->ranks, $dto->rownamesPerformanceTable);
+        $this->widgetData['final_ranking'] = $this->sortFinalRankingByRank($zippedArrays);
+    }
 
+    function sortFinalRankingByRank($zippedArrays)
+    {
+        $secondColumn = array_column($zippedArrays, 1);
+        array_multisort($secondColumn, SORT_ASC, $zippedArrays);
+        return $zippedArrays;
     }
 
     function getPairsOfStrings($strings)
@@ -107,7 +117,6 @@ class UTAReferenceRanking extends Page
 
     function getNameAttribute($object)
     {
-        //    dd($object);
         return $object['name'];
     }
 }
