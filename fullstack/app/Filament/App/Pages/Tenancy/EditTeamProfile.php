@@ -3,6 +3,7 @@
 namespace App\Filament\App\Pages\Tenancy;
 
 use App\Models\Dataset;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -20,6 +21,14 @@ class EditTeamProfile extends EditTenantProfile
     public static function getLabel(): string
     {
         return 'Project profile';
+    }
+    protected function getFormActions(): array
+    {
+        $proj = Filament::getTenant();
+        if ($proj->user_id != auth()->id()) {
+            return [];
+        }
+        return parent::getFormActions();
     }
 
     public function form(Form $form): Form

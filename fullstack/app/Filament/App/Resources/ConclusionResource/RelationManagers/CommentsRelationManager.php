@@ -2,6 +2,8 @@
 
 namespace App\Filament\App\Resources\ConclusionResource\RelationManagers;
 
+use App\Models\Comment;
+use App\Policies\CommentPolicy;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -44,8 +46,10 @@ class CommentsRelationManager extends RelationManager
                 }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                ->authorize(fn (Comment $comment) => auth()->user()->can('update', $comment)),
+                Tables\Actions\DeleteAction::make()
+                ->authorize(fn (Comment $comment) => auth()->user()->can('delete', $comment))
             ]);
     }
 }
