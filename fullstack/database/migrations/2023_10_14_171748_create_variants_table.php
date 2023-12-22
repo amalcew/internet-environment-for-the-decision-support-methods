@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('variants', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('dataset_id')->constrained();
+            $table->foreignId('dataset_id')->constrained()->cascadeOnDelete();
         });
     }
 

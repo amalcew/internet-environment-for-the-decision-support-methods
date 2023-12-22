@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('dataset_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dataset_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('dataset_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
     }
 
