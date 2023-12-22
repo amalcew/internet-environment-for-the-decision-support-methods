@@ -9,6 +9,7 @@ use App\Models\Conclusion;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -44,6 +45,8 @@ class ConclusionResource extends Resource
         if ($conclusion) {
             redirect(self::getUrl('view', [$conclusion]));
         }
+//        Default table, reach only empty table, so doesn't matter what is there
+// @never
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.email'),
@@ -72,19 +75,28 @@ class ConclusionResource extends Resource
     {
         return $infolist
             ->schema([
-                TextEntry::make('text')
-                    ->label("Your projects conclusion")
-                    ->extraAttributes([
-                        'class' => 'my-markdown'
+                TextEntry::make('created_at')
+                    ->label('started writing at')
+                    ->dateTime(),
+                TextEntry::make('updated_at')
+                    ->label('last modified at')
+                    ->dateTime(),
+                Section::make('Your conclusion')
+                    ->schema([
+                        TextEntry::make('text')
+                            ->label('')
+                            ->extraAttributes([
+                                'class' => 'my-markdown'
+                            ])
+                            ->markdown(),
                     ])
-                    ->markdown(),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-           RelationManagers\CommentsRelationManager::class,
+            RelationManagers\CommentsRelationManager::class,
         ];
     }
 

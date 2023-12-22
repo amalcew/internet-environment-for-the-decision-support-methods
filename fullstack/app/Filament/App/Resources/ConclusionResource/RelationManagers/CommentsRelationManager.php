@@ -33,6 +33,10 @@ class CommentsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('text'),
                 Tables\Columns\TextColumn::make('user.email'),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
                 //
