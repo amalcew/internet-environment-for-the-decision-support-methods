@@ -33,7 +33,7 @@ class DatasetResource extends Resource
 //    change tenant filter to user filter
     public static function scopeEloquentQueryToTenant(Builder $query, ?Model $tenant): Builder
     {
-        $query->whereRelation('user', 'id', '=', auth()->user()->id);
+        $query->whereRelation('datasetUsers', 'user_id', '=', auth()->id());
         return $query;
     }
 
@@ -41,6 +41,13 @@ class DatasetResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $record = $form->getRecord();
+        // edit form - only attach users
+        if ($record) {
+            return $form->schema([
+                Forms\Components\Placeholder::make('Share with other users')
+            ]);
+        }
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
@@ -48,10 +55,11 @@ class DatasetResource extends Resource
                 Forms\Components\FileUpload::make('csv_file')
                 ->required()
                 ->storeFiles(false),
-                Forms\Components\Placeholder::make('info')
-                ->content(new HtmlString('1 line: variants;<1 kryterium>; <2 kryterium>... <br>
-                                    2 line: <empty space>;c;g... <br>
-                                    Decimal seperator: "."'))
+                Forms\Components\Placeholder::make('CSV info')
+                ->content(new HtmlString('CSV: 1 line contains: variants;<1 kryterium>; <2 kryterium>... <br>
+                                    (1st element is required to be "variants")<br>
+                                    2 line contains: &lt;empty space>;c;g... <br>
+                                    Decimal seperator is "."'))
             ]);
     }
 
@@ -63,7 +71,7 @@ class DatasetResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -74,12 +82,8 @@ class DatasetResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\EditAction::make()
+                ->label('share with others'),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),

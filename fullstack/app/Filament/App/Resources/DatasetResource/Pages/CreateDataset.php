@@ -15,6 +15,8 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 class CreateDataset extends CreateRecord
 {
     protected static string $resource = DatasetResource::class;
+    protected static bool $canCreateAnother = false;
+
 
 //    change tenant filter to user filter
     protected function handleRecordCreation(array $data): Model

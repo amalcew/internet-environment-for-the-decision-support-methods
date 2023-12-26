@@ -14,9 +14,10 @@ class ViewDataset extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\EditAction::make()
+                ->label('share with others'),
             Actions\ViewAction::make()->action(fn() => $this->redirect(Filament::getTenantProfileUrl()))
-            ->label('Attach')
+                ->label('Attach')
         ];
     }
 }

@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('criteria', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('type');
-            $table->foreignId('dataset_id')->constrained()->cascadeOnDelete();
+        Schema::table('electre_ones', function (Blueprint $table) {
+            $table->string('tag')->nullable();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('criteria');
+        Schema::table('electre_ones', function (Blueprint $table) {
+            $table->dropColumn('tag');
+        });
     }
 };

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 class CreateUta extends CreateRecord
 {
     protected static string $resource = UtaResource::class;
+    protected static bool $canCreateAnother = false;
 
     public const TYPE_COST = 'cost';
     public const TYPE_GAIN = 'gain';
@@ -46,4 +47,7 @@ class CreateUta extends CreateRecord
     {
         return UtaResource::getUrl('edit', ['record' => $this->getRecord()]);
     }
+
+    
+
 }

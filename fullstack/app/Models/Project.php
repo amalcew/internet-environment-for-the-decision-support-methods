@@ -58,4 +58,9 @@ class Project extends Model
     {
         return $this->belongsTo(Dataset::class);
     }
+
+    public function conclusions(): HasMany
+    {
+        return $this->hasMany(Conclusion::class);
+    }
 }
