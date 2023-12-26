@@ -11,6 +11,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Forms;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Builder;
 
 class UtaCriteriaSettingsRelationManager extends RelationManager
 {
@@ -58,7 +59,11 @@ class UtaCriteriaSettingsRelationManager extends RelationManager
             ])
             ->filters([
                 SelectFilter::make('criterion')
-                    ->relationship('criterion', 'name')
+                    ->relationship('criterion', 'name', function (Builder $query) {
+                        $proj = Filament::getTenant();
+                        $dataset = $proj->dataset;
+                        return $query->whereBelongsTo($dataset);
+                    })
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('type')
@@ -69,17 +74,8 @@ class UtaCriteriaSettingsRelationManager extends RelationManager
                     ->searchable()
                     ->preload()
             ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
-            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()->label('Add criteria setting'),
