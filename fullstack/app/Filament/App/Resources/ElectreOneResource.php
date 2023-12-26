@@ -46,6 +46,8 @@ class ElectreOneResource extends Resource
             $editSchema[] = Forms\Components\TextInput::make('lambda')
                 ->required()
                 ->numeric();
+            $editSchema[] = Forms\Components\TextInput::make('tag')
+                ->required();
         }
         return $form
             ->schema($editSchema);
@@ -56,13 +58,14 @@ class ElectreOneResource extends Resource
         self::guardElectre();
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('tag'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
             ])
             ->filters([
                 //
@@ -90,6 +93,7 @@ class ElectreOneResource extends Resource
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
 
+//        TODO: this is another query for variants (1 is in initAndCalculate). We could store them...
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
         // TODO: find more elegant way to HTML format
