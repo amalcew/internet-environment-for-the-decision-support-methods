@@ -96,7 +96,8 @@
         </x-slot>
         <x-reference-table-component :names="$widgetData['list']" :selected="$widgetData['selected']"/>
         <div class="button-container">
-            <x-filament::button size="xl" class="secondary-button">
+            <x-filament::button size="xl" class="secondary-button"
+                                wire:click="generateFinalRanking( {{ $widgetData['uta_id'] }} )">
                 Generate final ranking
             </x-filament::button>
         </div>

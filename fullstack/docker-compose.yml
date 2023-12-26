@@ -57,6 +57,7 @@ services:
         container_name: 'decision-support-rest-api'
         ports:
             - '8000:8080'
+            - '8001:8000'
         networks:
             - sail
         depends_on:
@@ -68,7 +69,8 @@ services:
         image: 'uta_service:1.0.0'
         container_name: 'uta-method-service'
         ports:
-            - '8090:8090'
+            - '8090:8000'
+            - '8091:8090'
         networks:
             - sail
 networks:

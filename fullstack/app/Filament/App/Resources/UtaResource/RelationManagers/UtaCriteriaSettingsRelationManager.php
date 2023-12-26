@@ -11,6 +11,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Forms;
 use Filament\Tables;
+
 class UtaCriteriaSettingsRelationManager extends RelationManager
 {
     protected static string $relationship = 'utaCriteriaSettings';
@@ -19,17 +20,14 @@ class UtaCriteriaSettingsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                // TODO: display edited criterion name, not select list of criteria
-                Forms\Components\Select::make('criterion_id')
-                    ->options(function(Get $get) {
-                        /** @var Project $project */
-                        $project = Filament::getTenant();
-                        return $project->criteria->pluck('name', 'id');
-                    })
-                    ->native(false)
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+                Forms\Components\Fieldset::make('criterion')
+                    ->relationship('criterion')->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->inlineLabel()
+                    ])
+                    ->label('')
+                    ->columns(1)
+                    ->disabled(),
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([
@@ -38,8 +36,8 @@ class UtaCriteriaSettingsRelationManager extends RelationManager
                     ]),
                 Forms\Components\TextInput::make('linear_segments')
                     ->numeric()
-                    ->default(1)
-                    ->minValue(1)
+                    ->default(2)
+                    ->minValue(2)
                     ->required(),
             ]);
     }
@@ -52,7 +50,7 @@ class UtaCriteriaSettingsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('criterion.name')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'cost' => 'danger',
                         'gain' => 'success',
                     }),

@@ -19,4 +19,8 @@ class UtaCriteriaSetting extends Model
     {
         return $this->belongsTo(Criterion::class);
     }
+
+    protected $hidden = [
+        'id', 'uta_id', 'criterion_id', 'created_at', 'updated_at', 'criterion'
+    ];
 }

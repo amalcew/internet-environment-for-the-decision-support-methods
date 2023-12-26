@@ -2,7 +2,11 @@
 
 namespace App\Filament\App\Pages;
 
+use App\Models\Uta;
 use App\Models\Variant;
+use App\Service\MethodService\Mappers\UTAMapper;
+use App\Service\MethodService\MethodFacade;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
 class UTAReferenceRanking extends Page
@@ -13,37 +17,24 @@ class UTAReferenceRanking extends Page
 
     protected static bool $shouldRegisterNavigation = false;
 
+    private $min_variants_in_reference_ranking = 3;
+
     public $widgetData;
 
     public function mount(): void
     {
         $variants = Variant::all();
-        //  dd($variants->pluck('name')->toArray());
-        $jsonRequest = '
-            {
-                "performanceTable": [[3, 10, 1], [4, 20, 2], [2, 20, 0], [6, 40, 0], [30, 30, 3]],
-                "criteriaMinMax": ["min", "min", "max"],
-                "criteriaNumberOfBreakPoints": [3,4,4],
-                "epsilon": 0.05,
-                "rownamesPerformanceTable": ["RER","METRO1","METRO2","BUS","TAXI"],
-                "colnamesPerformanceTable": ["Price","Time","Comfort"],
-                "alternativesPreferences": [ ["METRO2","TAXI"]],
-                "alternativesIndifferences": [["BUS","RER"]]
-             }';
-        $json = ' {"optimum":[0],"valueFunctions":{"Price":[[30,16,2],[0,0.525,0.525]],"Time":[[40,30,20,10],[0,0,0,0]],"Comfort":[[0,1,2,3],[0,0,0,0.475]]},"overallValues":[0.525,0.525,0.525,0.475],"ranks":[1,1,1,4],"errors":[0,0,0,0],"Kendall":{},"minimumWeightsPO":{},"maximumWeightsPO":{},"averageValueFunctionsPO":{}}';
-        $uta_response = json_decode($json);
-        $uta_request = json_decode($jsonRequest);
-        //    dd($uta_response->valueFunctions);
         $this->widgetData = [
             'custom_title' => "Create your own reference ranking",
             'list' => $variants->toArray(),
             'selected' => [],
-            'final_ranking' => $this->zipArrays($uta_response->overallValues, $uta_response->ranks, $uta_request->rownamesPerformanceTable), // TODO request to UTA endpoint,
-            'chart_data' => $uta_response->valueFunctions];
+            'final_ranking' => [],
+            'chart_data' => [],
+            'uta_id' => request()->record
+        ];
     }
 
     /**
-     * No idea why it runs here and not on ReferenceTable
      * @param $sortOrder
      * @param $previousSortOrder
      * @param $name
@@ -53,17 +44,16 @@ class UTAReferenceRanking extends Page
      */
     public function handleSortOrderChange($sortOrder, $previousSortOrder, $name, $from, $to)
     {
-        $this->widgetData['list'] = $sortOrder;
-        // dd($this->widgetData['list']);
+        $variants = Variant::all();
+        $this->widgetData['list'] = $this->getStringsByIndices($variants, $sortOrder);
+        $this->widgetData['chart_data'] = [];
     }
 
     public function handleSortOrderChangeSorted($sortOrder, $previousSortOrder, $name, $from, $to)
     {
-        $this->widgetData['selected'] = $sortOrder;
-        $variants = Variant::all()->toArray();
-        $filteredObjects = array_filter($variants, function ($variant) {
-            return in_array($variant['id'], $this->widgetData['selected']);
-        });
+        $variants = Variant::all();
+        $this->widgetData['selected'] = $this->getStringsByIndices($variants, $sortOrder);
+        $this->widgetData['chart_data'] = [];
     }
 
     function zipArrays($arr1, $arr2, $arr3)
@@ -75,4 +65,58 @@ class UTAReferenceRanking extends Page
         return $zippedArray;
     }
 
+    function getStringsByIndices($strings, $indices)
+    {
+        $result = [];
+        foreach ($indices as $index) {
+            if (isset($strings[$index - 1])) {
+                $result[] = $strings[$index - 1];
+            }
+        }
+        return $result;
+    }
+
+    function generateFinalRanking(Uta $uta)
+    {
+        if (count($this->widgetData['selected']) < $this->min_variants_in_reference_ranking) {
+            Notification::make()
+                ->title('Reference ranking must contain at least 3 variants')
+                ->warning()
+                ->send();
+            return;
+        }
+        $nameArray = array_map(function ($object) {
+            return $this->getNameAttribute($object);
+        }, $this->widgetData['selected']);
+
+        $ranking = $this->getPairsOfStrings($nameArray);
+        $facade = new MethodFacade();
+        $dto = (new UTAMapper())->generateDTOfromUTAModel($uta, $ranking);
+        $body = $facade->getUTAData($dto, false);
+        $this->widgetData['chart_data'] = $body->valueFunctions;
+        $zippedArrays = $this->zipArrays($body->overallValues, $body->ranks, $dto->rownamesPerformanceTable);
+        $this->widgetData['final_ranking'] = $this->sortFinalRankingByRank($zippedArrays);
+    }
+
+    function sortFinalRankingByRank($zippedArrays)
+    {
+        $secondColumn = array_column($zippedArrays, 1);
+        array_multisort($secondColumn, SORT_ASC, $zippedArrays);
+        return $zippedArrays;
+    }
+
+    function getPairsOfStrings($strings)
+    {
+        $pairList = [];
+        for ($i = 0; $i < count($strings) - 1; $i++) {
+            $pair = [$strings[$i], $strings[$i + 1]];
+            $pairList[] = $pair;
+        }
+        return $pairList;
+    }
+
+    function getNameAttribute($object)
+    {
+        return $object['name'];
+    }
 }

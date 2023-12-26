@@ -6,12 +6,12 @@ use App\Service\MethodService\Transfers\Electre1s\VariantDTO;
 
 class UTARequest
 {
-    public array $alternativesIndifferences = [[]];
+    public ?array $alternativesIndifferences = [[]];
 
-    public array $alternativesPreferences = [[]];
+    public ?array $alternativesPreferences = [[]];
 
     /** @var int[] */
-    public array $alternativesRanks = [];
+    public ?array $alternativesRanks = [];
 
     /** @var int[] */
     public array $criteriaNumberOfBreakPoints = [];
@@ -25,7 +25,8 @@ class UTARequest
 
     public float $epsilon = 0.0;
 
-    public array $performanceTable = [[]];
+    /** @var int[] */
+    public array $performanceTable = [];
 
     /** @var string[] */
     public array $rownamesPerformanceTable = [];
