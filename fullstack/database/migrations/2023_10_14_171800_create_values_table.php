@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('values', function (Blueprint $table) {
             $table->id();
             $table->double('value');
-            $table->foreignId('criterion_id')->constrained();
-            $table->foreignId('variant_id')->constrained();
+            $table->foreignId('criterion_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('variant_id')->constrained()->cascadeOnDelete();
         });
     }
 
