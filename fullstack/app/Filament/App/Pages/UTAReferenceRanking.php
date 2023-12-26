@@ -6,6 +6,7 @@ use App\Models\Uta;
 use App\Models\Variant;
 use App\Service\MethodService\Mappers\UTAMapper;
 use App\Service\MethodService\MethodFacade;
+use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
@@ -23,7 +24,8 @@ class UTAReferenceRanking extends Page
 
     public function mount(): void
     {
-        $variants = Variant::all();
+        $proj = Filament::getTenant();
+        $variants = $proj->variants;
         $this->widgetData = [
             'custom_title' => "Create your own reference ranking",
             'list' => $variants->toArray(),
@@ -44,14 +46,16 @@ class UTAReferenceRanking extends Page
      */
     public function handleSortOrderChange($sortOrder, $previousSortOrder, $name, $from, $to)
     {
-        $variants = Variant::all();
+        $proj = Filament::getTenant();
+        $variants = $proj->variants;
         $this->widgetData['list'] = $this->getStringsByIndices($variants, $sortOrder);
         $this->widgetData['chart_data'] = [];
     }
 
     public function handleSortOrderChangeSorted($sortOrder, $previousSortOrder, $name, $from, $to)
     {
-        $variants = Variant::all();
+        $proj = Filament::getTenant();
+        $variants = $proj->variants;
         $this->widgetData['selected'] = $this->getStringsByIndices($variants, $sortOrder);
         $this->widgetData['chart_data'] = [];
     }
