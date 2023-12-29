@@ -40,5 +40,132 @@ class RelationAggregator : AggregatorInterface {
             }
         }
         context["relations"] = relations
+        removeCycles(context)
     }
+
+    fun removeCycles(context: MutableMap<String, Any>) {
+        val relations: Array<Array<String>> = context["relations"] as Array<Array<String>>
+        val mergedNodesMap: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+        val relationsFinal = relations.map { it.clone() }.toTypedArray()
+
+        var cycles = findCycles(relationsFinal)
+        while (cycles.isNotEmpty()) {
+            for (cycle in cycles) {
+                mergeCycleNodes(relationsFinal, cycle, mergedNodesMap)
+            }
+            cycles = findCycles(relationsFinal)
+        }
+        val filteredRelations = removeEmptyRowsAndColumns(relationsFinal)
+
+        context["final_relations"] = filteredRelations
+        context["merged_nodes"] = mergedNodesMap
+    }
+
+    private fun mergeCycleNodes(relations: Array<Array<String>>, cycle: List<Int>, mergedNodesMap: MutableMap<Int, MutableList<Int>>) {
+        val mergedNodeIndex = cycle.minOrNull() ?: return
+
+        mergedNodesMap[mergedNodeIndex] = mutableListOf()
+
+        for (i in cycle) {
+            if (i != mergedNodeIndex) {
+                mergedNodesMap[mergedNodeIndex]?.add(i)
+                for (j in relations.indices) {
+                    if (relations[i][j] != "-" && j != i) {
+                        relations[mergedNodeIndex][j] = relations[i][j]
+                    }
+                    if (relations[j][i] != "-" && j != i) {
+                        relations[j][mergedNodeIndex] = relations[j][i]
+                    }
+                    relations[i][j] = "-"
+                    relations[j][i] = "-"
+                }
+            }
+        }
+    }
+
+    private fun removeEmptyRowsAndColumns(relations: Array<Array<String>>): Array<Array<String>> {
+        val filteredRows = relations.filter { row -> row.any { it != "-" } }
+
+        val columnIndicesToKeep = mutableListOf<Int>()
+        if (filteredRows.isNotEmpty()) {
+            for (i in filteredRows[0].indices) {
+                if (filteredRows.any { row -> row[i] != "-" }) {
+                    columnIndicesToKeep.add(i)
+                }
+            }
+        }
+
+        return filteredRows.map { row ->
+            columnIndicesToKeep.map { columnIndex -> row[columnIndex] }.toTypedArray()
+        }.toTypedArray()
+    }
+
+    private fun mergeCycleNodes(relations: Array<Array<String>>,cycle: List<Int>) {
+        val mergedNodeIndex = cycle.minOrNull() ?: return
+
+        for (i in cycle) {
+            if (i != mergedNodeIndex) {
+                for (j in relations.indices) {
+                    if (relations[i][j] != "-" && j != i) {
+                        relations[mergedNodeIndex][j] = relations[i][j]
+                    }
+                    if (relations[j][i] != "-" && j != i) {
+                        relations[j][mergedNodeIndex] = relations[j][i]
+                    }
+                    relations[i][j] = "-"
+                    relations[j][i] = "-"
+                }
+            }
+        }
+    }
+
+    private fun findCycles(relations: Array<Array<String>>): List<List<Int>> {
+        val visited = BooleanArray(relations.size) { false }
+        val recStack = BooleanArray(relations.size) { false }
+        val cycles = mutableListOf<List<Int>>()
+
+        for (x in relations.indices) {
+            for (y in relations[x].indices) {
+                if (x != y && (relations[x][y] == "I" || relations[x][y] == "-P") && !visited[y]) {
+                    if (dfs(y, visited, recStack, relations, mutableListOf(x), cycles)) {
+                        break
+                    }
+                }
+            }
+        }
+
+        return cycles
+    }
+
+    private fun dfs(
+        current: Int,
+        visited: BooleanArray,
+        recStack: BooleanArray,
+        relations: Array<Array<String>>,
+        path: MutableList<Int>,
+        cycles: MutableList<List<Int>>
+    ): Boolean {
+        if (recStack[current]) {
+            cycles.add(path.toList())
+            return true
+        }
+        if (visited[current]) {
+            return false
+        }
+
+        visited[current] = true
+        recStack[current] = true
+        path.add(current)
+
+        for (i in relations[current].indices) {
+            if (relations[current][i] == "I" && dfs(i, visited, recStack, relations, path, cycles)) {
+                return true
+            }
+        }
+
+        recStack[current] = false
+        path.removeAt(path.size - 1)
+        return false
+    }
+
 }

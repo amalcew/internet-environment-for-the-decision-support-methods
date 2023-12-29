@@ -19,12 +19,13 @@ class Electre1sResolver
         if ($transposeArraysInResults) {
             $data = $this->transposeArraysInData($data);
         }
+        $data->merged_nodes = json_decode(json_encode($data->merged_nodes), true);
         return $data;
     }
 
     public function transposeArraysInData($data) {
         foreach ($data as $key => $value) {
-            if (is_array($value)) {
+            if (is_array($value) and $key != "final_relations") {
                 $data->{$key} = $this->transpose($value);
             }
         }

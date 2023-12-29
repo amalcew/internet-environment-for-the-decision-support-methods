@@ -27,6 +27,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 
 
 class ElectreOneResource extends Resource
@@ -92,7 +93,6 @@ class ElectreOneResource extends Resource
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
-
 //        TODO: this is another query for variants (1 is in initAndCalculate). We could store them...
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
@@ -143,13 +143,16 @@ class ElectreOneResource extends Resource
             $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
         }
         $OutrankingGraphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
+        $mergedList = self::mergeNodes($variants, $record->merged_nodes);
+        $mergedList = self::convertArrayToObjects($mergedList);
+        $OutrankingFinalGraphData = self::mapFullRelationsMatrixToGraphData($record->final_relations, $mergedList);
 
         // graphs have to be in 1 tab!! Otherwise weird bugs with d3 display
         // TODO: insert final graph data
         FilamentAsset::registerScriptData([
             'graphs' => [
                 'outranking_graph' => $OutrankingGraphData,
-                'final_graph' => $OutrankingGraphData
+                'final_graph' => $OutrankingFinalGraphData
             ]
         ]);
 
@@ -350,5 +353,29 @@ class ElectreOneResource extends Resource
                 ->send();
             redirect(DatasetResource::getUrl());
         }
+    }
+
+    public static function mergeNodes($nodes, $mergedNodes) {
+        if ($nodes instanceof Collection) {
+            $nodes = $nodes->toArray();
+        }
+        foreach (array_reverse($mergedNodes, true) as $mainNode => $merged) {
+            if (!empty($merged)) {
+                foreach ($merged as $nodeToMerge) {
+                    // Mergujemy nazwy nodów
+                    if (isset($nodes[$mainNode]['name']) && isset($nodes[$nodeToMerge]['name'])) {
+                        $nodes[$mainNode]['name'] .= ' + ' . $nodes[$nodeToMerge]['name'];
+                    }                    // Usuwamy zmergowany węzeł z listy
+                    unset($nodes[$nodeToMerge]);
+                }
+            }
+        }
+        return array_values($nodes);
+    }
+
+    private static function convertArrayToObjects($array) {
+        return array_map(function($item) {
+            return (object)$item;
+        }, $array);
     }
 }
