@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements HasTenants
+class User extends Authenticatable implements HasTenants, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -25,6 +26,7 @@ class User extends Authenticatable implements HasTenants
      *
      * @var array<int, string>
      */
+
     protected $fillable = [
         'name',
         'email',
@@ -84,5 +86,13 @@ class User extends Authenticatable implements HasTenants
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() == "admin") {
+            return (bool)auth()->user()->is_admin;
+        }
+        return true;
     }
 }
