@@ -27,7 +27,7 @@ class RegisterTeam extends RegisterTenant
         $data['user_id'] = auth()->user()->id;
         $project = Project::create($data);
 
-        $project->directMembers()->attach(auth()->user());
+        $project->members()->attach(auth()->user());
         return $project;
     }
 }
