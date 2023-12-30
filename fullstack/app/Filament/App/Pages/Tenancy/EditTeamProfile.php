@@ -41,6 +41,7 @@ class EditTeamProfile extends EditTenantProfile
                     ->relationship(
                         'dataset',
                         'id',
+//                        TODO: oft
                         modifyQueryUsing: fn(Builder $query) => $query->whereRelation('datasetUsers', 'user_id', '=', auth()->user()->id)->with('user')
                     )
                     ->getOptionLabelFromRecordUsing(fn(Dataset $dataset) => "{$dataset->name} - {$dataset->user->email}"),

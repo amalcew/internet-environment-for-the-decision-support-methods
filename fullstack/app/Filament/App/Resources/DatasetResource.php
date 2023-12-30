@@ -33,7 +33,14 @@ class DatasetResource extends Resource
 //    change tenant filter to user filter
     public static function scopeEloquentQueryToTenant(Builder $query, ?Model $tenant): Builder
     {
-        $query->whereRelation('datasetUsers', 'user_id', '=', auth()->id());
+//        direct members
+        $query->whereRelation('directMembers', 'datasetable_id', '=', auth()->id())
+//            members of a group
+            ->orWhereRelation('groups', function ($query) {
+                $query->whereHas('users', function ($query) {
+                    $query->where('id', '=', auth()->id());
+                });
+            });
         return $query;
     }
 
@@ -51,12 +58,12 @@ class DatasetResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                ->required(),
+                    ->required(),
                 Forms\Components\FileUpload::make('csv_file')
-                ->required()
-                ->storeFiles(false),
+                    ->required()
+                    ->storeFiles(false),
                 Forms\Components\Placeholder::make('CSV info')
-                ->content(new HtmlString('CSV: 1 line contains: variants;<1 kryterium>; <2 kryterium>... <br>
+                    ->content(new HtmlString('CSV: 1 line contains: variants;<1 kryterium>; <2 kryterium>... <br>
                                     (1st element is required to be "variants")<br>
                                     2 line contains: &lt;empty space>;c;g... <br>
                                     Decimal seperator is "."'))
@@ -83,7 +90,7 @@ class DatasetResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                ->label('share with others'),
+                    ->label('share with others'),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
@@ -95,7 +102,7 @@ class DatasetResource extends Resource
         /** @var Dataset $record */
         $record = $infolist->getRecord();
         $valuesGrid = [];
-/** @var Collection<Criterion> $criteria */
+        /** @var Collection<Criterion> $criteria */
         $criteria = $record->criteria()->with('values')->get();
         $record->variants()->get();
         $criteriaCount = $criteria->count();
@@ -108,7 +115,7 @@ class DatasetResource extends Resource
         $record->groupedValues = $groupedValues;
         $valuesGrid[] = TextEntry::make('variants')->listWithLineBreaks(true);
         foreach ($groupedValues as $key => $value) {
-            $valuesGrid[] = TextEntry::make('groupedValues.'.$key)->listWithLineBreaks(true)->label($key);
+            $valuesGrid[] = TextEntry::make('groupedValues.' . $key)->listWithLineBreaks(true)->label($key);
         }
 
         return $infolist->schema([
@@ -118,15 +125,16 @@ class DatasetResource extends Resource
                         ->schema(
                             $valuesGrid
                         )
-                        ->columns($criteriaCount+1)
-                    ])
+                        ->columns($criteriaCount + 1)
+                ])
         ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            RelationManagers\DatasetUsersRelationManager::class,
+            RelationManagers\GroupsRelationManager::class,
+            RelationManagers\UsersRelationManager::class
         ];
     }
 
