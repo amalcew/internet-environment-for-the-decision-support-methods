@@ -19,7 +19,7 @@ class DatasetPolicy
      */
     public function update(User $user, Dataset $dataset): bool
     {
-        return $user->id == $dataset->user_id;
+        return $user->id == $dataset->user_id || $user->is_admin;
     }
 
     /**
@@ -27,6 +27,9 @@ class DatasetPolicy
      */
     public function delete(User $user, Dataset $dataset): bool
     {
+        if ($user->is_admin) {
+            return true;
+        }
         if ($user->id != $dataset->user_id) {
             return false;
         }
@@ -39,6 +42,9 @@ class DatasetPolicy
      */
     public function forceDelete(User $user, Dataset $dataset): bool
     {
+        if ($user->is_admin) {
+            return true;
+        }
         if ($user->id != $dataset->user_id) {
             return false;
         }
