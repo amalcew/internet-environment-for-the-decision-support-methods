@@ -5,6 +5,7 @@ namespace App\Filament\App\Resources;
 use App\Filament\App\Resources\GroupResource\Pages;
 use App\Filament\App\Resources\GroupResource\RelationManagers;
 use App\Models\Group;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -46,6 +47,7 @@ class GroupResource extends Resource
 
     public static function table(Table $table): Table
     {
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
@@ -62,13 +64,21 @@ class GroupResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\Action::make('attach_user')
+                ->label(function ($record) {
+                    $user = auth()->user();
+                    return $user->group_id == $record->id ? "Leave" : "Join";
+                })
+                ->action(function ($record) {
+                    $user = auth()->user();
+                    if ($user->group_id == $record->id) {
+                        $user->group_id = null;
+                    } else {
+                        $user->group_id = $record->id;
+                    }
+                    $user->save();
+                })
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
