@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Pages\Tenancy;
 
+use App\Filament\App\Resources\DatasetResource\Helper\QueryHelper;
 use App\Models\Dataset;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Placeholder;
@@ -42,7 +43,7 @@ class EditTeamProfile extends EditTenantProfile
                         'dataset',
                         'id',
 //                        TODO: oft
-                        modifyQueryUsing: fn(Builder $query) => $query->whereRelation('datasetUsers', 'user_id', '=', auth()->user()->id)->with('user')
+                        modifyQueryUsing: fn(Builder $query) => QueryHelper::adjustQueryForDatasetAccess($query)->with('user')
                     )
                     ->getOptionLabelFromRecordUsing(fn(Dataset $dataset) => "{$dataset->name} - {$dataset->user->email}"),
                 Placeholder::make('info')

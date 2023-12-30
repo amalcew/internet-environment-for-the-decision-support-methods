@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\DatasetResource\Helper\QueryHelper;
 use App\Filament\App\Resources\DatasetResource\Pages;
 use App\Filament\App\Resources\DatasetResource\RelationManagers;
 use App\Imports\DatasetImport;
@@ -33,15 +34,7 @@ class DatasetResource extends Resource
 //    change tenant filter to user filter
     public static function scopeEloquentQueryToTenant(Builder $query, ?Model $tenant): Builder
     {
-//        direct members
-        $query->whereRelation('directMembers', 'datasetable_id', '=', auth()->id())
-//            members of a group
-            ->orWhereRelation('groups', function ($query) {
-                $query->whereHas('users', function ($query) {
-                    $query->where('id', '=', auth()->id());
-                });
-            });
-        return $query;
+        return QueryHelper::adjustQueryForDatasetAccess($query);
     }
 
     protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
