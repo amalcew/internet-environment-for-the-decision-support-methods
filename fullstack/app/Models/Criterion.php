@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Criterion extends Model
@@ -22,6 +23,11 @@ class Criterion extends Model
     public function electreCriteriaSettings(): HasMany
     {
         return $this->hasMany(ElectreCriteriaSetting::class);
+    }
+
+    public function dataset(): BelongsTo
+    {
+        return $this->belongsTo(Dataset::class);
     }
 
     public function __toString()

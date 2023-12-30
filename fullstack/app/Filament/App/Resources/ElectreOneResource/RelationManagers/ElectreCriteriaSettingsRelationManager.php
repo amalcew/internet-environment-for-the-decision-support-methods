@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -63,6 +64,23 @@ class ElectreCriteriaSettingsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+            ])
+            ->filters([
+                SelectFilter::make('criterion')
+                    ->relationship('criterion', 'name', function (Builder $query) {
+                        $proj = Filament::getTenant();
+                        $dataset = $proj->dataset;
+                        return $query->whereBelongsTo($dataset);
+                    })
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('type')
+                    ->options([
+                        'cost' => 'cost',
+                        'gain' => 'gain',
+                    ])
+                    ->searchable()
+                    ->preload()
             ]);
     }
 }

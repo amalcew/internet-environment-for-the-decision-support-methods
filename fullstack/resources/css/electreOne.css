@@ -1,9 +1,9 @@
 .fi-section-content-ctn {
-    overflow: scroll !important;
+    overflow: auto !important;
 }
-.fi-in-tabs-tab {
-    overflow: scroll !important;
-}
+/*.fi-in-tabs-tab {*/
+/*    overflow: scroll !important;*/
+/*}*/
 .electre-variant {
     overflow: hidden;
     white-space: nowrap;

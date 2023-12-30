@@ -173,7 +173,6 @@ class ElectreOneResource extends Resource
                                 ])
                                 ->collapsible(),
                         ])->columnSpanFull(),
-                    // TODO: insert here marginal concordances received from Spring Boot
                     Tab::make('tables')
                         ->schema([
                             Section::make('Marginal concordance')
