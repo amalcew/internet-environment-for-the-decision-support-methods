@@ -133,8 +133,7 @@ class DatasetResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\GroupsRelationManager::class,
-            RelationManagers\UsersRelationManager::class
+            RelationManagers\DatasetablesRelationManager::class
         ];
     }
 

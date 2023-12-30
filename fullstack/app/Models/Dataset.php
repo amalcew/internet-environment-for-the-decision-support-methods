@@ -47,6 +47,11 @@ class Dataset extends Model
         return $this->morphedByMany(Group::class, 'datasetable');
     }
 
+    public function datasetables(): HasMany
+    {
+        return $this->hasMany(Datasetable::class);
+    }
+
     public function criteria(): HasMany
     {
         return $this->hasMany(Criterion::class);
