@@ -14,6 +14,8 @@ class ViewElectreOne extends ViewRecord
 {
     protected static string $resource = ElectreOneResource::class;
 
+    protected ?string $maxContentWidth = 'full';
+
     protected function getHeaderActions(): array
     {
         return [
