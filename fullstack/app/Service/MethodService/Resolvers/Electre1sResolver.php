@@ -19,6 +19,7 @@ class Electre1sResolver
         if ($transposeArraysInResults) {
             $data = $this->transposeArraysInData($data);
         }
+        $data->merged_nodes = json_decode(json_encode($data->merged_nodes), true);
         return $data;
     }
 
