@@ -62,24 +62,33 @@ class RelationAggregator : AggregatorInterface {
         val mergedNodeIndex = cycle.minOrNull() ?: return
 
         mergedNodesMap[mergedNodeIndex] = mutableListOf()
-
         for (i in cycle) {
             if (i != mergedNodeIndex) {
                 mergedNodesMap[mergedNodeIndex]?.add(i)
+
                 for (j in relations.indices) {
-                    if (relations[i][j] != "-" && j != i) {
+                    if (relations[i][j] == "I" || relations[i][j] == "P") {
                         relations[mergedNodeIndex][j] = relations[i][j]
                     }
-                    if (relations[j][i] != "-" && j != i) {
+                    if (relations[j][i] == "I" || relations[j][i] == "P") {
                         relations[j][mergedNodeIndex] = relations[j][i]
                     }
+                }
+
+                for (j in relations.indices) {
                     relations[i][j] = "-"
                     relations[j][i] = "-"
                 }
             }
         }
-    }
 
+        for (j in relations.indices) {
+            if (relations[mergedNodeIndex][j] == "P" && relations[j][mergedNodeIndex] == "P") {
+                relations[mergedNodeIndex][j] = "I"
+                relations[j][mergedNodeIndex] = "I"
+            }
+        }
+    }
     private fun removeEmptyRowsAndColumns(relations: Array<Array<String>>): Array<Array<String>> {
         val filteredRows = relations.filter { row -> row.any { it != "-" } }
 

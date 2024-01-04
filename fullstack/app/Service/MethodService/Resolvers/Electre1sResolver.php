@@ -25,7 +25,7 @@ class Electre1sResolver
 
     public function transposeArraysInData($data) {
         foreach ($data as $key => $value) {
-            if (is_array($value) and $key != "final_relations") {
+            if (is_array($value)) {
                 $data->{$key} = $this->transpose($value);
             }
         }

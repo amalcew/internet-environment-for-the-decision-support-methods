@@ -309,14 +309,20 @@ class ElectreOneResource extends Resource
                 if ($x != $y) { // omit node relation with itself
                     if ($cell == "-P") { // transposed matrix - inverted relationships
                         $links[] = [
-                            'source' => $y,
-                            'target' => $x
+                            'source' => $x,
+                            'target' => $y
                         ];
                     }
                     if ($cell == "I") {
                         $links[] = [
                             'source' => $x,
                             'target' => $y
+                        ];
+                    }
+                    if ($cell == "P") { // transposed matrix - inverted relationships
+                        $links[] = [
+                            'source' => $y,
+                            'target' => $x
                         ];
                     }
                 }
