@@ -157,33 +157,37 @@ class RelationAggregator : AggregatorInterface {
     private fun findCycleFromNode(start: Int, successors: Array<MutableList<Int>>): MutableList<Int> {
         val visited = BooleanArray(successors.size) { false }
         val stack = mutableListOf<Int>()
+        val inStack = BooleanArray(successors.size) { false }
         stack.add(start)
         visited[start] = true
+        inStack[start] = true
 
         while (stack.isNotEmpty()) {
             val current = stack.last()
-            if (successors[current].isEmpty()) {
-                // Jeśli nie ma następników, wróć
-                visited[current] = false
-                stack.removeAt(stack.size - 1)
-                continue
-            }
+            var hasUnvisitedSuccessors = false
 
-            // Sprawdź następniki
+            // Sprawdzanie nieodwiedzonych następników, którzy nie są w stosie
             for (next in successors[current]) {
                 if (next == start) {
                     // Znaleziono cykl
                     return stack
                 }
-                if (!visited[next]) {
+                if (!visited[next] && !inStack[next]) {
                     stack.add(next)
                     visited[next] = true
+                    inStack[next] = true
+                    hasUnvisitedSuccessors = true
                     break
                 }
+            }
+
+            if (!hasUnvisitedSuccessors) {
+                // Jeśli nie ma nieodwiedzonych następników, którzy nie są w stosie, wróć
+                inStack[current] = false
+                stack.removeAt(stack.size - 1)
             }
         }
 
         return mutableListOf() // Brak cyklu
     }
-
 }
