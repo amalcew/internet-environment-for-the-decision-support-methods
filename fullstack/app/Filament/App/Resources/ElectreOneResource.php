@@ -145,8 +145,9 @@ class ElectreOneResource extends Resource
         $OutrankingGraphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
         $mergedList = self::mergeNodes($variants, $record->merged_nodes);
         $mergedList = self::convertArrayToObjects($mergedList);
-        $OutrankingFinalGraphData = self::mapFullRelationsMatrixToGraphData($record->final_relations, $mergedList);
 
+        $OutrankingFinalGraphData = self::mapFullRelationsMatrixToGraphData($record->final_relations, $mergedList);
+        $OutrankingFinalGraphData = self::filterLinks($OutrankingFinalGraphData);
         // graphs have to be in 1 tab!! Otherwise weird bugs with d3 display
         // TODO: insert final graph data
         FilamentAsset::registerScriptData([
@@ -305,25 +306,27 @@ class ElectreOneResource extends Resource
             $nodes[] = ['id' => $i, 'name' => $variant->name];
         }
         foreach ($matrix as $x => $row) {
-            foreach ($row as $y => $cell) {
-                if ($x != $y) { // omit node relation with itself
-                    if ($cell == "-P") { // transposed matrix - inverted relationships
-                        $links[] = [
-                            'source' => $x,
-                            'target' => $y
-                        ];
-                    }
-                    if ($cell == "I") {
-                        $links[] = [
-                            'source' => $x,
-                            'target' => $y
-                        ];
-                    }
-                    if ($cell == "P") { // transposed matrix - inverted relationships
-                        $links[] = [
-                            'source' => $y,
-                            'target' => $x
-                        ];
+            if (is_array($row)) {
+                foreach ($row as $y => $cell) {
+                    if ($x != $y) { // omit node relation with itself
+                        if ($cell == "-P") { // transposed matrix - inverted relationships
+                            $links[] = [
+                                'source' => $x,
+                                'target' => $y
+                            ];
+                        }
+                        if ($cell == "I") {
+                            $links[] = [
+                                'source' => $x,
+                                'target' => $y
+                            ];
+                        }
+                        if ($cell == "P") { // transposed matrix - inverted relationships
+                            $links[] = [
+                                'source' => $y,
+                                'target' => $x
+                            ];
+                        }
                     }
                 }
             }
@@ -382,5 +385,20 @@ class ElectreOneResource extends Resource
         return array_map(function($item) {
             return (object)$item;
         }, $array);
+    }
+
+    private static function filterLinks($data) {
+        $nodes = $data['nodes'];
+        $links = $data['links'];
+
+        $nodeIds = array_map(function($node) {
+            return $node['id'];
+        }, $nodes);
+
+        $filteredLinks = array_filter($links, function($link) use ($nodeIds) {
+            return in_array($link['source'], $nodeIds) && in_array($link['target'], $nodeIds);
+        });
+
+        return ['nodes' => $nodes, 'links' => array_values($filteredLinks)];
     }
 }
