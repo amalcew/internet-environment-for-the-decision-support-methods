@@ -13,6 +13,7 @@ use App\Models\Value;
 use App\Models\Variant;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
@@ -112,13 +113,11 @@ class DatasetResource extends Resource
         }
 
         return $infolist->schema([
-            Section::make('dataset values')
+            Section::make('Values')
                 ->schema([
-                    Section::make('aaa')
-                        ->schema(
-                            $valuesGrid
-                        )
-                        ->columns($criteriaCount+1)
+                    Grid::make(['default' => $criteriaCount + 1])
+                        ->schema($valuesGrid)
+                        ->columnSpan(['default' => 65,]),
                     ])
         ]);
     }
