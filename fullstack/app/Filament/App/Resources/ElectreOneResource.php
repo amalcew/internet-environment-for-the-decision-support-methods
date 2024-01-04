@@ -309,8 +309,8 @@ class ElectreOneResource extends Resource
                 if ($x != $y) { // omit node relation with itself
                     if ($cell == "-P") { // transposed matrix - inverted relationships
                         $links[] = [
-                            'source' => $x,
-                            'target' => $y
+                            'source' => $y,
+                            'target' => $x
                         ];
                     }
                     if ($cell == "I") {
@@ -362,10 +362,9 @@ class ElectreOneResource extends Resource
         foreach (array_reverse($mergedNodes, true) as $mainNode => $merged) {
             if (!empty($merged)) {
                 foreach ($merged as $nodeToMerge) {
-                    // Mergujemy nazwy nodów
                     if (isset($nodes[$mainNode]['name']) && isset($nodes[$nodeToMerge]['name'])) {
                         $nodes[$mainNode]['name'] .= ' + ' . $nodes[$nodeToMerge]['name'];
-                    }                    // Usuwamy zmergowany węzeł z listy
+                    }
                     unset($nodes[$nodeToMerge]);
                 }
             }

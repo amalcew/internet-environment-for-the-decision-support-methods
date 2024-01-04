@@ -14,11 +14,11 @@ class RelationAggregator : AggregatorInterface {
         stepResult: LinkedList<Any>,
         context: MutableMap<String, Any>
     ) {
-        val final: Array<Array<Double>> = context["final"] as Array<Array<Double>>;
-        val x: Int = final.size;
+        val final: Array<Array<Double>> = context["final"] as Array<Array<Double>>
+        val x: Int = final.size
         val y: Int = final[0].size
         if (x != y) {
-            throw InvalidShapeException("matrix has to be a square");
+            throw InvalidShapeException("matrix has to be a square")
         }
 
         val relations: Array<Array<String>> = Array(x) { Array(x) { "?" } }
@@ -43,17 +43,14 @@ class RelationAggregator : AggregatorInterface {
         removeCycles(context)
     }
 
-    fun removeCycles(context: MutableMap<String, Any>) {
+    private fun removeCycles(context: MutableMap<String, Any>) {
         val relations: Array<Array<String>> = context["relations"] as Array<Array<String>>
         val mergedNodesMap: MutableMap<Int, MutableList<Int>> = mutableMapOf()
         val relationsFinal = relations.map { it.clone() }.toTypedArray()
 
         var cycles = findCycles(relationsFinal)
-        while (cycles.isNotEmpty()) {
-            for (cycle in cycles) {
-                mergeCycleNodes(relationsFinal, cycle, mergedNodesMap)
-            }
-            cycles = findCycles(relationsFinal)
+        for (cycle in cycles) {
+            mergeCycleNodes(relationsFinal, cycle, mergedNodesMap)
         }
         val filteredRelations = removeEmptyRowsAndColumns(relationsFinal)
 
@@ -100,36 +97,47 @@ class RelationAggregator : AggregatorInterface {
         }.toTypedArray()
     }
 
-    private fun mergeCycleNodes(relations: Array<Array<String>>,cycle: List<Int>) {
-        val mergedNodeIndex = cycle.minOrNull() ?: return
+    private fun findCycles(relations: Array<Array<String>>): List<List<Int>> {
+        val n = relations.size
+        val successors = Array(n) { mutableListOf<Int>() }
+        val cycles = mutableListOf<List<Int>>()
 
-        for (i in cycle) {
-            if (i != mergedNodeIndex) {
-                for (j in relations.indices) {
-                    if (relations[i][j] != "-" && j != i) {
-                        relations[mergedNodeIndex][j] = relations[i][j]
-                    }
-                    if (relations[j][i] != "-" && j != i) {
-                        relations[j][mergedNodeIndex] = relations[j][i]
-                    }
-                    relations[i][j] = "-"
-                    relations[j][i] = "-"
+        for (i in 0 until n) {
+            for (j in 0 until n) {
+                if (i != j && !successors[i].contains(j) && relations[i][j] == "I") {
+                    successors[i].add(j)
                 }
             }
         }
-    }
 
-    private fun findCycles(relations: Array<Array<String>>): List<List<Int>> {
-        val visited = BooleanArray(relations.size) { false }
-        val recStack = BooleanArray(relations.size) { false }
-        val cycles = mutableListOf<List<Int>>()
-
-        for (x in relations.indices) {
-            for (y in relations[x].indices) {
-                if (x != y && (relations[x][y] == "I" || relations[x][y] == "-P") && !visited[y]) {
-                    if (dfs(y, visited, recStack, relations, mutableListOf(x), cycles)) {
-                        break
+        var canErase: Boolean
+        val stopList = mutableListOf<Int>()
+        do {
+            canErase = false
+            for (i in 0 until n) {
+                if (successors[i].isEmpty() && !stopList.contains(i)) {
+                    canErase = true
+                    stopList.add(i)
+                    for (j in 0 until n) {
+                        successors[j].remove(i)
                     }
+                    successors[i] = mutableListOf()
+                }
+            }
+        } while (canErase)
+
+        // Jeśli po wyczyszczeniu wszystkich wierszy nie zostały żadne, to nie ma cykli
+        if (successors.all { it.isEmpty() }) {
+            return emptyList()
+        }
+
+        // Znalezienie cykli
+        for (i in 0 until n) {
+            if (successors[i].isNotEmpty()) {
+                // Znajdź cykl zaczynając od wierzchołka i
+                val cycle = findCycleFromNode(i, successors)
+                if (cycle.isNotEmpty()) {
+                    cycles.add(cycle)
                 }
             }
         }
@@ -137,35 +145,36 @@ class RelationAggregator : AggregatorInterface {
         return cycles
     }
 
-    private fun dfs(
-        current: Int,
-        visited: BooleanArray,
-        recStack: BooleanArray,
-        relations: Array<Array<String>>,
-        path: MutableList<Int>,
-        cycles: MutableList<List<Int>>
-    ): Boolean {
-        if (recStack[current]) {
-            cycles.add(path.toList())
-            return true
-        }
-        if (visited[current]) {
-            return false
-        }
+    private fun findCycleFromNode(start: Int, successors: Array<MutableList<Int>>): MutableList<Int> {
+        val visited = BooleanArray(successors.size) { false }
+        val stack = mutableListOf<Int>()
+        stack.add(start)
+        visited[start] = true
 
-        visited[current] = true
-        recStack[current] = true
-        path.add(current)
+        while (stack.isNotEmpty()) {
+            val current = stack.last()
+            if (successors[current].isEmpty()) {
+                // Jeśli nie ma następników, wróć
+                visited[current] = false
+                stack.removeAt(stack.size - 1)
+                continue
+            }
 
-        for (i in relations[current].indices) {
-            if (relations[current][i] == "I" && dfs(i, visited, recStack, relations, path, cycles)) {
-                return true
+            // Sprawdź następniki
+            for (next in successors[current]) {
+                if (next == start) {
+                    // Znaleziono cykl
+                    return stack
+                }
+                if (!visited[next]) {
+                    stack.add(next)
+                    visited[next] = true
+                    break
+                }
             }
         }
 
-        recStack[current] = false
-        path.removeAt(path.size - 1)
-        return false
+        return mutableListOf() // Brak cyklu
     }
 
 }
