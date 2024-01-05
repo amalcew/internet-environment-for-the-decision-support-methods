@@ -1,7 +1,7 @@
 package pl.poznan.put.decision_support.decisionmethods.service.UTA
 
-import pl.poznan.put.decision_support.decisionmethods.model.domain.UTA.request.UTARequest
-import pl.poznan.put.decision_support.decisionmethods.model.domain.UTA.response.UTAResponse
+import pl.poznan.put.decision_support.decisionmethods.model.domain.uta.request.UTARequest
+import pl.poznan.put.decision_support.decisionmethods.model.domain.uta.response.UTAResponse
 import pl.poznan.put.decision_support.decisionmethods.utils.functioncalculator.LinearFunction
 import pl.poznan.put.decision_support.decisionmethods.utils.functioncalculator.Point
 import pl.poznan.put.decision_support.decisionmethods.utils.functioncalculator.round
