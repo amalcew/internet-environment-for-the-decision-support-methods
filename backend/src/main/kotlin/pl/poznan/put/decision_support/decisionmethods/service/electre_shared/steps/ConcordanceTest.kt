@@ -23,7 +23,8 @@ class ConcordanceTest : TestStepInterface {
             }
             allResults.add(results)
         }
-        val result = this.calculateToResultArray(allResults, criteria);
+        val result = if (criteria.isNotEmpty() && allResults.isNotEmpty()) this.calculateToResultArray(allResults, criteria)
+        else arrayOf(arrayOf())
         context["concordance"] = result
         return result;
     }
