@@ -26,7 +26,6 @@ class Electre1sMapper
             }
             $dto->variants[] = $obj;
         }
-        $dto->b = $dto->variants;
         return $dto;
     }
 

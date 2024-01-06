@@ -14,7 +14,4 @@ class Electre1sRequestDTO
 
     /** @var VariantDTO[] */
     public array $variants = [];
-
-    /** @var VariantDTO[] */
-    public $b = []; //remove when spring 1s won't require it
 }

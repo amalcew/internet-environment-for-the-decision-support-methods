@@ -11,13 +11,11 @@ class ConcordanceTest : TestStepInterface {
     @Throws(InvalidCriteriaException::class)
     override fun calculate(variantsX: List<Variant>, variantsY: List<Variant>, criteria: List<Criterion>, context: MutableMap<String, Any>): Array<Array<Double>> {
         val x = variantsX.size
-        val y = variantsY.size
-
         val allResults: LinkedList<Array<Array<Double>>> = LinkedList()
         for ((criterionIndex, criterion) in criteria.withIndex()) {
-            val results: Array<Array<Double>> = Array(x) { Array(y) { -1.0 } }
+            val results: Array<Array<Double>> = Array(x) { Array(x) { -1.0 } }
             for ((i, variantA) in variantsX.withIndex()) {
-                for ((j, variantB) in variantsY.withIndex()) {
+                for ((j, variantB) in variantsX.withIndex()) {
                     results[i][j] = this.calculateValueOfOutranking(variantA.values[criterionIndex], variantB.values[criterionIndex], criterion)
                 }
             }
@@ -30,10 +28,10 @@ class ConcordanceTest : TestStepInterface {
 
     private fun calculateToResultArray(allResults: List<Array<Array<Double>>>, criteria: List<Criterion>): Array<Array<Double>> {
         val n = allResults[0].size
+        val m = allResults[0][0].size
         val result: Array<Array<Double>> = Array(n) { Array(n) { 0.0 } }
-
         for (i in 0 until n) {
-            for (j in 0 until n) {
+            for (j in 0 until m) {
                 var sum = 0.0
                 var ksum = 0.0
                 for ((index, matrix) in allResults.withIndex()) {

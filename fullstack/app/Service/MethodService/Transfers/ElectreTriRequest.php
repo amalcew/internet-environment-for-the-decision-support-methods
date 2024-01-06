@@ -17,7 +17,4 @@ class ElectreTriRequest
 
     /** @var VariantDTO[] */
     public array $profiles = [];
-
-    /** @var VariantDTO[] */
-    public $b = []; //remove when spring 1s won't require it
 }

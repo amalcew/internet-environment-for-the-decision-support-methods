@@ -28,7 +28,6 @@ class ElectreTriMapper
             }
             $dto->variants[] = $obj;
         }
-        $dto->b = $dto->variants;
         $dataset_id = Project::all()->firstWhere("id", $electreTri->project_id)->dataset_id;
         $profiles = Profile::all()
             ->where("electre_tri_id", $electreTri->id)
