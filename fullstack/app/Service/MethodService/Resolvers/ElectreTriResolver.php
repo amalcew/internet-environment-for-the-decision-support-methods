@@ -14,7 +14,6 @@ class ElectreTriResolver
 
     public function resolve(ElectreTriRequest $dto, $transposeArraysInResults) {
         $url = $this->urlHelper->getBaseUrl() . UrlHelper::ELECTRE_TRI_RELATIVE_URL;
-        dd(json_encode($dto));
         $response = Http::asJson()->post($url, ['data' => $dto]);
         $data = json_decode($response->body());
         if ($transposeArraysInResults) {
