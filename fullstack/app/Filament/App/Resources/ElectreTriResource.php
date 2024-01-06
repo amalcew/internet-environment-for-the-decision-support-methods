@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\ElectreOneResource\Components\ElectreLabel;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers\ElectreTriCriteriaSettingsRelationMenager;
 use App\Filament\App\Resources\ElectreOneResource\RelationManagers\ElectreTriProfilesRelationManager;
 use App\Filament\App\Resources\ElectreTriResource\Pages;
@@ -11,11 +12,14 @@ use App\Service\MethodService\MethodFacade;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -96,18 +100,90 @@ class ElectreTriResource extends Resource
         /** @var ElectreTri $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
-        $valuesGrid[] = TextEntry::make('variants')->listWithLineBreaks(true);
+        $variants = Filament::getTenant()->variants;
+        $record->variants = $variants;
+        $electreTriProfiles = $record->electreTriProfile()->get();
+        $combinedVariants = $variants->concat($electreTriProfiles);
+        $variantCount = $variants->count();
+
+        $matrixBeforeLambdaData = $record->matrix_before_lambda;
+        $finalData = $record->final;
+        $sMatrixData = $record->sMatrix;
+        $transformedSMatrix = self::transformSMatrix($sMatrixData, [
+            'P' => 'P',
+            'minusP' => '-P',
+            'R' => 'R'
+        ]);
+        $optimisticData = $record->optimistic;
+        $pessimisticData = $record->pessimistic;
+        $concordanceColumns = self::getConcordanceColumns($variants);
+        $discordanceTabs = self::getDiscordanceTabs($record->discordance, $variantCount, $combinedVariants);
+        $matrixBeforeLambdaColumns = self::createMatrixColumns($variants, $matrixBeforeLambdaData, $combinedVariants);
+        $matrixAfterLambdaColumns = self::createMatrixColumns($variants, $finalData, $combinedVariants);
+        $sMatrixColumns = self::createMatrixColumns($variants, $transformedSMatrix, $combinedVariants);
+        $optimisticClassification = self::createVariantClassesColumns($variants, $optimisticData);
+        $pessimisticClassification = self::createVariantClassesColumns($variants, $pessimisticData);
         return $infolist->schema([
-            Section::make('dataset values')
-                ->schema([
-                    Section::make('aaa')
-                        ->schema(
-                            $valuesGrid
-                        )
-                        ->columns(2)
+            Tabs::make('Data Tabs')
+                ->tabs([
+                    Tabs\Tab::make('Concordance & Discordance')
+                        ->schema([
+                            Section::make('Concordance')
+                                ->schema([
+                                    Grid::make(['default' => $variantCount + 2])
+                                        ->schema($concordanceColumns)
+                                        ->columnSpan(['default' => 65,]),
+                                ])->collapsible(),
+                            Tabs::make('Discordance')
+                                ->tabs([
+                                    ...$discordanceTabs
+                                ])
+                        ]),
+                    Tabs\Tab::make('Outranking relations')
+                        ->schema([
+                            Section::make('Without lambda validation')
+                                ->schema([
+                                    Grid::make(['default' => $variantCount + 2])
+                                        ->schema($matrixBeforeLambdaColumns)
+                                        ->columnSpan(['default' => 65,]),
+                                ])->collapsible(),
+                            Section::make('With lambda validation')
+                                ->schema([
+                                    Grid::make(['default' => $variantCount + 2])
+                                        ->schema($matrixAfterLambdaColumns)
+                                        ->columnSpan(['default' => 65,]),
+                                ])->collapsible()
+                        ]),
+                    Tabs\Tab::make('Outranking final relation')
+                        ->schema([
+                            Section::make('Without lambda validation')
+                                ->schema([
+                                    Grid::make(['default' => $variantCount + 2])
+                                        ->schema($sMatrixColumns)
+                                        ->columnSpan(['default' => 65,]),
+                                ])->collapsible()
+                        ]),
+                    Tabs\Tab::make('Classification')
+                        ->schema([
+                            Section::make('Optimistic')
+                                ->schema([
+                                    Grid::make(['default' => $variantCount + 2])
+                                        ->schema($optimisticClassification)
+                                        ->columnSpan(['default' => 65,]),
+                                ])->collapsible(),
+                            Section::make('Pessimistic')
+                                ->schema([
+                                    Grid::make(['default' => $variantCount + 2])
+                                        ->schema($pessimisticClassification)
+                                        ->columnSpan(['default' => 65,]),
+                                ])->collapsible()
+                        ]),
                 ])
+                ->columnSpanFull()
+
         ]);
     }
+
 
     public static function initAndCalculateElectre(ElectreTri $record): ElectreTri
     {
@@ -143,4 +219,138 @@ class ElectreTriResource extends Resource
         }
         return true;
     }
+
+    /**
+     * @param mixed $variants
+     * @return array
+     */
+    public static function getConcordanceColumns(mixed $variants): array
+    {
+        $concordanceColumns = [
+            TextEntry::make('variants')
+                ->listWithLineBreaks(true)
+                ->columnSpan(2)
+                ->label(new ElectreLabel('Variants'))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
+        ];
+        foreach ($variants as $i => $variant) {
+            $concordanceColumns[] = TextEntry::make('concordance.' . $i)
+                ->listWithLineBreaks(true)
+                ->label(new ElectreLabel($variant->name))
+                ->numeric(decimalPlaces: 2, decimalSeparator: '.', thousandsSeparator: ',');
+        }
+        return $concordanceColumns;
+    }
+
+    public static function getDiscordanceTabs($discordanceData, $variantCount, $variants): array
+    {
+        $discordanceTabs = [];
+        $index = 0;
+
+        foreach ($discordanceData as $matrixIndex => $matrix) {
+            $matrixColumns = self::createDiscordcanceMatrixColumns($matrix, $variantCount);
+            $discordanceTabs[] = Tabs\Tab::make($variants[$index]->name)
+                ->schema([
+                    Section::make($variants[$index]->name)
+                        ->schema([
+                            Grid::make(['default' => $variantCount + 2])
+                                ->schema($matrixColumns)
+                                ->columnSpan(['default' => 65,]),
+                        ])->collapsible(),
+                ]);
+            $index+=1;
+        }
+
+        return $discordanceTabs;
+    }
+
+    private static function createDiscordcanceMatrixColumns($matrix, $variantCount): array
+    {
+        $columns = [
+            TextEntry::make('variants')
+                ->listWithLineBreaks(true)
+                ->columnSpan(2)
+                ->label(new ElectreLabel('Variants'))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
+        ];
+        foreach ($matrix as $rowIndex => $row) {
+            $columns[] = TextEntry::make('discordance'. $rowIndex)
+                ->listWithLineBreaks(true)
+                ->label(new ElectreLabel('P' . $rowIndex+1))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
+                ->numeric(decimalPlaces: 2, decimalSeparator: '.', thousandsSeparator: ',')
+                ->default($row);
+        }
+        return $columns;
+    }
+
+    public static function createMatrixColumns(mixed $variants, $matrixData, $combinedVariants): array
+    {
+        $matrixColumns = [
+            TextEntry::make('variants')
+                ->listWithLineBreaks(true)
+                ->columnSpan(2)
+                ->label(new ElectreLabel('Variants'))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
+        ];
+        foreach ($matrixData as $colIndex => $value) {
+            $matrixColumns[] = TextEntry::make('matrix'. $colIndex)
+                ->listWithLineBreaks(true)
+                ->label(new ElectreLabel($combinedVariants[$colIndex]->name))
+                ->weight(FontWeight::Medium)
+                ->html()
+                ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
+                ->numeric(decimalPlaces: 2, decimalSeparator: '.', thousandsSeparator: ',')
+                ->default($value);
+        }
+
+        return $matrixColumns;
+    }
+
+    public static function createVariantClassesColumns($variants, $variantClasses): array
+    {
+        $variantClassesColumns = [];
+
+        foreach ($variants as $index => $variant) {
+            $class = $variantClasses[$index] ?? 'Unknown'; // Default to 'Unknown' if class is not set
+
+            $variantClassesColumns[] = TextEntry::make('variantClass' . $index)
+                ->default($class)
+                ->label($variant->name);
+        }
+
+        return $variantClassesColumns;
+    }
+
+
+    public static function transformSMatrix($sMatrixData, $replacementValues): array
+    {
+        // Define the replacements
+        $replacements = [
+            'INDIFFERENT' => $replacementValues['P'],
+            'aSb' => $replacementValues['P'],
+            'bSa' => $replacementValues['minusP'],
+            'CANNOT_COMPARE' => $replacementValues['R'],
+        ];
+
+        $transformedMatrix = [];
+
+        foreach ($sMatrixData as $rowIndex => $row) {
+            foreach ($row as $colIndex => $value) {
+                // Replace the value based on the mapping
+                $transformedMatrix[$rowIndex][$colIndex] = $replacements[$value] ?? $value;
+            }
+        }
+
+        return $transformedMatrix;
+    }
+
 }
