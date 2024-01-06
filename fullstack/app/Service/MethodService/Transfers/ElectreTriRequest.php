@@ -7,13 +7,16 @@ use App\Service\MethodService\Transfers\Electre1s\VariantDTO;
 
 class ElectreTriRequest
 {
-    public float $lambda;
+    public ?float $lambda;
 
     /** @var CriterionDTO[] */
     public array $criteria = [];
 
     /** @var VariantDTO[] */
     public array $variants = [];
+
+    /** @var VariantDTO[] */
+    public array $profiles = [];
 
     /** @var VariantDTO[] */
     public $b = []; //remove when spring 1s won't require it

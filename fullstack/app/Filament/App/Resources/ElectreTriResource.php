@@ -2,16 +2,19 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\ElectreOneResource\RelationManagers\ElectreTriCriteriaSettingsRelationMenager;
+use App\Filament\App\Resources\ElectreOneResource\RelationManagers\ElectreTriProfilesRelationManager;
 use App\Filament\App\Resources\ElectreTriResource\Pages;
 use App\Models\ElectreTri;
 use App\Service\MethodService\Mappers\ElectreTriMapper;
 use App\Service\MethodService\MethodFacade;
-use Faker\Provider\Text;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,35 +33,33 @@ class ElectreTriResource extends Resource
 
     public static function form(Form $form): Form
     {
+        self::guardElectre();
+        $record = $form->getRecord();
+        $editSchema = [];
+        if ($record) {
+            $editSchema[] = Forms\Components\TextInput::make('lambda')
+                ->required()
+                ->numeric();
+            $editSchema[] = Forms\Components\TextInput::make('tag')
+                ->required();
+        }
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('project_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('lambda')
-                    ->required()
-                    ->numeric(),
-            ]);
+            ->schema($editSchema);
     }
 
     public static function table(Table $table): Table
     {
+        self::guardElectre();
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('project_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('lambda')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('tag'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
             ])
             ->filters([
                 //
@@ -66,11 +67,6 @@ class ElectreTriResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
@@ -80,7 +76,8 @@ class ElectreTriResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ElectreTriCriteriaSettingsRelationMenager::class,
+            ElectreTriProfilesRelationManager::class
         ];
     }
 
@@ -126,5 +123,24 @@ class ElectreTriResource extends Resource
             var_dump($exception->getMessage());
             dd("Most likely there is error connection with spring engine. Check if you have your spring app running");
         }
+    }
+    public static function guardElectre(): void
+    {
+        if (!self::validateProject()) {
+            Notification::make()
+                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->danger()
+                ->send();
+            redirect(DatasetResource::getUrl());
+        }
+    }
+
+    public static function validateProject(): bool
+    {
+        $proj = Filament::getTenant();
+        if (!$proj->dataset) {
+            return false;
+        }
+        return true;
     }
 }

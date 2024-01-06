@@ -16,8 +16,12 @@ class ElectreTri extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function electreCriteriaSettings(): HasMany
+    public function electreTriCriteriaSettings(): HasMany
     {
-        return $this->hasMany(ElectreCriteriaSetting::class, 'electre_one_id');
+        return $this->hasMany(ElectreTriCriteriaSettings::class);
+    }
+
+    public function electreTriProfile(): HasMany {
+        return $this->hasMany(Profile::class);
     }
 }

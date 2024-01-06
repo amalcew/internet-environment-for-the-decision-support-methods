@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ElectreCriteriaSetting extends Model
+class ElectreTriCriteriaSettings extends Model
 {
     use HasFactory;
 
-    public function electreOne(): BelongsTo
+    public function electreTri(): BelongsTo
     {
-        return $this->belongsTo(ElectreOne::class);
+        return $this->belongsTo(ElectreTri::class);
     }
 
     public function criterion(): BelongsTo
@@ -21,6 +22,6 @@ class ElectreCriteriaSetting extends Model
     }
 
     protected $hidden = [
-        'id', 'electre_one_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
+        'id', 'electre_tri_id', 'criterion_id', 'created_at', 'updated_at', 'criterion' // Electre1sMapper::generateDTOfromElectre1sModel
     ];
 }
