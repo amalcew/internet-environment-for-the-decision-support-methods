@@ -33,7 +33,7 @@ class AggregateTriStep : AggregatorInterface {
     }
     private fun classifyOptimistic(sMatrix: Array<Array<RelationType>>, variantsY: List<Variant>): Array<String> {
         val classes = getClasses(variantsY)
-        val classification = Array(sMatrix.size) { "C1" }
+        val classification = Array(sMatrix.size - variantsY.size) { "C1" }
 
         for (a in 0 until sMatrix.size - variantsY.size) {
             for ((t, _) in classes.withIndex()) {
@@ -49,7 +49,7 @@ class AggregateTriStep : AggregatorInterface {
 
     private fun classifyPessimistic(sMatrix: Array<Array<RelationType>>, variantsY: List<Variant>): Array<String> {
         val classes = getClasses(variantsY)
-        val classification = Array(sMatrix.size) { "C1" }
+        val classification = Array(sMatrix.size - variantsY.size) { "C1" }
 
         for (a in 0 until sMatrix.size - variantsY.size) {
             for (t in classes.size - 1 downTo 0) {
