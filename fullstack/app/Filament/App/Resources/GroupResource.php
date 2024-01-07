@@ -5,6 +5,8 @@ namespace App\Filament\App\Resources;
 use App\Filament\App\Resources\GroupResource\Pages;
 use App\Filament\App\Resources\GroupResource\RelationManagers;
 use App\Models\Group;
+use App\Models\Project;
+use App\Models\ProjectUser;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -71,6 +73,7 @@ class GroupResource extends Resource
                     return $user->group_id == $record->id ? "Leave" : "Join";
                 })
                 ->action(function ($record) {
+                    /** @var Group $record */
                     $user = auth()->user();
                     if ($user->group_id == $record->id) {
                         $user->group_id = null;
@@ -78,6 +81,20 @@ class GroupResource extends Resource
                         $user->group_id = $record->id;
                     }
                     $user->save();
+//                    give group owner(teacher) access
+                    $projects = $user->myProjects;
+                    $owner = $record->user;
+                    $projects->each(function ($project) use ($owner) {
+                        try {
+                            ProjectUser::create([
+                                'project_id' => $project->id,
+                                'user_id' => $owner->id
+                            ]);
+                        } catch (\Exception $exception) {
+                            // most likely unique constraint
+                        }
+
+                    });
                 })
             ])
             ->emptyStateActions([

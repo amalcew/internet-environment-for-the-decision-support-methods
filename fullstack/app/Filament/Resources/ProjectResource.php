@@ -54,6 +54,7 @@ class ProjectResource extends Resource
                 Tables\Columns\TextColumn::make('dataset.name')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('user.group.name'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -90,6 +91,7 @@ class ProjectResource extends Resource
             TextEntry::make('user.email'),
             TextEntry::make('dataset.name'),
             TextEntry::make('link'),
+            TextEntry::make('user.group.name'),
         ]);
     }
 

@@ -63,9 +63,9 @@ class User extends Authenticatable implements HasTenants, FilamentUser
         return $this->belongsToMany(Project::class);
     }
 
-    public function myProjects(): BelongsTo
+    public function myProjects(): HasMany
     {
-        return $this->belongsTo(Project::class);
+        return $this->hasMany(Project::class);
     }
 
     public function canAccessTenant(Model $tenant): bool
