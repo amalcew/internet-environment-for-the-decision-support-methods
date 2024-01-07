@@ -55,7 +55,6 @@ class ProjectUserResource extends Resource
                                 ->danger()
                                 ->send();
                         } else if ($record->user_id == $currentUser) {
-                            // TODO: SHOULD THIS if BE HERE?????????
                             Notification::make()
                                 ->title('Cannot delete currently logged user')
                                 ->danger()
