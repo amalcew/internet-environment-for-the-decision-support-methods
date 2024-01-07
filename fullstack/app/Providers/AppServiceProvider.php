@@ -23,12 +23,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
-        DB::listen(function($query) {
-            Log::info(
-                $query->sql,
-                $query->bindings,
-                $query->time
-            );
-        });
+//        Log all sql queries
+//        DB::listen(function($query) {
+//            Log::info(
+//                $query->sql,
+//                $query->bindings,
+//                $query->time
+//            );
+//        });
     }
 }

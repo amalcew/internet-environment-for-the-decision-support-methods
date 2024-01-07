@@ -54,12 +54,15 @@ class DatasetablesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('datasetable_type'),
-                Tables\Columns\TextColumn::make('datasetable_id'),
+                Tables\Columns\TextColumn::make('datasetable_type')
+                    ->formatStateUsing(fn ($state) => $state == 'App\Models\User' ? 'User' : 'Group')
+                    ->label('Sharing type (Group or User)'),
+                Tables\Columns\TextColumn::make('datasetable.name')
+                    ->label('Name'),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->label('Give access'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
