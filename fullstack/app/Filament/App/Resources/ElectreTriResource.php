@@ -19,9 +19,13 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
 use Filament\Support\Enums\FontWeight;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
+use stdClass;
 
 class ElectreTriResource extends Resource
 {
@@ -97,6 +101,9 @@ class ElectreTriResource extends Resource
 
     public static function infolist(Infolist $infolist): Infolist
     {
+        FilamentAsset::register([
+            Css::make('electre-one-stylesheet', __DIR__ . '/../../../../resources/css/matrix.css'),
+        ]);
         /** @var ElectreTri $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
@@ -105,7 +112,7 @@ class ElectreTriResource extends Resource
         $electreTriProfiles = $record->electreTriProfile()->get();
         $combinedVariants = $variants->concat($electreTriProfiles);
         $variantCount = $variants->count();
-
+        $combinedvariantCount = $combinedVariants->count();
         $matrixBeforeLambdaData = $record->matrix_before_lambda;
         $finalData = $record->final;
         $sMatrixData = $record->sMatrix;
@@ -116,8 +123,8 @@ class ElectreTriResource extends Resource
         ]);
         $optimisticData = $record->optimistic;
         $pessimisticData = $record->pessimistic;
-        $concordanceColumns = self::getConcordanceColumns($variants);
-        $discordanceTabs = self::getDiscordanceTabs($record->discordance, $variantCount, $combinedVariants);
+        $concordanceColumns = self::getConcordanceColumns($variants, $combinedVariants, $record->concordance);
+        $discordanceTabs = self::getDiscordanceTabs($record->discordance, $electreTriProfiles->count(), $combinedVariants);
         $matrixBeforeLambdaColumns = self::createMatrixColumns($variants, $matrixBeforeLambdaData, $combinedVariants);
         $matrixAfterLambdaColumns = self::createMatrixColumns($variants, $finalData, $combinedVariants);
         $sMatrixColumns = self::createMatrixColumns($variants, $transformedSMatrix, $combinedVariants);
@@ -130,7 +137,7 @@ class ElectreTriResource extends Resource
                         ->schema([
                             Section::make('Concordance')
                                 ->schema([
-                                    Grid::make(['default' => $variantCount + 2])
+                                    Grid::make(['default' => $combinedvariantCount + 2])
                                         ->schema($concordanceColumns)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible(),
@@ -143,13 +150,13 @@ class ElectreTriResource extends Resource
                         ->schema([
                             Section::make('Without lambda validation')
                                 ->schema([
-                                    Grid::make(['default' => $variantCount + 2])
+                                    Grid::make(['default' => $combinedvariantCount + 2])
                                         ->schema($matrixBeforeLambdaColumns)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible(),
                             Section::make('With lambda validation')
                                 ->schema([
-                                    Grid::make(['default' => $variantCount + 2])
+                                    Grid::make(['default' => $combinedvariantCount + 2])
                                         ->schema($matrixAfterLambdaColumns)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible()
@@ -158,7 +165,7 @@ class ElectreTriResource extends Resource
                         ->schema([
                             Section::make('Without lambda validation')
                                 ->schema([
-                                    Grid::make(['default' => $variantCount + 2])
+                                    Grid::make(['default' => $combinedvariantCount + 2])
                                         ->schema($sMatrixColumns)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible()
@@ -167,13 +174,13 @@ class ElectreTriResource extends Resource
                         ->schema([
                             Section::make('Optimistic')
                                 ->schema([
-                                    Grid::make(['default' => $variantCount + 2])
+                                    Grid::make(['default' => $variantCount])
                                         ->schema($optimisticClassification)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible(),
                             Section::make('Pessimistic')
                                 ->schema([
-                                    Grid::make(['default' => $variantCount + 2])
+                                    Grid::make(['default' => $variantCount])
                                         ->schema($pessimisticClassification)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible()
@@ -224,10 +231,12 @@ class ElectreTriResource extends Resource
      * @param mixed $variants
      * @return array
      */
-    public static function getConcordanceColumns(mixed $variants): array
+    public static function getConcordanceColumns(mixed $variants, $combinedVariants, $concordance): array
     {
+        $variantNames = collect($combinedVariants)->map(fn($variant) => $variant->name);
         $concordanceColumns = [
-            TextEntry::make('variants')
+            TextEntry::make('variantNames')
+                ->default($variantNames) // Set the concatenated names as the default value
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
                 ->label(new ElectreLabel('Variants'))
@@ -235,8 +244,9 @@ class ElectreTriResource extends Resource
                 ->html()
                 ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
         ];
-        foreach ($variants as $i => $variant) {
-            $concordanceColumns[] = TextEntry::make('concordance.' . $i)
+        $combinedVariantsMapped = self::mapToStdClass($combinedVariants);
+        foreach ($combinedVariantsMapped as $i => $variant) {
+            $concordanceColumns[] = TextEntry::make("concordance.". $i)
                 ->listWithLineBreaks(true)
                 ->label(new ElectreLabel($variant->name))
                 ->numeric(decimalPlaces: 2, decimalSeparator: '.', thousandsSeparator: ',');
@@ -250,14 +260,14 @@ class ElectreTriResource extends Resource
         $index = 0;
 
         foreach ($discordanceData as $matrixIndex => $matrix) {
-            $matrixColumns = self::createDiscordcanceMatrixColumns($matrix, $variantCount);
+            $matrixColumns = self::createDiscordcanceMatrixColumns($matrix, $variantCount, $variants);
             $discordanceTabs[] = Tabs\Tab::make($variants[$index]->name)
                 ->schema([
                     Section::make($variants[$index]->name)
                         ->schema([
                             Grid::make(['default' => $variantCount + 2])
                                 ->schema($matrixColumns)
-                                ->columnSpan(['default' => 65,]),
+                                ->columnSpan(['default' => 35,]),
                         ])->collapsible(),
                 ]);
             $index+=1;
@@ -266,10 +276,12 @@ class ElectreTriResource extends Resource
         return $discordanceTabs;
     }
 
-    private static function createDiscordcanceMatrixColumns($matrix, $variantCount): array
+    private static function createDiscordcanceMatrixColumns($matrix, $variantCount, $variants): array
     {
+        $variantNames = collect($variants)->map(fn($variant) => $variant->name);
         $columns = [
-            TextEntry::make('variants')
+            TextEntry::make('$variantNames')
+                ->default($variantNames)
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
                 ->label(new ElectreLabel('Variants'))
@@ -292,8 +304,11 @@ class ElectreTriResource extends Resource
 
     public static function createMatrixColumns(mixed $variants, $matrixData, $combinedVariants): array
     {
+        $variantNames = collect($combinedVariants)->map(fn($variant) => $variant->name);
+
         $matrixColumns = [
-            TextEntry::make('variants')
+            TextEntry::make('$variantNames')
+                ->default($variantNames)
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
                 ->label(new ElectreLabel('Variants'))
@@ -353,4 +368,13 @@ class ElectreTriResource extends Resource
         return $transformedMatrix;
     }
 
+    private static function mapToStdClass($items): array {
+        return $items->map(function ($item) {
+            $stdObject = new stdClass;
+            $stdObject->id = $item->id;
+            $stdObject->name = $item->name;
+            $stdObject->dataset_id = $item->dataset_id;
+            return $stdObject;
+        })->all();
+    }
 }
