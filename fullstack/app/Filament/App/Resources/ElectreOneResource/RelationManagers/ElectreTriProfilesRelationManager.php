@@ -45,7 +45,6 @@ class ElectreTriProfilesRelationManager extends RelationManager
                 $this->getCreateAction()
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->emptyStateActions([
@@ -102,7 +101,7 @@ class ElectreTriProfilesRelationManager extends RelationManager
             });
     }
 
-    private function deleteEmptyProfiles() {
+    private static function deleteEmptyProfiles() {
         Profile::whereNull('name')
             ->delete();
     }
