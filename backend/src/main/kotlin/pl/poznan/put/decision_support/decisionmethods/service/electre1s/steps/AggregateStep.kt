@@ -1,11 +1,12 @@
 package pl.poznan.put.decision_support.service.electre1s.steps
 
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Variant
 import pl.poznan.put.decision_support.service.electre_shared.steps.AggregatorInterface
 import java.util.*
 
 class AggregateStep : AggregatorInterface {
 
-    override fun calculate(lambda: Double, stepResult: LinkedList<Any>, context: MutableMap<String, Any>) {
+    override fun calculate(lambda: Double, stepResult: LinkedList<Any>, context: MutableMap<String, Any>, variantsY: List<Variant>) {
         val concordanceTestResults = stepResult[0] //Array<Array<Double>>
         val discordanceTestResults = stepResult[1]
 //        TODO: is multiple with acceptable?

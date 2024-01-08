@@ -1,6 +1,7 @@
 package pl.poznan.put.decision_support.service.electre1s.steps
 
 import pl.poznan.put.decision_support.decisionmethods.exception.InvalidShapeException
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Variant
 import pl.poznan.put.decision_support.service.electre_shared.steps.AggregatorInterface
 import java.util.*
 
@@ -10,9 +11,10 @@ class RelationAggregator : AggregatorInterface {
      * based on 'final' in context
      */
     override fun calculate(
-        lambda: Double,
-        stepResult: LinkedList<Any>,
-        context: MutableMap<String, Any>
+            lambda: Double,
+            stepResult: LinkedList<Any>,
+            context: MutableMap<String, Any>,
+            variantsY: List<Variant>
     ) {
         val final: Array<Array<Double>> = context["final"] as Array<Array<Double>>
         val x: Int = final.size

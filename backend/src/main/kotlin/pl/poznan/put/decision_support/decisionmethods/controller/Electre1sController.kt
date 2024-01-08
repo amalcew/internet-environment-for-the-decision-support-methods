@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pl.poznan.put.decision_support.service.electre1s.Electre1sFactory
 import pl.poznan.put.decision_support.decisionmethods.service.electreTri.ElectreTriFactory
+import pl.poznan.put.decision_support.decisionmethods.service.electreTri.model.InputBodyTri
 import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.InputBody
+import pl.poznan.put.decision_support.decisionmethods.service.electre_shared.model.Variant
 
 @RestController
 class Electre1sController() {
@@ -29,9 +31,12 @@ class Electre1sController() {
     }
 
     @PostMapping("/electretri")
-    fun postTriAction(@RequestBody body: InputBody): Any {
+    fun postTriAction(@RequestBody body: InputBodyTri): Any {
         val data = body.data
         val calculator = electreTriFactory.createElectreTri()
-        return calculator.calculate(data.variants, data.b, data.criteria, data.lambda)
+        val variantsWithProfiles = ArrayList<Variant>()
+        data.profiles.forEach { variantsWithProfiles.add(it) }
+        data.variants.forEach { variantsWithProfiles.add(it) }
+        return calculator.calculate(variantsWithProfiles, data.profiles, data.criteria, data.lambda)
     }
 }

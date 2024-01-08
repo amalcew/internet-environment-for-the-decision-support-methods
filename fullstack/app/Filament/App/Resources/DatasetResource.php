@@ -100,10 +100,9 @@ class DatasetResource extends Resource
         $criteria = $record->criteria()->with('values')->get();
         $record->variants()->get();
         $criteriaCount = $criteria->count();
-
         $groupedValues = [];
         foreach ($criteria as $criterion) {
-            $groupedValues[$criterion->name] = $criterion->values->sortBy('variant_id');
+            $groupedValues[$criterion->name] = $criterion->values()->whereNot('variant_id', null)->get()->sortBy('variant_id');
         }
         //        saving will throw an error
         $record->groupedValues = $groupedValues;
@@ -111,7 +110,6 @@ class DatasetResource extends Resource
         foreach ($groupedValues as $key => $value) {
             $valuesGrid[] = TextEntry::make('groupedValues.'.$key)->listWithLineBreaks(true)->label($key);
         }
-
         return $infolist->schema([
             Section::make('Values')
                 ->schema([

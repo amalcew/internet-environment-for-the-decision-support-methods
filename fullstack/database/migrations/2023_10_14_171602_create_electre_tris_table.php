@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('electre_tris', function (Blueprint $table) {
             $table->id();
-            $table->double('lambda');
+            $table->double('lambda')->nullable();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

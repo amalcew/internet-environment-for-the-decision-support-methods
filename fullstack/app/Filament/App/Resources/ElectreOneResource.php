@@ -182,33 +182,10 @@ class ElectreOneResource extends Resource
                             Section::make('Marginal concordance')
                                 ->schema(
                                     [
-                                        Tabs::make('Marginal concordance')
-                                            ->tabs([
-                                                Tab::make('Tab 1')
-                                                    ->schema(
-                                                        [
-                                                            Grid::make(['default' => $variantCount + 2])
-                                                                ->schema($concordanceColumns)
-                                                                ->columnSpan(['default' => 65,]),
-                                                        ]
-                                                    ),
-                                                Tab::make('Tab 2')
-                                                    ->schema(
-                                                        [
-                                                            Grid::make(['default' => $variantCount + 2])
-                                                                ->schema($concordanceColumns)
-                                                                ->columnSpan(['default' => 65,]),
-                                                        ]
-                                                    ),
-                                                Tab::make('Tab 3')
-                                                    ->schema(
-                                                        [
-                                                            Grid::make(['default' => $variantCount + 2])
-                                                                ->schema($concordanceColumns)
-                                                                ->columnSpan(['default' => 65,]),
-                                                        ]
-                                                    ),
-                                            ])
+
+                                    Grid::make(['default' => $variantCount + 2])
+                                        ->schema($concordanceColumns)
+                                        ->columnSpan(['default' => 65,]),
 //                                            ->contained(false)
                                     ]
                                 )
