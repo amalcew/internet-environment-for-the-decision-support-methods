@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,12 +11,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements HasTenants
+class User extends Authenticatable implements HasTenants, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -24,6 +26,7 @@ class User extends Authenticatable implements HasTenants
      *
      * @var array<int, string>
      */
+
     protected $fillable = [
         'name',
         'email',
@@ -60,9 +63,9 @@ class User extends Authenticatable implements HasTenants
         return $this->belongsToMany(Project::class);
     }
 
-    public function myProjects(): BelongsTo
+    public function myProjects(): HasMany
     {
-        return $this->belongsTo(Project::class);
+        return $this->hasMany(Project::class);
     }
 
     public function canAccessTenant(Model $tenant): bool
@@ -73,5 +76,23 @@ class User extends Authenticatable implements HasTenants
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function datasets(): MorphToMany
+    {
+        return $this->morphToMany(Dataset::class, 'datasetable');
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Group::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() == "admin") {
+            return (bool)auth()->user()->is_admin;
+        }
+        return true;
     }
 }

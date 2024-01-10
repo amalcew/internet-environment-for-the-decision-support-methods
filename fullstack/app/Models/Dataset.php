@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Dataset extends Model
 {
@@ -26,14 +27,29 @@ class Dataset extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function datasetUsers(): HasMany
+//    TODO: here
+//    public function datasetUsers(): HasMany
+//    {
+//        return $this->hasMany(DatasetUser::class);
+//    }
+
+//    public function datasetUsers(): MorphToMany
+//    {
+//        return $this->morphedByMany(User::class, 'datasetable');
+//    }
+
+    public function directMembers(): BelongsToMany
     {
-        return $this->hasMany(DatasetUser::class);
+        return $this->morphedByMany(User::class, 'datasetable');
+    }
+    public function groups(): BelongsToMany
+    {
+        return $this->morphedByMany(Group::class, 'datasetable');
     }
 
-    public function members(): BelongsToMany
+    public function datasetables(): HasMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(Datasetable::class);
     }
 
     public function criteria(): HasMany

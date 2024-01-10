@@ -2,16 +2,22 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\App\Resources\DatasetResource\Helper\QueryHelper;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
+use App\Models\Dataset;
 use App\Models\Project;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\URL;
 
 class ProjectResource extends Resource
 {
@@ -26,9 +32,13 @@ class ProjectResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('user_id')
+                    ->relationship(
+                        'user',
+                        'id',
+                    )
+                    ->getOptionLabelFromRecordUsing(fn(User $user) => $user->email)
+                    ->required(),
             ]);
     }
 
@@ -38,9 +48,13 @@ class ProjectResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.email')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('dataset.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('user.group.name'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -56,6 +70,7 @@ class ProjectResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -66,14 +81,27 @@ class ProjectResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        $record = $infolist->getRecord();
+        $record->link = URL::to('/app') . '/' . $record->id;
+        return $infolist->schema([
+            TextEntry::make('name'),
+            TextEntry::make('user.email'),
+            TextEntry::make('dataset.name'),
+            TextEntry::make('link'),
+            TextEntry::make('user.group.name'),
+        ]);
+    }
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -82,5 +110,5 @@ class ProjectResource extends Resource
             'view' => Pages\ViewProject::route('/{record}'),
             'edit' => Pages\EditProject::route('/{record}/edit'),
         ];
-    }    
+    }
 }
