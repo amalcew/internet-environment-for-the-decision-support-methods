@@ -25,14 +25,12 @@ class DecisionSupportController {
     fun runSample(@RequestBody input: SampleInput): Result {
         val methodClientFactory =  SampleMethodClientFactory()
         val inputFactory = methodClientFactory.createInputFactory()
-        //todo map body for input
         val methodInput = inputFactory.build()
 
         val method = methodClientFactory.createMethodFactory().createMethod()
         val methodResult = method.applyMethod()
 
         val outputFactory = methodClientFactory.createResultFactory()
-        //todo map methodResult to REST result
 
         return  outputFactory.build()
 

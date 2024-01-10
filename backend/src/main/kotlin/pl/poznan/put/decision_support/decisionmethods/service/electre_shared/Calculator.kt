@@ -34,7 +34,7 @@ class Calculator(private var config: ConfigInterface) {
         }
 
         for (aggregator in config.getAggregators()) {
-            aggregator.calculate(lambda, stepResult, context)
+            aggregator.calculate(lambda, stepResult, context, variantsY)
         }
         return context;
     }

@@ -27,6 +27,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 
 
 class ElectreOneResource extends Resource
@@ -85,14 +86,13 @@ class ElectreOneResource extends Resource
             Js::make('external-script', 'https://d3js.org/d3.v4.min.js'),
             Js::make('external-script', 'https://d3js.org/d3-selection-multi.v1.js'),
             Js::make('graph', __DIR__ . '/../../../../resources/js/graph.js'),
-            Css::make('electre-one-stylesheet', __DIR__ . '/../../../../resources/css/electreOne.css'),
+            Css::make('electre-one-stylesheet', __DIR__ . '/../../../../resources/css/matrix.css'),
         ]);
 
 
         /** @var ElectreOne $record */
         $record = $infolist->getRecord();
         $record = self::initAndCalculateElectre($record);
-
 //        TODO: this is another query for variants (1 is in initAndCalculate). We could store them...
         $variants = Filament::getTenant()->variants;
         $record->variants = $variants;
@@ -143,13 +143,17 @@ class ElectreOneResource extends Resource
             $relationsColumns[] = TextEntry::make('relations.' . $i)->listWithLineBreaks(true)->label(new ElectreLabel($variant->name));
         }
         $OutrankingGraphData = self::mapFullRelationsMatrixToGraphData($record->relations, $variants);
+        $mergedList = self::mergeNodes($variants, $record->merged_nodes);
+        $mergedList = self::convertArrayToObjects($mergedList);
 
+        $OutrankingFinalGraphData = self::mapFullRelationsMatrixToGraphData($record->final_relations, $mergedList);
+        $OutrankingFinalGraphData = self::filterLinks($OutrankingFinalGraphData);
         // graphs have to be in 1 tab!! Otherwise weird bugs with d3 display
         // TODO: insert final graph data
         FilamentAsset::registerScriptData([
             'graphs' => [
                 'outranking_graph' => $OutrankingGraphData,
-                'final_graph' => $OutrankingGraphData
+                'final_graph' => $OutrankingFinalGraphData
             ]
         ]);
 
@@ -178,33 +182,10 @@ class ElectreOneResource extends Resource
                             Section::make('Marginal concordance')
                                 ->schema(
                                     [
-                                        Tabs::make('Marginal concordance')
-                                            ->tabs([
-                                                Tab::make('Tab 1')
-                                                    ->schema(
-                                                        [
-                                                            Grid::make(['default' => $variantCount + 2])
-                                                                ->schema($concordanceColumns)
-                                                                ->columnSpan(['default' => 65,]),
-                                                        ]
-                                                    ),
-                                                Tab::make('Tab 2')
-                                                    ->schema(
-                                                        [
-                                                            Grid::make(['default' => $variantCount + 2])
-                                                                ->schema($concordanceColumns)
-                                                                ->columnSpan(['default' => 65,]),
-                                                        ]
-                                                    ),
-                                                Tab::make('Tab 3')
-                                                    ->schema(
-                                                        [
-                                                            Grid::make(['default' => $variantCount + 2])
-                                                                ->schema($concordanceColumns)
-                                                                ->columnSpan(['default' => 65,]),
-                                                        ]
-                                                    ),
-                                            ])
+
+                                    Grid::make(['default' => $variantCount + 2])
+                                        ->schema($concordanceColumns)
+                                        ->columnSpan(['default' => 65,]),
 //                                            ->contained(false)
                                     ]
                                 )
@@ -301,19 +282,27 @@ class ElectreOneResource extends Resource
             $nodes[] = ['id' => $i, 'name' => $variant->name];
         }
         foreach ($matrix as $x => $row) {
-            foreach ($row as $y => $cell) {
-                if ($x != $y) { // omit node relation with itself
-                    if ($cell == "-P") { // transposed matrix - inverted relationships
-                        $links[] = [
-                            'source' => $x,
-                            'target' => $y
-                        ];
-                    }
-                    if ($cell == "I") {
-                        $links[] = [
-                            'source' => $x,
-                            'target' => $y
-                        ];
+            if (is_array($row)) {
+                foreach ($row as $y => $cell) {
+                    if ($x != $y) { // omit node relation with itself
+                        if ($cell == "-P") { // transposed matrix - inverted relationships
+                            $links[] = [
+                                'source' => $x,
+                                'target' => $y
+                            ];
+                        }
+                        if ($cell == "I") {
+                            $links[] = [
+                                'source' => $x,
+                                'target' => $y
+                            ];
+                        }
+                        if ($cell == "P") { // transposed matrix - inverted relationships
+                            $links[] = [
+                                'source' => $y,
+                                'target' => $x
+                            ];
+                        }
                     }
                 }
             }
@@ -349,5 +338,43 @@ class ElectreOneResource extends Resource
                 ->send();
             redirect(DatasetResource::getUrl());
         }
+    }
+
+    public static function mergeNodes($nodes, $mergedNodes) {
+        if ($nodes instanceof Collection) {
+            $nodes = $nodes->toArray();
+        }
+        foreach (array_reverse($mergedNodes, true) as $mainNode => $merged) {
+            if (!empty($merged)) {
+                foreach ($merged as $nodeToMerge) {
+                    if (isset($nodes[$mainNode]['name']) && isset($nodes[$nodeToMerge]['name'])) {
+                        $nodes[$mainNode]['name'] .= ' + ' . $nodes[$nodeToMerge]['name'];
+                    }
+                    unset($nodes[$nodeToMerge]);
+                }
+            }
+        }
+        return array_values($nodes);
+    }
+
+    private static function convertArrayToObjects($array) {
+        return array_map(function($item) {
+            return (object)$item;
+        }, $array);
+    }
+
+    private static function filterLinks($data) {
+        $nodes = $data['nodes'];
+        $links = $data['links'];
+
+        $nodeIds = array_map(function($node) {
+            return $node['id'];
+        }, $nodes);
+
+        $filteredLinks = array_filter($links, function($link) use ($nodeIds) {
+            return in_array($link['source'], $nodeIds) && in_array($link['target'], $nodeIds);
+        });
+
+        return ['nodes' => $nodes, 'links' => array_values($filteredLinks)];
     }
 }

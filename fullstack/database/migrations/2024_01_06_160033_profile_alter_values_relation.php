@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('values', function (Blueprint $table) {
-            $table->id();
-            $table->double('value');
-            $table->foreignId('criterion_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('variant_id')->nullable()->constrained()->cascadeOnDelete();
+        Schema::table('values', function (Blueprint $table) {
+            $table->foreignId('profile_id')->nullable()->constrained()->cascadeOnDelete();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('values');
+        Schema::table('values', function (Blueprint $table) {
+            $table->dropColumn('profile_id');
+        });
     }
 };

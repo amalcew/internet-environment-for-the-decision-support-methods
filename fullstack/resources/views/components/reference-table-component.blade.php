@@ -77,7 +77,7 @@
             </div>
             <div class="icon_wrapper">
                 <x-filament::icon
-                    alias="panels::topbar.global-search.field"
+                    icon="heroicon-m-chevron-right"
                     class="h-8 w-8 text-gray-500 dark:text-gray-400"
                 >
                     <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"

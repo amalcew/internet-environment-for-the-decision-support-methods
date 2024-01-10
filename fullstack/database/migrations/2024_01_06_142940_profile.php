@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('values', function (Blueprint $table) {
+        Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->double('value');
-            $table->foreignId('criterion_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('variant_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('name')->nullable();
+            $table->foreignId('electre_tri_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('dataset_id')->nullable()->constrained()->cascadeOnDelete();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('values');
+        Schema::dropIfExists('profiles');
     }
 };
