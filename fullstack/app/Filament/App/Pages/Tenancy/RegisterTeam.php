@@ -25,12 +25,14 @@ class RegisterTeam extends RegisterTenant
     protected function handleRegistration(array $data): Project
     {
         $user = auth()->user();
-        $teacherId = $user->group->user_id;
+        $teacherId = $user->group?->user_id;
         $data['user_id'] = $user->id;
         $project = Project::create($data);
 
         $project->members()->attach(auth()->user());
-        $project->members()->attach($teacherId);
+        if ($teacherId) {
+            $project->members()->attach($teacherId);
+        }
 
         return $project;
     }
