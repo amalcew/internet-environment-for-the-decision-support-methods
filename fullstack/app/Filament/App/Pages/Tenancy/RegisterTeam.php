@@ -11,14 +11,15 @@ class RegisterTeam extends RegisterTenant
 {
     public static function getLabel(): string
     {
-        return 'Register your project';
+        return __('Register your project');
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name'),
+                TextInput::make('name')
+                    ->label(__('Name')),
             ]);
     }
 

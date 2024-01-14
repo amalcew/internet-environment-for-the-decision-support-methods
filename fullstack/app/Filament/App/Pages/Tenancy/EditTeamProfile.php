@@ -21,7 +21,7 @@ class EditTeamProfile extends EditTenantProfile
 //    This is not a resource. Policies doesn't work there!
     public static function getLabel(): string
     {
-        return 'Project profile';
+        return __('Project profile');
     }
     protected function getFormActions(): array
     {
@@ -36,8 +36,10 @@ class EditTeamProfile extends EditTenantProfile
     {
         return $form
             ->schema([
-                TextInput::make('name'),
+                TextInput::make('name')
+                ->label(__('Name')),
                 Select::make('dataset_id')
+                    ->label(__('Dataset'))
                     ->disabled(fn($state) => filled($state))
                     ->relationship(
                         'dataset',
@@ -47,7 +49,7 @@ class EditTeamProfile extends EditTenantProfile
                     )
                     ->getOptionLabelFromRecordUsing(fn(Dataset $dataset) => "{$dataset->name} - {$dataset->user->email}"),
                 Placeholder::make('info')
-                ->content('If you already selected a dataset, you need a new project to use another dataset.')
+                ->content(__('If you already selected a dataset, you need a new project to use another dataset.'))
             ]);
     }
 }

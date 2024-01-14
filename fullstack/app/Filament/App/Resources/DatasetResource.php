@@ -47,20 +47,21 @@ class DatasetResource extends Resource
         if ($record) {
             return $form->schema([
                 Forms\Components\Placeholder::make('Share with other users')
+                ->label(__('Share'))
             ]);
         }
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('Name'))
                     ->required(),
                 Forms\Components\FileUpload::make('csv_file')
+                    ->label(__('Csv file'))
                     ->required()
                     ->storeFiles(false),
                 Forms\Components\Placeholder::make('CSV info')
-                    ->content(new HtmlString('CSV: 1 line contains: variants;<1 kryterium>; <2 kryterium>... <br>
-                                    (1st element is required to be "variants")<br>
-                                    2 line contains: &lt;empty space>;c;g... <br>
-                                    Decimal seperator is "."'))
+                    ->label(__('Formatting requirements'))
+                    ->content(new HtmlString(__("Header must be composed of two data rows:<br>- First row contains required keyword <b>'variants'</b> and names of each criteria:<br><br><b>variants</b>,criterion1,criterion2, ...<br><br>- Second row contains information about the type of criteria: <b>c</b> for cost and <b>g</b> for gain. Keyword 'variants' have to be included as blank:<br><br>,c,g,g,c, ...<br><br>- Desired delimiter for dataset file is comma (,) or semicolon (;).<br><br><br>Example file content:<br><br>variants,cost,gain<br>,c,g<br>var1,100.0,100<br>var2,200.0,500<br>var3,500.0,1000<br>var4,300.0,1000<br>")))
             ]);
     }
 
@@ -68,12 +69,15 @@ class DatasetResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                ->label(__('Name')),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -84,7 +88,7 @@ class DatasetResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->label('share with others'),
+                    ->label(__('Share')),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
@@ -106,12 +110,12 @@ class DatasetResource extends Resource
         }
         //        saving will throw an error
         $record->groupedValues = $groupedValues;
-        $valuesGrid[] = TextEntry::make('variants')->listWithLineBreaks(true);
+        $valuesGrid[] = TextEntry::make('variants')->label(__('Variants'))->listWithLineBreaks(true);
         foreach ($groupedValues as $key => $value) {
             $valuesGrid[] = TextEntry::make('groupedValues.' . $key)->listWithLineBreaks(true)->label($key);
         }
         return $infolist->schema([
-            Section::make('Values')
+            Section::make(__('Values'))
                 ->schema([
                     Grid::make(['default' => $criteriaCount + 1])
                         ->schema($valuesGrid)

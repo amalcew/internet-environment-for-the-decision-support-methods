@@ -6,12 +6,18 @@ use App\Filament\App\Resources\GroupResource;
 use Filament\Actions;
 use Filament\Facades\Filament;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class CreateGroup extends CreateRecord
 {
     protected static string $resource = GroupResource::class;
+
+    public function getTitle(): string|Htmlable
+    {
+        return __('Create Group');
+    }
 
     protected function handleRecordCreation(array $data): Model
     {

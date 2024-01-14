@@ -13,14 +13,14 @@ class ListProjectUsers extends ListRecords
 
     public function getTitle(): string|Htmlable
     {
-        return __('people who have access');
+        return __('Project sharing');
     }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
-            ->label('Share with user'),
+            ->label(__('Share with user')),
         ];
     }
 }

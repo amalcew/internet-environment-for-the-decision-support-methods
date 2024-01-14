@@ -28,6 +28,7 @@ class ProjectUserResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
+                    ->label(__('User email'))
                     ->relationship('user', 'email')
                 ->required()
             ]);
@@ -38,6 +39,7 @@ class ProjectUserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.email')
+                    ->label(__('User email'))
                     ->sortable(),
 
             ])
@@ -51,12 +53,12 @@ class ProjectUserResource extends Resource
                         $currentUser = Filament::auth()->user()->id;
                         if ($record->user_id == $owner) {
                             Notification::make()
-                                ->title('Cannot delete project owner')
+                                ->title(__('Cannot delete project owner'))
                                 ->danger()
                                 ->send();
                         } else if ($record->user_id == $currentUser) {
                             Notification::make()
-                                ->title('Cannot delete currently logged user')
+                                ->title(__('Cannot delete currently logged user'))
                                 ->danger()
                                 ->send();
                         } else {

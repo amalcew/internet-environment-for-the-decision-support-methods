@@ -10,17 +10,24 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CommentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'comments';
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Comments');
+    }
+
     public function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('text')
+                    ->label(__('Text'))
                     ->required()
                     ->maxLength(999),
             ]);
@@ -31,9 +38,12 @@ class CommentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('text'),
-                Tables\Columns\TextColumn::make('user.email'),
+                Tables\Columns\TextColumn::make('text')
+                ->label(__('Text')),
+                Tables\Columns\TextColumn::make('user.email')
+                    ->label(__('User')),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
