@@ -1,14 +1,12 @@
 package pl.poznan.put.decision_support.decisionmethods.controller
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import pl.poznan.put.decision_support.decisionmethods.model.domain.UTA.request.UTARequestBody
-import pl.poznan.put.decision_support.decisionmethods.model.domain.UTA.response.UTAResponse
+import pl.poznan.put.decision_support.decisionmethods.model.domain.uta.request.UTARequestBody
+import pl.poznan.put.decision_support.decisionmethods.model.domain.uta.response.UTAResponse
 import pl.poznan.put.decision_support.decisionmethods.service.UTA.UTAFactory
 import pl.poznan.put.decision_support.decisionmethods.utils.httpclient.HTTPClientManagerImpl
 import pl.poznan.put.decision_support.decisionmethods.utils.httpclient.convertFromJson
