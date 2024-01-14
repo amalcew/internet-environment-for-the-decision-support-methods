@@ -32,6 +32,7 @@ class ConclusionResource extends Resource
             ->schema([
 //                Forms\Components\RichEditor::make()
                 Forms\Components\MarkdownEditor::make('text')
+                    ->label(__('Text'))
                     ->required()
                     ->columnSpanFull(),
             ]);
@@ -76,12 +77,12 @@ class ConclusionResource extends Resource
         return $infolist
             ->schema([
                 TextEntry::make('created_at')
-                    ->label('started writing at')
+                    ->label(__('Created at'))
                     ->dateTime(),
                 TextEntry::make('updated_at')
-                    ->label('last modified at')
+                    ->label(__('Updated at'))
                     ->dateTime(),
-                Section::make('Your conclusion')
+                Section::make(__('Your conclusion'))
                     ->schema([
                         TextEntry::make('text')
                             ->label('')

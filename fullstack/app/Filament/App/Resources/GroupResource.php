@@ -36,13 +36,16 @@ class GroupResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('class_year')
+                    ->label(__('Class year'))
                     ->required()
                     ->default($year)
                     ->maxLength(255),
                 Forms\Components\TextInput::make('class_time')
+                    ->label(__('Class time'))
                     ->maxLength(255),
             ]);
     }
@@ -53,13 +56,17 @@ class GroupResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('Creator'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('class_year')
+                    ->label(__('Class year'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('class_time')
+                    ->label(__('Class time'))
                     ->searchable(),
             ])
             ->filters([
@@ -70,7 +77,7 @@ class GroupResource extends Resource
                 Tables\Actions\Action::make('attach_user')
                 ->label(function ($record) {
                     $user = auth()->user();
-                    return $user->group_id == $record->id ? "Leave" : "Join";
+                    return $user->group_id == $record->id ? __("Leave") : __("Join");
                 })
                 ->action(function ($record) {
                     /** @var Group $record */
