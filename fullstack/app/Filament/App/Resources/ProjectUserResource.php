@@ -21,7 +21,10 @@ class ProjectUserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-share';
 
-    protected static ?string $navigationLabel = 'Share project with others';
+    public static function getNavigationLabel(): string
+    {
+        return __('Share Project');
+    }
 
     public static function form(Form $form): Form
     {

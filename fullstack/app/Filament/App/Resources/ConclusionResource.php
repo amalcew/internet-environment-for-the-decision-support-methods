@@ -22,9 +22,14 @@ class ConclusionResource extends Resource
 {
     protected static ?string $model = Conclusion::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left';
 
     protected static ?int $navigationSort = 999;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Conclusions');
+    }
 
     public static function form(Form $form): Form
     {
