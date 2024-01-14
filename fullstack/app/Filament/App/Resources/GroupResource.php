@@ -22,7 +22,12 @@ class GroupResource extends Resource
     protected static ?string $model = Group::class;
 
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Groups');
+    }
 
     // turn of filter
     public static function scopeEloquentQueryToTenant(Builder $query, ?Model $tenant): Builder

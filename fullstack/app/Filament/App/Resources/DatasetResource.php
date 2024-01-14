@@ -26,11 +26,17 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DatasetResource extends Resource
 {
     protected static ?string $model = Dataset::class;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Datasets');
+    }
 
 //    change tenant filter to user filter
     public static function scopeEloquentQueryToTenant(Builder $query, ?Model $tenant): Builder
