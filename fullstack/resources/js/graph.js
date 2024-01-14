@@ -5,16 +5,15 @@ const renderGraph =  function (id, data) {
         return;
     }
     var margin = {top: 10, right: 30, bottom: 30, left: 40},
-        width = 928 - margin.left - margin.right,
-        height = 680 - margin.top - margin.bottom;
+        width = 1500 - margin.left - margin.right,
+        height = 750 - margin.top - margin.bottom;
 
     // color scale
     var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
     var svg = d3.select('#' + id)
         .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("viewBox", `0 0 1500 750`)
 
     // arrows
     svg.append('defs').append('marker')
