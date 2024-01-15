@@ -11,7 +11,7 @@ use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Contracts\Support\Htmlable;
 
 FilamentAsset::register([
-    Css::make('electre-one-stylesheet', __DIR__ . '/../../../../resources/css/matrix.css'),
+    Css::make('electre-one-stylesheet', __DIR__ . '/../../../../../../resources/css/matrix.css'),
 ]);
 
 class ViewDataset extends ViewRecord
