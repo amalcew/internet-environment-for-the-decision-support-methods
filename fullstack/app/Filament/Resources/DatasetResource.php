@@ -72,9 +72,7 @@ class DatasetResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->label(__('Share')),
                 Tables\Actions\DeleteAction::make('delete')
-                ->authorize(true)
-                ->visible(true)
-                ->hidden(false)
+                ->requiresConfirmation()
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
