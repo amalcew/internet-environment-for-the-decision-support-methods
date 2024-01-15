@@ -35,7 +35,7 @@ class AppPanelProvider extends PanelProvider
             ->path('app')
             ->login()
             ->registration()
-            ->passwordReset()
+//            ->passwordReset()
             ->emailVerification()
             ->colors([
                 'primary' => Color::Rose,
