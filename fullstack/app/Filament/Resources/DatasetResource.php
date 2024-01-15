@@ -20,13 +20,29 @@ class DatasetResource extends \App\Filament\App\Resources\DatasetResource
 
     public static function table(Table $table): Table
     {
-        $table = parent::table($table);
-        $table->actions([
-            Tables\Actions\ViewAction::make(),
-            Tables\Actions\EditAction::make()
-                ->authorize(true)
-                ->label('share with others'),
-        ]);
-        return $table;
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name')),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label(__('Share')),
+                Tables\Actions\DeleteAction::make('delete')
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
+            ]);
     }
 }
