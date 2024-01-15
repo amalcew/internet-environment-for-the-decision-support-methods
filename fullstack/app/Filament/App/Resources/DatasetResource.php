@@ -94,7 +94,7 @@ class DatasetResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->label(__('Share')),
+                    ->label(__('Edit')),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
