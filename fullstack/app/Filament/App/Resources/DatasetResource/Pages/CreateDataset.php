@@ -36,7 +36,7 @@ class CreateDataset extends CreateRecord
             $record->user()->associate(auth()->user());
             $saved = $record->save();
             if ($saved) {
-                $record->directMembers()->attach(auth()->user()); // populate dataset_user too
+                $record->directMembers()->attach(auth()->user()); // populate datasetabble too
                 $record->save();
                 AfterDatasetCreated::dispatch($record, $file);
             }
