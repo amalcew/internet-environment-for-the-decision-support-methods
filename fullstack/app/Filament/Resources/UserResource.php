@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
@@ -39,6 +41,19 @@ class UserResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(0),
+                Forms\Components\Section::make()
+                ->schema([
+                    Forms\Components\TextInput::make('password')
+                    ->label(__('New Password'))
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state): string => Hash::make($state))
+                    ->rule(Password::default())
+                    ->same('confirm_password'),
+                    Forms\Components\TextInput::make('confirm_password')
+                    ->label(__('Confirm Password'))
+                    ->password()
+                    ->dehydrated(false)
+                ])
             ]);
     }
 
