@@ -58,19 +58,19 @@
         }
     </script>
     <div>
-        <h1 class="instruction">Final Ranking</h1>
+        <h1 class="instruction">{{__('Final ranking')}}</h1>
         <div class="container">
             <div class="column" id="single_column">
                 <x-filament::card>
                     <div class="row-container">
                         <div class="column-table-cell">
-                            Utility
+                            {{__('Utility')}}
                         </div>
                         <div class="column-table-cell">
-                            Rank
+                            {{__('Rank')}}
                         </div>
                         <div class="column-table-cell">
-                            Variant Name
+                            {{__('Variant')}}
                         </div>
                     </div>
                     <x-laravel-blade-sortable::sortable id="single_column_section"

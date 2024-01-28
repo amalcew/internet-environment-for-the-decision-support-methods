@@ -41,6 +41,7 @@ class UtaResource extends Resource
         $editSchema = [];
         if ($record) {
             $editSchema[] = Forms\Components\TextInput::make('epsilon')
+                ->label(__('Epsilon'))
                 ->required()
                 ->numeric();
         }
@@ -54,9 +55,11 @@ class UtaResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
