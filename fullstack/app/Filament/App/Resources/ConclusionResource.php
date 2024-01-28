@@ -24,6 +24,11 @@ class ConclusionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left';
 
+    public static function getPluralLabel(): ?string
+    {
+        return __('Conclusions');
+    }
+
     protected static ?int $navigationSort = 999;
 
     public static function getNavigationLabel(): string

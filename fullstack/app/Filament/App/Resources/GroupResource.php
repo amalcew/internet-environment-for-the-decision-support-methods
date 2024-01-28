@@ -29,6 +29,11 @@ class GroupResource extends Resource
         return __('Groups');
     }
 
+    public static function getPluralLabel(): ?string
+    {
+        return __('Groups');
+    }
+
     // turn of filter
     public static function scopeEloquentQueryToTenant(Builder $query, ?Model $tenant): Builder
     {
