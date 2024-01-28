@@ -29,7 +29,10 @@ class UtaResource extends Resource
     protected static ?string $modelLabel = 'Uta';
     protected static ?string $pluralModelLabel = 'Uta';
 
-    protected static ?string $navigationGroup = 'Methods';
+    public static function getNavigationGroup(): string
+    {
+        return __('Methods');
+    }
 
     public static function form(Form $form): Form
     {

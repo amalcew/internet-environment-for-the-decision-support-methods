@@ -10,6 +10,11 @@ class ListElectreOnes extends ListRecords
 {
     protected static string $resource = ElectreOneResource::class;
 
+    public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return __('Electre 1s');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

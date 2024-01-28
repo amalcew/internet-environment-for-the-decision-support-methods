@@ -37,7 +37,10 @@ class ElectreTriResource extends Resource
     protected static ?string $modelLabel = 'Electre Tri';
     protected static ?string $pluralModelLabel = 'Electre Tri';
 
-    protected static ?string $navigationGroup = 'Methods';
+    public static function getNavigationGroup(): string
+    {
+        return __('Methods');
+    }
 
     public static function form(Form $form): Form
     {

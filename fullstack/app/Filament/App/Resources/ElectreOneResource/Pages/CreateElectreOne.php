@@ -26,7 +26,6 @@ class CreateElectreOne extends CreateRecord
         $electreOne = $this->getRecord();
         $collection = new Collection();
         foreach ($criteria as $criterion) {
-//            TODO: could be done more eloquent way :)
             $electreCriterion = (new ElectreCriteriaSetting([
                 'electre_one_id' => $electreOne->id,
                 'criterion_id' => $criterion->id,
