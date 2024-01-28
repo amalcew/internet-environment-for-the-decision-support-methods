@@ -49,9 +49,11 @@ class ElectreTriResource extends Resource
         $editSchema = [];
         if ($record) {
             $editSchema[] = Forms\Components\TextInput::make('lambda')
+                ->label(__('Lambda'))
                 ->required()
                 ->numeric();
             $editSchema[] = Forms\Components\TextInput::make('tag')
+                ->label(__('Tag'))
                 ->required();
         }
         return $form
@@ -63,11 +65,14 @@ class ElectreTriResource extends Resource
         self::guardElectre();
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tag'),
+                Tables\Columns\TextColumn::make('tag')
+                    ->label(__('Tag')),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
@@ -136,52 +141,52 @@ class ElectreTriResource extends Resource
         return $infolist->schema([
             Tabs::make('Data Tabs')
                 ->tabs([
-                    Tabs\Tab::make('Concordance & Discordance')
+                    Tabs\Tab::make(__('Concordance & Discordance'))
                         ->schema([
-                            Section::make('Concordance')
+                            Section::make(__('Concordance'))
                                 ->schema([
                                     Grid::make(['default' => $combinedvariantCount + 2])
                                         ->schema($concordanceColumns)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible(),
-                            Tabs::make('Discordance')
+                            Tabs::make(__('Discordance'))
                                 ->tabs([
                                     ...$discordanceTabs
                                 ])
                         ]),
-                    Tabs\Tab::make('Outranking relations')
+                    Tabs\Tab::make(__('Outranking relations'))
                         ->schema([
-                            Section::make('Without lambda validation')
+                            Section::make(__('Without lambda validation'))
                                 ->schema([
                                     Grid::make(['default' => $combinedvariantCount + 2])
                                         ->schema($matrixBeforeLambdaColumns)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible(),
-                            Section::make('With lambda validation')
+                            Section::make(__('With lambda validation'))
                                 ->schema([
                                     Grid::make(['default' => $combinedvariantCount + 2])
                                         ->schema($matrixAfterLambdaColumns)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible()
                         ]),
-                    Tabs\Tab::make('Outranking final relation')
+                    Tabs\Tab::make(__('Outranking final relations'))
                         ->schema([
-                            Section::make('Without lambda validation')
+                            Section::make(__('Without lambda validation'))
                                 ->schema([
                                     Grid::make(['default' => $combinedvariantCount + 2])
                                         ->schema($sMatrixColumns)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible()
                         ]),
-                    Tabs\Tab::make('Classification')
+                    Tabs\Tab::make(__('Classification'))
                         ->schema([
-                            Section::make('Optimistic')
+                            Section::make(__('Optimistic'))
                                 ->schema([
                                     Grid::make(['default' => $variantCount])
                                         ->schema($optimisticClassification)
                                         ->columnSpan(['default' => 65,]),
                                 ])->collapsible(),
-                            Section::make('Pessimistic')
+                            Section::make(__('Pessimistic'))
                                 ->schema([
                                     Grid::make(['default' => $variantCount])
                                         ->schema($pessimisticClassification)
@@ -242,7 +247,7 @@ class ElectreTriResource extends Resource
                 ->default($variantNames) // Set the concatenated names as the default value
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
-                ->label(new ElectreLabel('Variants'))
+                ->label(new ElectreLabel(__('Variants')))
                 ->weight(FontWeight::Medium)
                 ->html()
                 ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
@@ -268,9 +273,9 @@ class ElectreTriResource extends Resource
                 ->schema([
                     Section::make($variants[$index]->name)
                         ->schema([
-                            Grid::make(['default' => $variantCount + 2])
+                            Grid::make(['default' => $variantCount + count($matrixColumns)])
                                 ->schema($matrixColumns)
-                                ->columnSpan(['default' => 35,]),
+                                ->columnSpan(['default' => 65,]),
                         ])->collapsible(),
                 ]);
             $index+=1;
@@ -287,7 +292,7 @@ class ElectreTriResource extends Resource
                 ->default($variantNames)
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
-                ->label(new ElectreLabel('Variants'))
+                ->label(new ElectreLabel(__('Variants')))
                 ->weight(FontWeight::Medium)
                 ->html()
                 ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
