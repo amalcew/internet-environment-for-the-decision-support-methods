@@ -41,6 +41,7 @@ class UtaResource extends Resource
         $editSchema = [];
         if ($record) {
             $editSchema[] = Forms\Components\TextInput::make('epsilon')
+                ->label(__('Epsilon'))
                 ->required()
                 ->numeric();
         }
@@ -54,9 +55,11 @@ class UtaResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -130,7 +133,7 @@ class UtaResource extends Resource
     {
         if (!self::validateProject()) {
             Notification::make()
-                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->title(__('Project does not have any dataset! Upload your dataset first'))
                 ->danger()
                 ->send();
             redirect(DatasetResource::getUrl());

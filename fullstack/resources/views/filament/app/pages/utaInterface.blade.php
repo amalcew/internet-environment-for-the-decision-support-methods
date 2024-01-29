@@ -98,7 +98,7 @@
         <div class="button-container">
             <x-filament::button size="xl" class="secondary-button"
                                 wire:click="generateFinalRanking( {{ $widgetData['uta_id'] }} )">
-                Generate final ranking
+                {{ __('Generate final ranking') }}
             </x-filament::button>
         </div>
 

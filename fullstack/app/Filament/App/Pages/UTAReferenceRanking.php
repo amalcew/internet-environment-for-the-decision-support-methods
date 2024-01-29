@@ -16,6 +16,12 @@ class UTAReferenceRanking extends Page
 
     protected static string $view = 'filament.app.pages.utaInterface';
 
+    public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return __('UTA Reference Ranking');
+    }
+
+
     protected static bool $shouldRegisterNavigation = false;
 
     private $min_variants_in_reference_ranking = 3;
@@ -27,7 +33,7 @@ class UTAReferenceRanking extends Page
         $proj = Filament::getTenant();
         $variants = $proj->variants;
         $this->widgetData = [
-            'custom_title' => "Create your own reference ranking",
+            'custom_title' => __("Create your own reference ranking"),
             'list' => $variants->toArray(),
             'selected' => [],
             'final_ranking' => [],
@@ -84,7 +90,7 @@ class UTAReferenceRanking extends Page
     {
         if (count($this->widgetData['selected']) < $this->min_variants_in_reference_ranking) {
             Notification::make()
-                ->title('Reference ranking must contain at least 3 variants')
+                ->title(__('Reference ranking must contain at least 3 variants'))
                 ->warning()
                 ->send();
             return;
