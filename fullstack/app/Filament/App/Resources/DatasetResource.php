@@ -38,6 +38,11 @@ class DatasetResource extends Resource
         return __('Datasets');
     }
 
+    public static function getPluralLabel(): ?string
+    {
+        return __('Datasets');
+    }
+
 //    change tenant filter to user filter
     public static function scopeEloquentQueryToTenant(Builder $query, ?Model $tenant): Builder
     {

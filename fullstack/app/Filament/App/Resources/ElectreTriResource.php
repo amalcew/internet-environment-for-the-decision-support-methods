@@ -219,7 +219,7 @@ class ElectreTriResource extends Resource
     {
         if (!self::validateProject()) {
             Notification::make()
-                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->title(__('Project does not have any dataset! Upload your dataset first'))
                 ->danger()
                 ->send();
             redirect(DatasetResource::getUrl());
