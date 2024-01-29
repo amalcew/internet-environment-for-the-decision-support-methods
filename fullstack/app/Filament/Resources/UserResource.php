@@ -19,7 +19,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function form(Form $form): Form
     {
@@ -28,16 +28,20 @@ class UserResource extends Resource
                 Forms\Components\Fieldset::make('user')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
                             ->inlineLabel(),
                         Forms\Components\TextInput::make('email')
+                            ->label(__('User email'))
                             ->inlineLabel(),
                     ])
                     ->label('')
                     ->columns(1)
                     ->disabled(),
                 Forms\Components\Select::make('group_id')
+                    ->label(__('Group'))
                     ->relationship('group', 'name'),
                 Forms\Components\TextInput::make('is_admin')
+                    ->label(__('Is admin'))
                     ->required()
                     ->numeric()
                     ->default(0),
@@ -62,20 +66,26 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label(__('User email'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('group.name')
+                    ->label(__('Group'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('is_admin')
+                    ->label(__('Is admin'))
                     ->formatStateUsing(fn ($state) => $state ? __('Yes') : __('No'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
