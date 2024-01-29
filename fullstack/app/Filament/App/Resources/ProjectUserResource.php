@@ -26,6 +26,11 @@ class ProjectUserResource extends Resource
         return __('Share Project');
     }
 
+    public static function getPluralLabel(): ?string
+    {
+        return __('Project sharing');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

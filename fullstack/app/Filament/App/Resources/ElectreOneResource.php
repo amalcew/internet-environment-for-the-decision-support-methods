@@ -36,7 +36,14 @@ class ElectreOneResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Methods';
+    protected static ?string $navigationLabel = 'Electre 1s';
+    protected static ?string $modelLabel = 'Electre 1s';
+    protected static ?string $pluralModelLabel = 'Electre 1s';
+
+    public static function getNavigationGroup(): string
+    {
+        return __('Methods');
+    }
 
     public static function form(Form $form): Form
     {
@@ -45,9 +52,11 @@ class ElectreOneResource extends Resource
         $editSchema = [];
         if ($record) {
             $editSchema[] = Forms\Components\TextInput::make('lambda')
+                ->label(__('Lambda'))
                 ->required()
                 ->numeric();
             $editSchema[] = Forms\Components\TextInput::make('tag')
+                ->label(__('Tag'))
                 ->required();
         }
         return $form
@@ -59,11 +68,14 @@ class ElectreOneResource extends Resource
         self::guardElectre();
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tag'),
+                Tables\Columns\TextColumn::make('tag')
+                ->label(__('Tag')),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
@@ -102,7 +114,7 @@ class ElectreOneResource extends Resource
             TextEntry::make('variants')
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
-                ->label(new ElectreLabel('Variants'))
+                ->label(new ElectreLabel(__('Variants')))
                 ->weight(FontWeight::Medium)
                 ->html()
                 ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
@@ -111,7 +123,7 @@ class ElectreOneResource extends Resource
             TextEntry::make('variants')
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
-                ->label(new ElectreLabel('Variants'))
+                ->label(new ElectreLabel(__('Variants')))
                 ->weight(FontWeight::Medium)
                 ->html()
                 ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
@@ -120,7 +132,7 @@ class ElectreOneResource extends Resource
             TextEntry::make('variants')
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
-                ->label(new ElectreLabel('Variants'))
+                ->label(new ElectreLabel(__('Variants')))
                 ->weight(FontWeight::Medium)
                 ->html()
                 ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
@@ -129,7 +141,7 @@ class ElectreOneResource extends Resource
             TextEntry::make('variants')
                 ->listWithLineBreaks(true)
                 ->columnSpan(2)
-                ->label(new ElectreLabel('Variants'))
+                ->label(new ElectreLabel(__('Variants')))
                 ->weight(FontWeight::Medium)
                 ->html()
                 ->formatStateUsing(fn(string $state): string => __('<p class="electre-variant">' . $state . '</p>'))
@@ -162,15 +174,17 @@ class ElectreOneResource extends Resource
             Tabs::make('tabs')
                 ->tabs([
                     Tab::make('graphs')
+                        ->label(__('Graphs'))
                         ->schema([
-                            TextEntry::make('lambda'),
-                            Section::make('Outranking graph')
+                            TextEntry::make('lambda')
+                            ->label(__('Lambda')),
+                            Section::make(__('Outranking graph'))
                                 ->schema([
                                     Electre1sGraph::make('outranking_graph')
                                         ->viewData(['graphId' => 'outranking_graph', 'graphData' => $OutrankingGraphData])
                                 ])
                                 ->collapsible(),
-                            Section::make('Final graph')
+                            Section::make(__('Final graph'))
                                 ->schema([
                                     Electre1sGraph::make('final_graph')
                                         ->viewData(['graphId' => 'final_graph', 'graphData' => $OutrankingGraphData])
@@ -178,19 +192,20 @@ class ElectreOneResource extends Resource
                                 ->collapsible(),
                         ])->columnSpanFull(),
                     Tab::make('tables')
+                        ->label(__('Tables'))
                         ->schema([
-                            Section::make('Marginal concordance')
-                                ->schema(
-                                    [
-
-                                    Grid::make(['default' => $variantCount + 2])
-                                        ->schema($concordanceColumns)
-                                        ->columnSpan(['default' => 65,]),
-//                                            ->contained(false)
-                                    ]
-                                )
-                                ->collapsible(),
-                            Section::make('Comprehensive concordance')
+//                            Section::make(__('Marginal concordance'))
+//                                ->schema(
+//                                    [
+//
+//                                    Grid::make(['default' => $variantCount + 2])
+//                                        ->schema($concordanceColumns)
+//                                        ->columnSpan(['default' => 65,]),
+//                                        ->contained(false)
+//                                    ]
+//                                )
+//                                ->collapsible(),
+                            Section::make(__('Comprehensive concordance'))
                                 ->schema(
                                     [
                                         Grid::make(['default' => $variantCount + 2])
@@ -199,7 +214,7 @@ class ElectreOneResource extends Resource
                                     ]
                                 )
                                 ->collapsible(),
-                            Section::make('Discordance')
+                            Section::make(__('Discordance'))
                                 ->schema(
                                     [
                                         Grid::make(['default' => $variantCount + 2])
@@ -208,7 +223,7 @@ class ElectreOneResource extends Resource
                                     ]
                                 )
                                 ->collapsible(),
-                            Section::make('Outranking')
+                            Section::make(__('Outranking'))
                                 ->schema(
                                     [
                                         Grid::make(['default' => $variantCount + 2])
@@ -217,7 +232,7 @@ class ElectreOneResource extends Resource
                                     ]
                                 )
                                 ->collapsible(),
-                            Section::make('Relations')
+                            Section::make(__('Relations'))
                                 ->schema(
                                     [
                                         Grid::make(['default' => $variantCount + 2])
@@ -333,7 +348,7 @@ class ElectreOneResource extends Resource
     {
         if (!self::validateProject()) {
             Notification::make()
-                ->title('No project assigned! Redirected to dataset. Remember to attach dataset to project!')
+                ->title(__('Project does not have any dataset! Upload your dataset first'))
                 ->danger()
                 ->send();
             redirect(DatasetResource::getUrl());

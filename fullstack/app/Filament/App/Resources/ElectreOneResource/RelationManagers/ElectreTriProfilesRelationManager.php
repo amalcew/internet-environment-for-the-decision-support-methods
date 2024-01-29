@@ -11,10 +11,16 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class ElectreTriProfilesRelationManager extends RelationManager
 {
     protected static string $relationship = 'electreTriProfile';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Profiles');
+    }
 
     public function table(Tables\Table $table): Tables\Table
     {
@@ -31,14 +37,15 @@ class ElectreTriProfilesRelationManager extends RelationManager
                         ->where('criterion_id', $criterion->id)
                         ->first();
 //                    dd(Value::all()->where('criterion_id', $criterion->id));
-                    return $valueEntry ? $valueEntry->value : 'Brak danych';
+                    return $valueEntry ? $valueEntry->value : __('NaN');
                 })
                 ->html();
         })->toArray();
         // Dodaj kolumny do definicji tabeli
         return $table
             ->columns(array_merge([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                ->label(__('Name')),
                 // inne kolumny...
             ], $tableColumns))
             ->headerActions([
@@ -70,6 +77,7 @@ class ElectreTriProfilesRelationManager extends RelationManager
         return $form
             ->schema(array_merge([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 // inne pola formularza...

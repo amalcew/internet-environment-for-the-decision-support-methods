@@ -11,6 +11,11 @@ class EditElectreOne extends EditRecord
 {
     protected static string $resource = ElectreOneResource::class;
 
+    public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return __('Edit Electre 1s');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -25,6 +25,6 @@ class ViewElectreOne extends ViewRecord
 
     public function getTitle(): string|Htmlable
     {
-        return 'Electre One' . $this->getRecord()->tag;
+        return 'Electre 1s - ' . $this->getRecord()->tag;
     }
 }
