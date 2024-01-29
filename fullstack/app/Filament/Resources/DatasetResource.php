@@ -23,6 +23,12 @@ class DatasetResource extends Resource
     {
         return __('Datasets');
     }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Datasets');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
 
     public static function form(Form $form): Form
@@ -70,7 +76,7 @@ class DatasetResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->label(__('Share')),
+                    ->label(__('Edit')),
                 Tables\Actions\DeleteAction::make('delete')
                 ->requiresConfirmation()
             ])

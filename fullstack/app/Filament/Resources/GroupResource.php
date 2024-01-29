@@ -20,7 +20,17 @@ class GroupResource extends Resource
 {
     protected static ?string $model = Group::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Groups');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Groups');
+    }
 
     public static function form(Form $form): Form
     {
@@ -45,11 +55,14 @@ class GroupResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
-            TextEntry::make('name'),
+            TextEntry::make('name')
+                ->label(__('Name')),
             TextEntry::make('user.name')
-            ->label(__('Owner')),
-            TextEntry::make('class_year'),
+                ->label(__('Creator')),
+            TextEntry::make('class_year')
+                ->label(__('Class year')),
             TextEntry::make('class_time')
+                ->label(__('Class time'))
         ]);
     }
 
@@ -58,13 +71,16 @@ class GroupResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label(__('Owner'))
+                    ->label(__('Creator'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('class_year')
+                    ->label(__('Class year'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('class_time')
+                    ->label(__('Class time'))
                     ->searchable(),
             ])
             ->filters([

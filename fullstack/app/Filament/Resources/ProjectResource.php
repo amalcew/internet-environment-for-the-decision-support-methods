@@ -23,16 +23,28 @@ class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Projects');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Projects');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('user_id')
+                    ->label(__('User'))
                     ->relationship(
                         'user',
                         'id',
@@ -47,19 +59,25 @@ class ProjectResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.email')
+                    ->label(__('User email'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('dataset.name')
+                    ->label(__('Dataset'))
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.group.name'),
+                Tables\Columns\TextColumn::make('user.group.name')
+                    ->label(__('Group')),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -87,11 +105,16 @@ class ProjectResource extends Resource
         $record = $infolist->getRecord();
         $record->link = URL::to('/app') . '/' . $record->id;
         return $infolist->schema([
-            TextEntry::make('name'),
-            TextEntry::make('user.email'),
-            TextEntry::make('dataset.name'),
-            TextEntry::make('link'),
-            TextEntry::make('user.group.name'),
+            TextEntry::make('name')
+                ->label(__('Name')),
+            TextEntry::make('user.email')
+                ->label(__('User email')),
+            TextEntry::make('dataset.name')
+                ->label(__('Dataset')),
+            TextEntry::make('link')
+                ->label(__('Link')),
+            TextEntry::make('user.group.name')
+                ->label(__('Group')),
         ]);
     }
 
