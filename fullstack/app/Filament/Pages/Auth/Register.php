@@ -113,6 +113,7 @@ class Register extends SimplePage
     {
         return TextInput::make('email')
             ->label(__('filament-panels::pages/auth/register.form.email.label'))
+            ->regex('/^.+@cs.put.poznan.pl$/i')  // make better use of enum, regex is bad approach as it is hardcoded!
             ->email()
             ->required()
             ->maxLength(255)
